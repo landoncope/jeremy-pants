@@ -11,6 +11,42 @@ This is Brother Cope's "Exploring Computer Science" class materials repository. 
 - **Class Duration**: 75 minutes with a 5-minute break
 - **Teaching Style**: Casual, uses real-world examples, lots of live demos, minimal lecturing
 
+## Main Index Page (GitHub Pages)
+
+### Purpose
+The `index.html` file in the root directory serves as the main landing page for GitHub Pages, providing centralized access to all class materials.
+
+### Structure
+- **Header**: Class title, subtitle, and repository info
+- **Day Cards Grid**: Visual cards for each class day showing:
+  - Day number and title
+  - Topics covered
+  - Completion status (checkmark for completed days)
+  - Links to materials (slides, tutorials, etc.)
+- **Resources Section**: Quick links to external tools (ChatGPT, GitHub, Grok, VS Code, W3Schools)
+- **Footer**: Class mantras and last updated date
+
+### Updating the Index
+When creating new day materials:
+1. Change the day card from `upcoming` to `completed` class
+2. Update the topics list if needed
+3. Add links to the new materials in the materials section
+4. Primary links use `material-link` class
+5. Secondary links use `material-link secondary` class
+
+### File Organization
+```
+jeremy-pants/
+├── index.html (main landing page)
+├── CLAUDE.md (this file)
+├── day 1/
+│   └── binary-cats-tutorial.html
+├── day 2/
+│   └── day2_slides.html
+└── day X/
+    └── dayX_slides.html
+```
+
 ## Slide Deck Creation Guidelines
 
 ### Technical Specifications
@@ -97,6 +133,7 @@ function checkAnswer(button, isCorrect) {
 - Binary basics
 - AI tools (Grok for video generation)
 - Created "jeremy-pants" repository
+- **Materials**: binary-cats-tutorial.html
 
 ### Day 2 (Completed)
 - Binary addition/subtraction
@@ -104,6 +141,7 @@ function checkAnswer(button, isCorrect) {
 - Files and folders
 - File paths
 - RAM vs Storage
+- **Materials**: day2_slides.html (interactive presentation)
 
 ### Future Topics to Cover (from syllabus)
 - Web Development (HTML/CSS basics)

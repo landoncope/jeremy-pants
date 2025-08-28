@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploring Computer Science - Brother Cope</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .repo-info {
+            background: #f8f9fa;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .repo-info code {
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 1.1em;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .day-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .day-card.completed::before {
+            content: "✓";
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #4caf50;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .day-card.upcoming {
+            opacity: 0.7;
+            background: #f0f0f0;
+        }
+
+        .day-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .day-title {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .day-topics {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .day-topics ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .day-topics li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .day-topics li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .materials-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .materials-title {
+            color: #764ba2;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .material-link {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .material-link:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .material-link.secondary {
+            background: #f8f9fa;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .material-link.secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .resources {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .resources h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .resource-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .resource-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .resource-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .fun-fact {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .subtitle {
+                font-size: 1.2em;
+            }
+            .days-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🖥️ Exploring Computer Science</h1>
+            <p class="subtitle">Brother Cope's Class Materials</p>
+            <div class="repo-info">
+                <p>GitHub Repository: <code>jeremy-pants</code></p>
+            </div>
+            <div class="fun-fact">
+                "The best time to plant a tree was 20 years ago. The second best time is now." 
+                <br>- Ancient proverb (also applies to learning to code)
+            </div>
+        </header>
+
+        <div class="days-grid">
+            <!-- Day 1 -->
+            <div class="day-card completed">
+                <div class="day-number">Day 1</div>
+                <h3 class="day-title">Introduction & Binary Basics</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>GitHub Introduction</li>
+                        <li>Binary Number System</li>
+                        <li>AI Tools (Grok)</li>
+                        <li>Creating Jeremy Pants repo</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <a href="day 1/binary-cats-tutorial.html" class="material-link">Binary Cats Tutorial</a>
+                </div>
+            </div>
+
+            <!-- Day 2 -->
+            <div class="day-card completed">
+                <div class="day-number">Day 2</div>
+                <h3 class="day-title">Binary Math & Computer Basics</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>Binary Addition/Subtraction</li>
+                        <li>Operating Systems</li>
+                        <li>Files & Folders</li>
+                        <li>RAM vs Storage</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <a href="day 2/day2_slides.html" class="material-link">Interactive Slides</a>
+                </div>
+            </div>
+
+            <!-- Day 3 -->
+            <div class="day-card upcoming">
+                <div class="day-number">Day 3</div>
+                <h3 class="day-title">Coming Soon</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>Web Development Basics</li>
+                        <li>HTML Introduction</li>
+                        <li>Your First Web Page</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <span style="color: #999;">Not yet available</span>
+                </div>
+            </div>
+
+            <!-- Day 4 -->
+            <div class="day-card upcoming">
+                <div class="day-number">Day 4</div>
+                <h3 class="day-title">Coming Soon</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>CSS Styling</li>
+                        <li>Making Things Look Cool</li>
+                        <li>Interactive Elements</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <span style="color: #999;">Not yet available</span>
+                </div>
+            </div>
+
+            <!-- Day 5 -->
+            <div class="day-card upcoming">
+                <div class="day-number">Day 5</div>
+                <h3 class="day-title">Coming Soon</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>Introduction to Python</li>
+                        <li>AI-Assisted Coding</li>
+                        <li>Hello World & Beyond</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <span style="color: #999;">Not yet available</span>
+                </div>
+            </div>
+
+            <!-- Day 6 -->
+            <div class="day-card upcoming">
+                <div class="day-number">Day 6</div>
+                <h3 class="day-title">Coming Soon</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>AI & Machine Learning</li>
+                        <li>Training Your First Model</li>
+                        <li>Ethics in AI</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <span style="color: #999;">Not yet available</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="resources">
+            <h2>🚀 Quick Resources</h2>
+            <div class="resource-grid">
+                <a href="https://chat.openai.com" class="resource-item" target="_blank">
+                    <div class="resource-icon">🤖</div>
+                    <div>ChatGPT</div>
+                </a>
+                <a href="https://github.com/landoncope/jeremy-pants" class="resource-item" target="_blank">
+                    <div class="resource-icon">📦</div>
+                    <div>Class GitHub</div>
+                </a>
+                <a href="https://grok.x.ai" class="resource-item" target="_blank">
+                    <div class="resource-icon">🎥</div>
+                    <div>Grok AI</div>
+                </a>
+                <a href="https://code.visualstudio.com" class="resource-item" target="_blank">
+                    <div class="resource-icon">💻</div>
+                    <div>VS Code</div>
+                </a>
+                <a href="https://www.w3schools.com" class="resource-item" target="_blank">
+                    <div class="resource-icon">📚</div>
+                    <div>W3Schools</div>
+                </a>
+                <a href="https://liahonaeducation.schoology.com/course/7994510303/materials" class="resource-item" target="_blank">
+                    <div class="resource-icon">🎓</div>
+                    <div>Schoology</div>
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 Brother Cope's Exploring Computer Science Class</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                Remember: <strong>You're required to use AI in this class!</strong> 🤖
+            </p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                "Every job will involve spreadsheets" - Brother Cope
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Add some interactive touches
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on page load
+            const cards = document.querySelectorAll('.day-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s, transform 0.5s';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Add current date
+            const today = new Date();
+            const dateElement = document.createElement('p');
+            dateElement.style.marginTop = '10px';
+            dateElement.style.fontSize = '0.9em';
+            dateElement.textContent = `Last updated: ${today.toLocaleDateString()}`;
+            document.querySelector('footer').appendChild(dateElement);
+        });
+    </script>
+</body>
+</html>
