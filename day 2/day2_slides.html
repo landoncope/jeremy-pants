@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 2: Binary Math & Computer Basics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            color: #333;
+        }
+
+        .slideshow-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s ease-out;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2.2em;
+            margin: 30px 0 20px 0;
+        }
+
+        h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin: 25px 0 15px 0;
+        }
+
+        p, li {
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30ปpx;
+            font-size: 1.1em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .binary-demo {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .bit-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .bit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bit-value {
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .bit-button {
+            width: 60px;
+            height: 60px;
+            font-size: 2em;
+            font-weight: bold;
+            border: 3px solid #667eea;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .bit-button.on {
+            background: #667eea;
+            color: white;
+        }
+
+        .result {
+            text-align: center;
+            font-size: 1.8em;
+            margin: 20px 0;
+            padding: 20px;
+            background: #667eea;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .vocabulary {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .vocab-term {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0 10px 0;
+        }
+
+        .vocab-def {
+            font-size: 1.2em;
+            color: #555;
+            padding-left: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .interactive-quiz {
+            background: #f0f4f8;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            margin: 10px 0;
+            padding: 15px;
+            background: white;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            transform: translateX(10px);
+        }
+
+        .quiz-option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .quiz-option.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .file-tree {
+            font-family: 'Courier New', monospace;
+            background: #2d3748;
+            color: #a0aec0;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+
+        .file-tree .folder {
+            color: #68d391;
+        }
+
+        .file-tree .file {
+            color: #63b3ed;
+        }
+
+        .path-demo {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3em;
+            margin: 20px 0;
+        }
+
+        .highlight {
+            background: #ffd700;
+            padding: 3px 8px;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            font-size: 1.3em;
+            text-align: center;
+        }
+
+        .binary-addition {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5em;
+            margin: 30px 0;
+        }
+
+        .binary-row {
+            display: flex;
+            gap: 10px;
+            margin: 5px 0;
+            align-items: center;
+        }
+
+        .binary-digit {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .operator {
+            width: 30px;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .binary-line {
+            width: 100%;
+            height: 2px;
+            background: #667eea;
+            margin: 10px 0;
+        }
+
+        input[type="text"] {
+            font-size: 1.2em;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            margin: 10px;
+        }
+
+        .fun-fact {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            font-size: 1.2em;
+            position: relative;
+        }
+
+        .fun-fact::before {
+            content: "💡";
+            font-size: 2em;
+            position: absolute;
+            top: -15px;
+            left: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .bit-button {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slideshow-container">
+        <div class="slide-number">
+            <span id="current-slide">1</span> / <span id="total-slides">15</span>
+        </div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>🖥️ Day 2: Exploring Computer Science</h1>
+            <h2 style="text-align: center; color: #764ba2;">Binary Math & Computer Basics</h2>
+            <div style="text-align: center; margin-top: 50px;">
+                <p style="font-size: 1.5em;">Brother Cope</p>
+                <p style="font-size: 1.2em; color: #666;">Ready to dive deeper? 🚀</p>
+            </div>
+            <div class="fun-fact" style="margin-top: 50px;">
+                <p><strong>Today's Journey:</strong> Binary Addition, Operating Systems, Files & Folders!</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Quick Review -->
+        <div class="slide">
+            <h1>🔄 Quick Review from Day 1</h1>
+            <div class="interactive-quiz">
+                <h3>Pop Quiz! What is 8 bits equal to?</h3>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">A) A nibble</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">B) A byte</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">C) A word</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">D) A kilobyte</button>
+            </div>
+            <div class="binary-demo">
+                <h3>Remember: Binary = Base 2</h3>
+                <div class="bit-container">
+                    <div class="bit">
+                        <div class="bit-value">128</div>
+                        <button class="bit-button" onclick="toggleBit(this)">0</button>
+                    </div>
+                    <div class="bit">
+                        <div class="bit-value">64</div>
+                        <button class="bit-button" onclick="toggleBit(this)">0</button>
+                    </div>
+                    <div class="bit">
+                        <div class="bit-value">32</div>
+                        <button class="bit-button" onclick="toggleBit(this)">0</button>
+                    </div>
+                    <div class="bit">
+                        <div class="bit-value">16</div>
+                        <button class="bit-button" onclick="toggleBit(this)">0</button>
+                    </div>
+                    <div class="bit">
+                        <div class="bit-value">8</div>
+                        <button class="bit-button" onclick="toggleBit(this)">0</button>
+                    </div>
+                    <div class="bit">
+                        <div class="bit-value">4</div>
+                        <button class="bit-button" onclick="toggleBit(this)">0</button>
+                    </div>
+                    <div class="bit">
+                        <div class="bit-value">2</div>
+                        <button class="bit-button" onclick="toggleBit(this)">0</button>
+                    </div>
+                    <div class="bit">
+                        <div class="bit-value">1</div>
+                        <button class="bit-button" onclick="toggleBit(this)">0</button>
+                    </div>
+                </div>
+                <div class="result">Decimal Value: <span id="decimal-result">0</span></div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Binary Addition -->
+        <div class="slide">
+            <h1>➕ Binary Addition</h1>
+            <p style="text-align: center; font-size: 1.4em;">Just like regular math, but with only 0s and 1s!</p>
+            
+            <div class="binary-demo">
+                <h3>Rules of Binary Addition:</h3>
+                <ul style="font-size: 1.3em; margin-left: 40px;">
+                    <li>0 + 0 = 0</li>
+                    <li>0 + 1 = 1</li>
+                    <li>1 + 0 = 1</li>
+                    <li>1 + 1 = 10 (that's "2" - we carry the 1!)</li>
+                </ul>
+            </div>
+
+            <div class="binary-addition">
+                <h3>Let's Try: 5 + 3</h3>
+                <div class="binary-row">
+                    <span class="operator"></span>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit">1</div>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit">1</div>
+                    <span style="margin-left: 20px;">(5)</span>
+                </div>
+                <div class="binary-row">
+                    <span class="operator">+</span>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit">1</div>
+                    <div class="binary-digit">1</div>
+                    <span style="margin-left: 20px;">(3)</span>
+                </div>
+                <div class="binary-line" style="width: 200px;"></div>
+                <div class="binary-row">
+                    <span class="operator">=</span>
+                    <div class="binary-digit" style="background: #667eea; color: white;">1</div>
+                    <div class="binary-digit" style="background: #667eea; color: white;">0</div>
+                    <div class="binary-digit" style="background: #667eea; color: white;">0</div>
+                    <div class="binary-digit" style="background: #667eea; color: white;">0</div>
+                    <span style="margin-left: 20px;">(8)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Binary Addition Practice -->
+        <div class="slide">
+            <h1>🎯 Your Turn: Binary Addition!</h1>
+            <div class="binary-demo">
+                <h3>Add these binary numbers:</h3>
+                <div class="binary-addition">
+                    <div class="binary-row">
+                        <span class="operator"></span>
+                        <div class="binary-digit">1</div>
+                        <div class="binary-digit">0</div>
+                        <div class="binary-digit">1</div>
+                        <div class="binary-digit">1</div>
+                        <span style="margin-left: 20px;">(11)</span>
+                    </div>
+                    <div class="binary-row">
+                        <span class="operator">+</span>
+                        <div class="binary-digit">0</div>
+                        <div class="binary-digit">1</div>
+                        <div class="binary-digit">1</div>
+                        <div class="binary-digit">0</div>
+                        <span style="margin-left: 20px;">(6)</span>
+                    </div>
+                    <div class="binary-line" style="width: 200px;"></div>
+                    <div style="margin-top: 20px;">
+                        <input type="text" id="binary-answer" placeholder="Enter binary result" style="width: 200px;">
+                        <button onclick="checkBinaryAddition()">Check Answer</button>
+                        <p id="addition-feedback" style="margin-top: 20px; font-size: 1.3em;"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="fun-fact">
+                <p><strong>Pro Tip:</strong> Remember to carry the 1 when you get 1+1! It becomes 10 in binary.</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Binary Subtraction -->
+        <div class="slide">
+            <h1>➖ Binary Subtraction</h1>
+            <div class="binary-demo">
+                <h3>Rules of Binary Subtraction:</h3>
+                <ul style="font-size: 1.3em; margin-left: 40px;">
+                    <li>0 - 0 = 0</li>
+                    <li>1 - 0 = 1</li>
+                    <li>1 - 1 = 0</li>
+                    <li>0 - 1 = 1 (borrow 1 from the next column)</li>
+                </ul>
+            </div>
+
+            <div class="binary-addition">
+                <h3>Example: 9 - 5</h3>
+                <div class="binary-row">
+                    <span class="operator"></span>
+                    <div class="binary-digit">1</div>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit">1</div>
+                    <span style="margin-left: 20px;">(9)</span>
+                </div>
+                <div class="binary-row">
+                    <span class="operator">-</span>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit">1</div>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit">1</div>
+                    <span style="margin-left: 20px;">(5)</span>
+                </div>
+                <div class="binary-line" style="width: 200px;"></div>
+                <div class="binary-row">
+                    <span class="operator">=</span>
+                    <div class="binary-digit" style="background: #764ba2; color: white;">0</div>
+                    <div class="binary-digit" style="background: #764ba2; color: white;">1</div>
+                    <div class="binary-digit" style="background: #764ba2; color: white;">0</div>
+                    <div class="binary-digit" style="background: #764ba2; color: white;">0</div>
+                    <span style="margin-left: 20px;">(4)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Vocabulary Introduction -->
+        <div class="slide">
+            <h1>📚 Today's Vocabulary</h1>
+            <div class="vocabulary">
+                <div class="vocab-term">1. Operating System (OS)</div>
+                <div class="vocab-def">The software that manages computer hardware and provides services for programs. It's like the manager of a restaurant - coordinating everything!</div>
+                
+                <div class="vocab-term">2. File Extension</div>
+                <div class="vocab-def">The suffix at the end of a filename that tells the computer what type of file it is (.txt, .jpg, .exe)</div>
+                
+                <div class="vocab-term">3. Directory/Folder</div>
+                <div class="vocab-def">A container that holds files and other folders - like a filing cabinet drawer</div>
+                
+                <div class="vocab-term">4. Path</div>
+                <div class="vocab-def">The address showing the location of a file or folder - like a street address for your files</div>
+                
+                <div class="vocab-term">5. RAM vs Storage</div>
+                <div class="vocab-def">RAM: Fast temporary memory (lost when power off)<br>Storage: Slower permanent memory (keeps data after power off)</div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Operating Systems -->
+        <div class="slide">
+            <h1>🖥️ Operating Systems</h1>
+            <h2>The Big Three</h2>
+            
+            <div style="display: flex; justify-content: space-around; margin: 40px 0;">
+                <div style="text-align: center;">
+                    <div style="font-size: 4em;">🪟</div>
+                    <h3>Windows</h3>
+                    <p>Most common<br>Business & Gaming</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 4em;">🍎</div>
+                    <h3>macOS</h3>
+                    <p>Creative pros<br>User friendly</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 4em;">🐧</div>
+                    <h3>Linux</h3>
+                    <p>Servers & Devs<br>Free & Customizable</p>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                <p><strong>Fun Fact:</strong> Your phone has an OS too! iOS for iPhones, Android for most others. Android is actually based on Linux!</p>
+            </div>
+
+            <div class="activity-box">
+                <p><strong>Live Demo Time!</strong> Let's open Task Manager (Windows) or Activity Monitor (Mac) and see what's running!</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: File Systems -->
+        <div class="slide">
+            <h1>📁 Understanding Files & Folders</h1>
+            
+            <div class="file-tree">
+                <pre>
+<span class="folder">📁 CompSci_Class/</span>
+    ├── <span class="folder">📁 Projects/</span>
+    │   ├── <span class="folder">📁 Day1_Binary/</span>
+    │   │   └── <span class="file">📄 cat_binary.html</span>
+    │   └── <span class="folder">📁 Day2_Files/</span>
+    │       └── <span class="file">📄 notes.txt</span>
+    ├── <span class="folder">📁 Notes/</span>
+    │   └── <span class="file">📄 vocabulary.docx</span>
+    └── <span class="folder">📁 Resources/</span>
+        ├── <span class="file">🖼️ diagram.png</span>
+        └── <span class="file">🎵 podcast.mp3</span>
+                </pre>
+            </div>
+
+            <h3>File Extensions Tell the Story:</h3>
+            <ul style="font-size: 1.3em;">
+                <li><span class="highlight">.txt</span> → Plain text (Notepad)</li>
+                <li><span class="highlight">.jpg/.png</span> → Images</li>
+                <li><span class="highlight">.mp3/.wav</span> → Audio files</li>
+                <li><span class="highlight">.exe</span> → Programs (Windows)</li>
+                <li><span class="highlight">.html</span> → Web pages</li>
+            </ul>
+        </div>
+
+        <!-- Slide 9: File Paths -->
+        <div class="slide">
+            <h1>🗺️ File Paths: Addresses for Your Files</h1>
+            
+            <h3>Windows Path:</h3>
+            <div class="path-demo">
+                C:\Users\Brother_Cope\Documents\CompSci_Class\Projects\
+            </div>
+            
+            <h3>Mac/Linux Path:</h3>
+            <div class="path-demo">
+                /Users/Brother_Cope/Documents/CompSci_Class/Projects/
+            </div>
+
+            <div class="binary-demo">
+                <h3>Path Anatomy:</h3>
+                <p style="font-size: 1.3em;">Think of it like a mailing address:</p>
+                <ul style="font-size: 1.2em;">
+                    <li><strong>Drive/Root:</strong> The country (C:\ or /)</li>
+                    <li><strong>Folders:</strong> State → City → Street</li>
+                    <li><strong>File:</strong> The house number</li>
+                </ul>
+            </div>
+
+            <div class="activity-box">
+                <p><strong>Scavenger Hunt!</strong> Navigate to these paths and find the secret code!</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Storage Sizes -->
+        <div class="slide">
+            <h1>💾 Understanding Storage Sizes</h1>
+            
+            <div style="text-align: center;">
+                <h2>The Storage Ladder</h2>
+                <div style="font-size: 1.5em; line-height: 2;">
+                    <p>8 bits = 1 <span class="highlight">Byte</span> (a single character)</p>
+                    <p>1,000 Bytes = 1 <span class="highlight">Kilobyte</span> (KB) - A short email</p>
+                    <p>1,000 KB = 1 <span class="highlight">Megabyte</span> (MB) - A song</p>
+                    <p>1,000 MB = 1 <span class="highlight">Gigabyte</span> (GB) - A movie</p>
+                    <p>1,000 GB = 1 <span class="highlight">Terabyte</span> (TB) - 250 movies!</p>
+                </div>
+            </div>
+
+            <div class="interactive-quiz">
+                <h3>Quick Math!</h3>
+                <p>If a TikTok video is 15 MB, how many can fit on a 64 GB phone?</p>
+                <input type="text" id="storage-answer" placeholder="Your answer">
+                <button onclick="checkStorageAnswer()">Check</button>
+                <p id="storage-feedback" style="margin-top: 20px;"></p>
+            </div>
+        </div>
+
+        <!-- Slide 11: RAM vs Storage -->
+        <div class="slide">
+            <h1>🧠 RAM vs Storage</h1>
+            
+            <div style="display: flex; justify-content: space-around; margin: 40px 0;">
+                <div style="flex: 1; margin: 20px;">
+                    <h2 style="text-align: center;">🚀 RAM</h2>
+                    <div class="vocabulary">
+                        <p><strong>Speed:</strong> Super Fast!</p>
+                        <p><strong>Capacity:</strong> 8-32 GB typical</p>
+                        <p><strong>Persistence:</strong> Lost when power off</p>
+                        <p><strong>Like:</strong> Your desk while working</p>
+                        <p><strong>Use:</strong> Running programs</p>
+                    </div>
+                </div>
+                <div style="flex: 1; margin: 20px;">
+                    <h2 style="text-align: center;">💽 Storage (SSD/HDD)</h2>
+                    <div class="vocabulary">
+                        <p><strong>Speed:</strong> Slower than RAM</p>
+                        <p><strong>Capacity:</strong> 256 GB - 2 TB typical</p>
+                        <p><strong>Persistence:</strong> Keeps data forever</p>
+                        <p><strong>Like:</strong> Your filing cabinet</p>
+                        <p><strong>Use:</strong> Saving files</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                <p><strong>Think of it this way:</strong> RAM is like your brain's short-term memory (what you're thinking about right now), Storage is like long-term memory (what you learned last year)</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Interactive File Extension Game -->
+        <div class="slide">
+            <h1>🎮 File Extension Match Game!</h1>
+            <p style="text-align: center; font-size: 1.3em;">Match the file type with what program opens it!</p>
+            
+            <div class="interactive-quiz">
+                <h3>presentation.pptx opens with:</h3>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">A) Photoshop</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">B) PowerPoint</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">C) Spotify</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">D) Notepad</button>
+            </div>
+
+            <div class="interactive-quiz">
+                <h3>song.mp3 opens with:</h3>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">A) Word</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">B) Excel</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">C) Music Player</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">D) Paint</button>
+            </div>
+
+            <div class="fun-fact">
+                <p><strong>Experiment Time!</strong> What happens if you rename a .jpg to .txt and try to open it? (Spoiler: You'll see gibberish!)</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Hands-On Activity -->
+        <div class="slide">
+            <h1>🛠️ Let's Build Something!</h1>
+            
+            <div class="activity-box">
+                <h2>Create Your File System!</h2>
+                <p>Together, let's create this folder structure:</p>
+            </div>
+
+            <div class="file-tree">
+                <pre>
+<span class="folder">📁 MyFirstProject/</span>
+    ├── <span class="folder">📁 Code/</span>
+    │   └── <span class="file">📄 hello_world.py</span>
+    ├── <span class="folder">📁 Images/</span>
+    │   └── <span class="file">🖼️ screenshot.png</span>
+    ├── <span class="folder">📁 Documents/</span>
+    │   └── <span class="file">📄 readme.txt</span>
+    └── <span class="file">📄 notes.txt</span>
+                </pre>
+            </div>
+
+            <div class="binary-demo">
+                <h3>Steps:</h3>
+                <ol style="font-size: 1.2em;">
+                    <li>Create main folder "MyFirstProject"</li>
+                    <li>Add three subfolders</li>
+                    <li>Create a simple text file in each</li>
+                    <li>Take a screenshot and save it</li>
+                    <li>Find the full path to your screenshot!</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 14: Command Line Preview -->
+        <div class="slide">
+            <h1>🖥️ The Matrix Moment: Command Line!</h1>
+            
+            <div class="path-demo">
+                <p>$ cd Documents/CompSci_Class</p>
+                <p>$ ls</p>
+                <p style="color: #68d391;">Projects  Notes  Resources</p>
+                <p>$ mkdir Day2_Awesome</p>
+                <p>$ echo "Hello World!" > message.txt</p>
+                <p>$ cat message.txt</p>
+                <p style="color: #63b3ed;">Hello World!</p>
+            </div>
+
+            <div class="binary-demo">
+                <h3>Basic Commands:</h3>
+                <ul style="font-size: 1.2em;">
+                    <li><code>cd</code> - Change Directory (move between folders)</li>
+                    <li><code>ls</code> - List (show what's in a folder)</li>
+                    <li><code>mkdir</code> - Make Directory (create a folder)</li>
+                    <li><code>echo</code> - Print text</li>
+                    <li><code>cat</code> - Display file contents</li>
+                </ul>
+            </div>
+
+            <div class="fun-fact">
+                <p><strong>Why learn this?</strong> Many programming jobs use command line daily. Plus, you look really cool typing in a black window with green text! 😎</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Summary & Preview -->
+        <div class="slide">
+            <h1>🎯 Today's Recap & What's Next!</h1>
+            
+            <div class="vocabulary">
+                <h3>What We Learned:</h3>
+                <ul style="font-size: 1.3em;">
+                    <li>✅ Binary addition and subtraction</li>
+                    <li>✅ Operating Systems (Windows, Mac, Linux)</li>
+                    <li>✅ Files, folders, and paths</li>
+                    <li>✅ File extensions and what they mean</li>
+                    <li>✅ RAM vs Storage</li>
+                    <li>✅ Basic command line preview</li>
+                </ul>
+            </div>
+
+            <div class="activity-box">
+                <h3>🚀 Coming Next Class:</h3>
+                <p>We'll use AI to build our first real program!</p>
+                <p>Bring your creativity - we're making something cool!</p>
+            </div>
+
+            <div class="fun-fact">
+                <p><strong>Homework Challenge:</strong> Find 5 different file extensions on your computer and figure out what programs open them!</p>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <h2>Questions? 🤔</h2>
+                <p style="font-size: 1.3em;">Remember: The only bad question is the one you don't ask!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+        <button id="nextBtn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide - 1].classList.add('active');
+            
+            document.getElementById('current-slide').textContent = currentSlide;
+            
+            // Update button states
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
+            }
+        });
+
+        // Binary calculator
+        function toggleBit(button) {
+            if (button.textContent === '0') {
+                button.textContent = '1';
+                button.classList.add('on');
+            } else {
+                button.textContent = '0';
+                button.classList.remove('on');
+            }
+            updateDecimal();
+        }
+
+        function updateDecimal() {
+            const bits = document.querySelectorAll('.bit-button');
+            let total = 0;
+            const values = [128, 64, 32, 16, 8, 4, 2, 1];
+            
+            bits.forEach((bit, index) => {
+                if (bit.textContent === '1') {
+                    total += values[index];
+                }
+            });
+            
+            const resultElement = document.getElementById('decimal-result');
+            if (resultElement) {
+                resultElement.textContent = total;
+            }
+        }
+
+        // Quiz functions
+        function checkAnswer(button, isCorrect) {
+            const options = button.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.disabled = true;
+                opt.onclick = null;
+            });
+            
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.textContent += ' ✓';
+            } else {
+                button.classList.add('incorrect');
+                button.textContent += ' ✗';
+            }
+        }
+
+        function checkBinaryAddition() {
+            const answer = document.getElementById('binary-answer').value.trim();
+            const feedback = document.getElementById('addition-feedback');
+            
+            if (answer === '10001' || answer === '10001') {
+                feedback.textContent = '✅ Correct! 11 + 6 = 17, which is 10001 in binary!';
+                feedback.style.color = '#4caf50';
+            } else {
+                feedback.textContent = '❌ Not quite. Hint: 11 + 6 = 17 in decimal. Try converting 17 to binary!';
+                feedback.style.color = '#f44336';
+            }
+        }
+
+        function checkStorageAnswer() {
+            const answer = parseInt(document.getElementById('storage-answer').value);
+            const feedback = document.getElementById('storage-feedback');
+            const correctAnswer = Math.floor(64 * 1000 / 15);
+            
+            if (answer >= correctAnswer - 100 && answer <= correctAnswer + 100) {
+                feedback.textContent = `✅ Close enough! About ${correctAnswer} TikToks can fit!`;
+                feedback.style.color = '#4caf50';
+            } else {
+                feedback.textContent = `❌ Not quite. Hint: 64 GB = 64,000 MB. Divide by 15 MB per video!`;
+                feedback.style.color = '#f44336';
+            }
+        }
+
+        // Initialize
+        showSlide(1);
+    </script>
+</body>
+</html>
