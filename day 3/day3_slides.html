@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3: Command Line & Web Basics - Brother Cope</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .slide-container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            padding: 60px 40px;
+            min-height: 600px;
+            animation: slideIn 0.5s;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.3em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .fun-fact {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .vocab-term {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .vocab-def {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background: #f8f9fa;
+        }
+
+        .nav-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-button:hover {
+            background: #764ba2;
+        }
+
+        .nav-button:disabled {
+            background: #ced4da;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+            color: #495057;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .storage-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .storage-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.2em;
+        }
+
+        .storage-table td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 1.1em;
+        }
+
+        .storage-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .storage-visual {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .storage-item {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+
+        .storage-item:hover {
+            transform: scale(1.05);
+        }
+
+        .storage-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .terminal-demo {
+            background: #1e1e1e;
+            color: #4ec9b0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin: 20px 0;
+            border: 2px solid #333;
+        }
+
+        .terminal-prompt {
+            color: #569cd6;
+        }
+
+        .terminal-command {
+            color: #4ec9b0;
+        }
+
+        .terminal-output {
+            color: #d4d4d4;
+            margin-left: 20px;
+        }
+
+        .command-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .command-name {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .command-desc {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .file-tree {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin: 20px 0;
+        }
+
+        .folder {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .file {
+            color: #333;
+        }
+
+        .html-demo {
+            background: #2d2d2d;
+            color: #cccccc;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            border: 2px solid #444;
+        }
+
+        .html-tag {
+            color: #569cd6;
+        }
+
+        .html-bracket {
+            color: #808080;
+        }
+
+        .html-content {
+            color: #ce9178;
+        }
+
+        .html-attribute {
+            color: #9cdcfe;
+        }
+
+        .html-value {
+            color: #ce9178;
+        }
+
+        .web-preview {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .browser-bar {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px 5px 0 0;
+            margin: -20px -20px 20px -20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .browser-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .browser-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #dee2e6;
+        }
+
+        .browser-dot.red {
+            background: #ff5f56;
+        }
+
+        .browser-dot.yellow {
+            background: #ffbd2e;
+        }
+
+        .browser-dot.green {
+            background: #27c93f;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+            .slide {
+                padding: 40px 20px;
+            }
+            .storage-visual {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 3: Command Line & Web Basics 💻</h1>
+            <div class="activity-box">
+                <p>Today we'll explore the command line, create file systems, and build our first web page!</p>
+            </div>
+            <div class="fun-fact">
+                <p><strong>Fun Fact:</strong> The first website ever created is still online! It was made by Tim Berners-Lee in 1991.</p>
+                <p style="margin-top: 10px;">🔗 Visit it at: <a href="http://info.cern.ch/hypertext/WWW/TheProject.html" target="_blank" style="color: white; text-decoration: underline;">info.cern.ch</a></p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Review Quiz -->
+        <div class="slide">
+            <h2>Quick Review! 🧠</h2>
+            <p><strong>What's the difference between RAM and a Hard Drive?</strong></p>
+            <div class="quiz-option" onclick="checkAnswer(this, false)">
+                A) RAM is permanent storage, Hard Drive is temporary
+            </div>
+            <div class="quiz-option" onclick="checkAnswer(this, false)">
+                B) They're the same thing with different names
+            </div>
+            <div class="quiz-option" onclick="checkAnswer(this, true)">
+                C) RAM is temporary (loses data when power off), Hard Drive is permanent storage
+            </div>
+            <div class="quiz-option" onclick="checkAnswer(this, false)">
+                D) RAM stores files, Hard Drive runs programs
+            </div>
+        </div>
+
+        <!-- Slide 3: Storage Sizes Review -->
+        <div class="slide">
+            <h2>Storage Sizes Review 📊</h2>
+            <table class="storage-table">
+                <tr>
+                    <th>Unit</th>
+                    <th>Size</th>
+                    <th>Real World Example</th>
+                </tr>
+                <tr>
+                    <td><strong>Byte</strong></td>
+                    <td>8 bits</td>
+                    <td>A single character</td>
+                </tr>
+                <tr>
+                    <td><strong>Kilobyte (KB)</strong></td>
+                    <td>1,024 bytes</td>
+                    <td>A short email</td>
+                </tr>
+                <tr>
+                    <td><strong>Megabyte (MB)</strong></td>
+                    <td>1,024 KB</td>
+                    <td>A song (3-4 MB)</td>
+                </tr>
+                <tr>
+                    <td><strong>Gigabyte (GB)</strong></td>
+                    <td>1,024 MB</td>
+                    <td>A movie (2-4 GB)</td>
+                </tr>
+                <tr>
+                    <td><strong>Terabyte (TB)</strong></td>
+                    <td>1,024 GB</td>
+                    <td>250,000 songs!</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Slide 4: Storage Visual -->
+        <div class="slide">
+            <h2>How Big Is a Gigabyte? 🎮</h2>
+            <div class="storage-visual">
+                <div class="storage-item">
+                    <div class="storage-icon">📱</div>
+                    <p><strong>1 GB can store:</strong></p>
+                    <p>~250 songs</p>
+                    <p>OR</p>
+                    <p>~600 photos</p>
+                </div>
+                <div class="storage-item">
+                    <div class="storage-icon">🎮</div>
+                    <p><strong>Fortnite:</strong></p>
+                    <p>~30 GB</p>
+                    <p>(That's 30,000 MB!)</p>
+                </div>
+                <div class="storage-item">
+                    <div class="storage-icon">📱</div>
+                    <p><strong>iPhone Storage:</strong></p>
+                    <p>128 GB - 1 TB</p>
+                    <p>(1 TB = 1,024 GB)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Vocabulary - Gigabyte -->
+        <div class="slide">
+            <h2>Vocabulary Time! 📚</h2>
+            <div class="vocab-term">Gigabyte (GB)</div>
+            <div class="vocab-def">
+                A unit of digital storage equal to approximately 1 billion bytes (technically 1,024 megabytes). Think of it like a large box that can hold about 250 songs or a 30-minute HD video.
+            </div>
+            <div class="fun-fact">
+                <p><strong>Fun Fact:</strong> The first hard drive in 1956 could store 5 MB and weighed over a ton! Your phone now has thousands of times more storage and fits in your pocket!</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Create Your File System Activity -->
+        <div class="slide">
+            <h2>Create Your File System! 📁</h2>
+            <div class="activity-box">
+                <p><strong>Let's organize a computer for gaming!</strong></p>
+                <p>Design a folder structure for someone who loves gaming, school work, and making TikToks</p>
+            </div>
+            <div class="file-tree">
+                <pre>
+<span class="folder">📁 My Computer/</span>
+    ├── <span class="folder">📁 Games/</span>
+    │   ├── <span class="folder">📁 Fortnite/</span>
+    │   ├── <span class="folder">📁 Minecraft/</span>
+    │   └── <span class="folder">📁 Roblox/</span>
+    ├── <span class="folder">📁 School/</span>
+    │   ├── <span class="folder">📁 Math/</span>
+    │   ├── <span class="folder">📁 Science/</span>
+    │   └── <span class="folder">📁 Computer Science/</span>
+    └── <span class="folder">📁 Videos/</span>
+        ├── <span class="folder">📁 TikToks/</span>
+        └── <span class="folder">📁 YouTube/</span>
+                </pre>
+            </div>
+        </div>
+
+        <!-- Slide 7: Command Line Introduction -->
+        <div class="slide">
+            <h2>The Command Line 🖥️</h2>
+            <p>Before we had mice and touchscreens, we talked to computers by typing commands!</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                <div>
+                    <p style="text-align: center; font-weight: bold; margin-bottom: 10px;">Mac (Terminal)</p>
+                    <div class="terminal-demo">
+                        <div><span class="terminal-prompt">$</span> <span class="terminal-command">pwd</span></div>
+                        <div class="terminal-output">/Users/student/Desktop</div>
+                        <div><span class="terminal-prompt">$</span> <span class="terminal-command">ls</span></div>
+                        <div class="terminal-output">homework.txt  games  pictures</div>
+                    </div>
+                </div>
+                <div>
+                    <p style="text-align: center; font-weight: bold; margin-bottom: 10px;">Windows (Command Prompt)</p>
+                    <div class="terminal-demo">
+                        <div><span class="terminal-prompt">C:\></span> <span class="terminal-command">cd</span></div>
+                        <div class="terminal-output">C:\Users\student\Desktop</div>
+                        <div><span class="terminal-prompt">C:\></span> <span class="terminal-command">dir</span></div>
+                        <div class="terminal-output">homework.txt  games  pictures</div>
+                    </div>
+                </div>
+            </div>
+            <div class="fun-fact">
+                <p><strong>Cool Fact:</strong> Hackers in movies always use the command line because it looks cooler (and it's actually faster for many tasks!)</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Vocabulary - Command Line -->
+        <div class="slide">
+            <h2>Vocabulary Time! 📚</h2>
+            <div class="vocab-term">Command Line (Terminal)</div>
+            <div class="vocab-def">
+                A text-based way to control your computer by typing commands instead of clicking with a mouse. On Mac, it's called <strong>Terminal</strong>. On Windows, it's called <strong>Command Prompt</strong> or <strong>PowerShell</strong>. It's like texting your computer instructions!
+            </div>
+            <div class="activity-box">
+                <p>Think of it like this: GUI (clicking) is like using Uber's app, Command Line is like texting the driver directly!</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Basic Commands -->
+        <div class="slide">
+            <h2>Essential Commands 🎯</h2>
+            <table class="storage-table">
+                <tr>
+                    <th>Action</th>
+                    <th>Mac (Terminal)</th>
+                    <th>Windows (Command Prompt)</th>
+                </tr>
+                <tr>
+                    <td><strong>Where am I?</strong></td>
+                    <td><code style="background: #f8f9fa; padding: 3px 8px; border-radius: 3px;">pwd</code></td>
+                    <td><code style="background: #f8f9fa; padding: 3px 8px; border-radius: 3px;">cd</code> (no arguments)</td>
+                </tr>
+                <tr>
+                    <td><strong>List files</strong></td>
+                    <td><code style="background: #f8f9fa; padding: 3px 8px; border-radius: 3px;">ls</code></td>
+                    <td><code style="background: #f8f9fa; padding: 3px 8px; border-radius: 3px;">dir</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Change folder</strong></td>
+                    <td><code style="background: #f8f9fa; padding: 3px 8px; border-radius: 3px;">cd foldername</code></td>
+                    <td><code style="background: #f8f9fa; padding: 3px 8px; border-radius: 3px;">cd foldername</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Create folder</strong></td>
+                    <td><code style="background: #f8f9fa; padding: 3px 8px; border-radius: 3px;">mkdir newfolder</code></td>
+                    <td><code style="background: #f8f9fa; padding: 3px 8px; border-radius: 3px;">mkdir newfolder</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Clear screen</strong></td>
+                    <td><code style="background: #f8f9fa; padding: 3px 8px; border-radius: 3px;">clear</code></td>
+                    <td><code style="background: #f8f9fa; padding: 3px 8px; border-radius: 3px;">cls</code></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Slide 10: Command Practice -->
+        <div class="slide">
+            <h2>Let's Practice! 🎮</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                <div>
+                    <p style="text-align: center; font-weight: bold; margin-bottom: 10px; color: #667eea;">Mac (Terminal)</p>
+                    <div class="terminal-demo">
+                        <div><span class="terminal-prompt">$</span> <span class="terminal-command">mkdir MyGames</span></div>
+                        <div><span class="terminal-prompt">$</span> <span class="terminal-command">cd MyGames</span></div>
+                        <div><span class="terminal-prompt">$</span> <span class="terminal-command">mkdir Fortnite</span></div>
+                        <div><span class="terminal-prompt">$</span> <span class="terminal-command">mkdir Minecraft</span></div>
+                        <div><span class="terminal-prompt">$</span> <span class="terminal-command">ls</span></div>
+                        <div class="terminal-output">Fortnite  Minecraft</div>
+                    </div>
+                </div>
+                <div>
+                    <p style="text-align: center; font-weight: bold; margin-bottom: 10px; color: #667eea;">Windows (Command Prompt)</p>
+                    <div class="terminal-demo">
+                        <div><span class="terminal-prompt">C:\></span> <span class="terminal-command">mkdir MyGames</span></div>
+                        <div><span class="terminal-prompt">C:\></span> <span class="terminal-command">cd MyGames</span></div>
+                        <div><span class="terminal-prompt">C:\MyGames></span> <span class="terminal-command">mkdir Fortnite</span></div>
+                        <div><span class="terminal-prompt">C:\MyGames></span> <span class="terminal-command">mkdir Minecraft</span></div>
+                        <div><span class="terminal-prompt">C:\MyGames></span> <span class="terminal-command">dir</span></div>
+                        <div class="terminal-output">Fortnite  Minecraft</div>
+                    </div>
+                </div>
+            </div>
+            <div class="activity-box">
+                <p><strong>Your Turn!</strong> Open Terminal (Mac) or Command Prompt (Windows) and create your own folder structure!</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Web Development Introduction -->
+        <div class="slide">
+            <h2>Welcome to Web Development! 🌐</h2>
+            <p>Every website you visit is made of three main ingredients:</p>
+            <div class="storage-visual">
+                <div class="storage-item">
+                    <div class="storage-icon">🏗️</div>
+                    <p><strong>HTML</strong></p>
+                    <p>The structure</p>
+                    <p>(Like a house frame)</p>
+                </div>
+                <div class="storage-item">
+                    <div class="storage-icon">🎨</div>
+                    <p><strong>CSS</strong></p>
+                    <p>The style</p>
+                    <p>(Like paint & decorations)</p>
+                </div>
+                <div class="storage-item">
+                    <div class="storage-icon">⚡</div>
+                    <p><strong>JavaScript</strong></p>
+                    <p>The behavior</p>
+                    <p>(Like electricity & plumbing)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Vocabulary - HTML -->
+        <div class="slide">
+            <h2>Vocabulary Time! 📚</h2>
+            <div class="vocab-term">HTML</div>
+            <div class="vocab-def">
+                HyperText Markup Language - The standard language for creating web pages. It uses tags (like labels) to tell the browser what each part of the page is: headings, paragraphs, images, links, etc. It's the skeleton of every website!
+            </div>
+            <div class="fun-fact">
+                <p><strong>Fun Fact:</strong> HTML was invented in 1991, before Google, Amazon, or even Yahoo existed!</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: HTML Basics -->
+        <div class="slide">
+            <h2>Your First HTML 🏗️</h2>
+            <div class="html-demo">
+                <div><span class="html-bracket">&lt;</span><span class="html-tag">h1</span><span class="html-bracket">&gt;</span><span class="html-content">Hello World!</span><span class="html-bracket">&lt;/</span><span class="html-tag">h1</span><span class="html-bracket">&gt;</span></div>
+                <div><span class="html-bracket">&lt;</span><span class="html-tag">p</span><span class="html-bracket">&gt;</span><span class="html-content">This is my first web page!</span><span class="html-bracket">&lt;/</span><span class="html-tag">p</span><span class="html-bracket">&gt;</span></div>
+                <div><span class="html-bracket">&lt;</span><span class="html-tag">button</span><span class="html-bracket">&gt;</span><span class="html-content">Click Me!</span><span class="html-bracket">&lt;/</span><span class="html-tag">button</span><span class="html-bracket">&gt;</span></div>
+            </div>
+            <div class="web-preview">
+                <div class="browser-bar">
+                    <div class="browser-dots">
+                        <div class="browser-dot red"></div>
+                        <div class="browser-dot yellow"></div>
+                        <div class="browser-dot green"></div>
+                    </div>
+                </div>
+                <h1 style="color: black;">Hello World!</h1>
+                <p>This is my first web page!</p>
+                <button style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 1em; cursor: pointer;">Click Me!</button>
+            </div>
+        </div>
+
+        <!-- Slide 14: HTML Tags -->
+        <div class="slide">
+            <h2>HTML Tags Explained 🏷️</h2>
+            <p>HTML tags are like labels that tell the browser what something is:</p>
+            <div class="command-box">
+                <div class="command-name">&lt;h1&gt; ... &lt;/h1&gt;</div>
+                <div class="command-desc">Main heading (biggest)</div>
+            </div>
+            <div class="command-box">
+                <div class="command-name">&lt;p&gt; ... &lt;/p&gt;</div>
+                <div class="command-desc">Paragraph of text</div>
+            </div>
+            <div class="command-box">
+                <div class="command-name">&lt;img src="picture.jpg"&gt;</div>
+                <div class="command-desc">Display an image</div>
+            </div>
+            <div class="command-box">
+                <div class="command-name">&lt;a href="google.com"&gt; ... &lt;/a&gt;</div>
+                <div class="command-desc">Create a link</div>
+            </div>
+        </div>
+
+        <!-- Slide 15: HTML Structure -->
+        <div class="slide">
+            <h2>Complete HTML Page 📄</h2>
+            <div class="html-demo">
+                <div><span class="html-bracket">&lt;</span><span class="html-tag">!DOCTYPE html</span><span class="html-bracket">&gt;</span></div>
+                <div><span class="html-bracket">&lt;</span><span class="html-tag">html</span><span class="html-bracket">&gt;</span></div>
+                <div>&nbsp;&nbsp;<span class="html-bracket">&lt;</span><span class="html-tag">head</span><span class="html-bracket">&gt;</span></div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="html-bracket">&lt;</span><span class="html-tag">title</span><span class="html-bracket">&gt;</span><span class="html-content">My Page</span><span class="html-bracket">&lt;/</span><span class="html-tag">title</span><span class="html-bracket">&gt;</span></div>
+                <div>&nbsp;&nbsp;<span class="html-bracket">&lt;/</span><span class="html-tag">head</span><span class="html-bracket">&gt;</span></div>
+                <div>&nbsp;&nbsp;<span class="html-bracket">&lt;</span><span class="html-tag">body</span><span class="html-bracket">&gt;</span></div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="html-bracket">&lt;</span><span class="html-tag">h1</span><span class="html-bracket">&gt;</span><span class="html-content">Welcome!</span><span class="html-bracket">&lt;/</span><span class="html-tag">h1</span><span class="html-bracket">&gt;</span></div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="html-bracket">&lt;</span><span class="html-tag">p</span><span class="html-bracket">&gt;</span><span class="html-content">This is my website.</span><span class="html-bracket">&lt;/</span><span class="html-tag">p</span><span class="html-bracket">&gt;</span></div>
+                <div>&nbsp;&nbsp;<span class="html-bracket">&lt;/</span><span class="html-tag">body</span><span class="html-bracket">&gt;</span></div>
+                <div><span class="html-bracket">&lt;/</span><span class="html-tag">html</span><span class="html-bracket">&gt;</span></div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Activity -->
+        <div class="slide">
+            <h2>Build Your First Page! 🚀</h2>
+            <div class="activity-box">
+                <p><strong>Create an HTML page about yourself!</strong></p>
+                <p>Include:</p>
+                <p>• A heading with your name</p>
+                <p>• A paragraph about your favorite game</p>
+                <p>• A list of your hobbies</p>
+                <p>• A link to your favorite website</p>
+            </div>
+            <div class="fun-fact">
+                <p><strong>Pro Tip:</strong> You can create HTML files in any text editor, even Notes! Just save it with .html at the end!</p>
+            </div>
+        </div>
+
+        <!-- Slide 17: Summary -->
+        <div class="slide">
+            <h2>Today We Learned! 🎉</h2>
+            <div style="font-size: 1.3em; line-height: 2;">
+                <p>✅ Storage sizes (KB, MB, GB, TB)</p>
+                <p>✅ How to organize files and folders</p>
+                <p>✅ Command line basics (pwd, ls, cd, mkdir)</p>
+                <p>✅ What HTML is and how it works</p>
+                <p>✅ Basic HTML tags and structure</p>
+            </div>
+            <div class="activity-box">
+                <p><strong>Great job today!</strong> You're on your way to becoming a web developer!</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+            <div class="slide-counter">
+                <span id="slideNumber">1</span> / <span id="totalSlides">17</span>
+            </div>
+            <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('slideNumber').textContent = currentSlide + 1;
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
+            }
+        });
+
+        // Quiz functionality
+        function checkAnswer(element, isCorrect) {
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.onclick = null;
+                opt.style.cursor = 'default';
+            });
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                element.innerHTML += ' ✓';
+            } else {
+                element.classList.add('incorrect');
+                element.innerHTML += ' ✗';
+            }
+        }
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>

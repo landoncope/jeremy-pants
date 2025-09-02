@@ -183,6 +183,82 @@
             color: white;
         }
 
+        .vocabulary {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .vocabulary h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .vocab-day {
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+        }
+
+        .vocab-day-title {
+            color: #764ba2;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vocab-day-title:hover {
+            color: #667eea;
+        }
+
+        .vocab-toggle {
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .vocab-day.collapsed .vocab-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .vocab-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.3s;
+            opacity: 1;
+        }
+
+        .vocab-day.collapsed .vocab-content {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .vocab-term-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .vocab-term {
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .vocab-definition {
+            color: #666;
+            line-height: 1.6;
+        }
+
         .resources {
             background: white;
             border-radius: 15px;
@@ -305,19 +381,20 @@
             </div>
 
             <!-- Day 3 -->
-            <div class="day-card upcoming">
+            <div class="day-card completed">
                 <div class="day-number">Day 3</div>
-                <h3 class="day-title">Coming Soon</h3>
+                <h3 class="day-title">Command Line & Web Basics</h3>
                 <div class="day-topics">
                     <ul>
-                        <li>Web Development Basics</li>
+                        <li>Storage Sizes Review</li>
+                        <li>Command Line (Terminal)</li>
+                        <li>File System Organization</li>
                         <li>HTML Introduction</li>
-                        <li>Your First Web Page</li>
                     </ul>
                 </div>
                 <div class="materials-section">
                     <p class="materials-title">Materials:</p>
-                    <span style="color: #999;">Not yet available</span>
+                    <a href="day 3/day3_slides.html" class="material-link">Interactive Slides</a>
                 </div>
             </div>
 
@@ -373,6 +450,77 @@
             </div>
         </div>
 
+        <div class="vocabulary">
+            <h2>📖 Vocabulary Terms</h2>
+            
+            <div class="vocab-day collapsed" id="vocab-day-1">
+                <div class="vocab-day-title" onclick="toggleVocab('vocab-day-1')">
+                    <span class="vocab-toggle">▼</span>
+                    Day 1: Introduction & Binary Basics
+                </div>
+                <div class="vocab-content">
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Bit</div>
+                        <div class="vocab-definition">The smallest unit of data in computing, representing a single 0 or 1.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Byte</div>
+                        <div class="vocab-definition">A unit of digital information that consists of 8 bits.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Repository</div>
+                        <div class="vocab-definition">A storage location for code and project files, often used for collaboration and version control (e.g., on GitHub).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vocab-day collapsed" id="vocab-day-2">
+                <div class="vocab-day-title" onclick="toggleVocab('vocab-day-2')">
+                    <span class="vocab-toggle">▼</span>
+                    Day 2: Binary Math & Computer Basics
+                </div>
+                <div class="vocab-content">
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Operating System</div>
+                        <div class="vocab-definition">The main software that manages a computer's hardware and software resources, and provides common services for computer programs. Examples include Windows, MacOS, Linux, Android, and iOS.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">File Extension</div>
+                        <div class="vocab-definition">The suffix at the end of a filename that indicates what type of file it is (for example, .docx for Word documents, .jpg for images, .exe for executable programs).</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Hard Drive</div>
+                        <div class="vocab-definition">A data storage device used for storing and retrieving digital information. It retains data even when the computer is turned off and is used to store files, programs, and the operating system.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">RAM (Random Access Memory)</div>
+                        <div class="vocab-definition">A type of computer memory that is used for temporary storage while a computer is running. It allows data to be read and written quickly, but all information is lost when the power is turned off.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vocab-day collapsed" id="vocab-day-3">
+                <div class="vocab-day-title" onclick="toggleVocab('vocab-day-3')">
+                    <span class="vocab-toggle">▼</span>
+                    Day 3: Command Line & Web Basics
+                </div>
+                <div class="vocab-content">
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Gigabyte (GB)</div>
+                        <div class="vocab-definition">A unit of digital storage equal to approximately 1 billion bytes (technically 1,024 megabytes). Think of it like a large box that can hold about 250 songs or a 30-minute HD video.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Command Line (Terminal)</div>
+                        <div class="vocab-definition">A text-based way to control your computer by typing commands instead of clicking with a mouse. On Mac, it's called Terminal. On Windows, it's called Command Prompt or PowerShell.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">HTML</div>
+                        <div class="vocab-definition">HyperText Markup Language - The standard language for creating web pages. It uses tags to tell the browser what each part of the page is: headings, paragraphs, images, links, etc.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="resources">
             <h2>🚀 Quick Resources</h2>
             <div class="resource-grid">
@@ -391,10 +539,6 @@
                 <a href="https://code.visualstudio.com" class="resource-item" target="_blank">
                     <div class="resource-icon">💻</div>
                     <div>VS Code</div>
-                </a>
-                <a href="https://www.w3schools.com" class="resource-item" target="_blank">
-                    <div class="resource-icon">📚</div>
-                    <div>W3Schools</div>
                 </a>
                 <a href="https://liahonaeducation.schoology.com/course/7994510303/materials" class="resource-item" target="_blank">
                     <div class="resource-icon">🎓</div>
@@ -415,6 +559,12 @@
     </div>
 
     <script>
+        // Toggle vocabulary sections
+        function toggleVocab(dayId) {
+            const vocabDay = document.getElementById(dayId);
+            vocabDay.classList.toggle('collapsed');
+        }
+
         // Add some interactive touches
         document.addEventListener('DOMContentLoaded', function() {
             // Animate cards on page load
