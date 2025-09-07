@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploring Computer Science - Brother Cope</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .repo-info {
+            background: #f8f9fa;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .repo-info code {
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 1.1em;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .day-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .day-card.completed::before {
+            content: "✓";
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #4caf50;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .day-card.upcoming {
+            opacity: 0.7;
+            background: #f0f0f0;
+        }
+
+        .day-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .day-title {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .day-topics {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .day-topics ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .day-topics li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .day-topics li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .materials-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .materials-title {
+            color: #764ba2;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .material-link {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .material-link:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .material-link.secondary {
+            background: #f8f9fa;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .material-link.secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .vocabulary {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .vocabulary h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .vocab-day {
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+        }
+
+        .vocab-day-title {
+            color: #764ba2;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vocab-day-title:hover {
+            color: #667eea;
+        }
+
+        .vocab-toggle {
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .vocab-day.collapsed .vocab-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .vocab-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.3s;
+            opacity: 1;
+        }
+
+        .vocab-day.collapsed .vocab-content {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .vocab-term-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .vocab-term {
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .vocab-definition {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .resources {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .resources h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .resource-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .resource-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .resource-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .fun-fact {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .subtitle {
+                font-size: 1.2em;
+            }
+            .days-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🖥️ Exploring Computer Science</h1>
+            <p class="subtitle">Brother Cope's Class Materials</p>
+            <div class="repo-info">
+                <p>GitHub Repository: <code>jeremy-pants</code></p>
+            </div>
+            <div class="fun-fact">
+                "There are only 10 types of people: those who understand binary and those who don't." 
+            </div>
+        </header>
+
+        <div class="days-grid">
+            <!-- Day 1 -->
+            <div class="day-card completed">
+                <div class="day-number">Day 1</div>
+                <h3 class="day-title">Introduction & Binary Basics</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>GitHub Introduction</li>
+                        <li>Binary Number System</li>
+                        <li>AI Tools (Grok)</li>
+                        <li>Creating Jeremy Pants repo</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <a href="day 1/binary-cats-tutorial.html" class="material-link">Binary Cats Tutorial</a>
+                </div>
+            </div>
+
+            <!-- Day 2 -->
+            <div class="day-card completed">
+                <div class="day-number">Day 2</div>
+                <h3 class="day-title">Binary Math & Computer Basics</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>Binary Addition/Subtraction</li>
+                        <li>Operating Systems</li>
+                        <li>Files & Folders</li>
+                        <li>RAM vs Storage</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <a href="day 2/day2_slides.html" class="material-link">Interactive Slides</a>
+                </div>
+            </div>
+
+            <!-- Day 3 -->
+            <div class="day-card completed">
+                <div class="day-number">Day 3</div>
+                <h3 class="day-title">Command Line & Web Basics</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>Storage Sizes Review</li>
+                        <li>Command Line (Terminal)</li>
+                        <li>File System Organization</li>
+                        <li>HTML Introduction</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <a href="day 3/day3_slides.html" class="material-link">Interactive Slides</a>
+                </div>
+            </div>
+
+            <!-- Day 4 -->
+            <div class="day-card completed">
+                <div class="day-number">Day 4</div>
+                <h3 class="day-title">HTML Basics (Part 1)</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>Creating folders and files</li>
+                        <li>Writing HTML from scratch</li>
+                        <li>Basic HTML structure</li>
+                        <li>Testing webpages locally</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <a href="day 4/day4_slides.html" class="material-link">Interactive Slides</a>
+                </div>
+            </div>
+
+            <!-- Day 5 -->
+            <div class="day-card upcoming">
+                <div class="day-number">Day 5</div>
+                <h3 class="day-title">Git & GitHub (Part 2)</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>GitHub account setup</li>
+                        <li>Forking repositories</li>
+                        <li>Git commands (clone, add, commit, push)</li>
+                        <li>Creating Pull Requests</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <span style="color: #999;">Coming next class</span>
+                </div>
+            </div>
+
+            <!-- Day 6 -->
+            <div class="day-card upcoming">
+                <div class="day-number">Day 6</div>
+                <h3 class="day-title">Introduction to Python</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>Python basics</li>
+                        <li>AI-Assisted Coding</li>
+                        <li>Hello World & Beyond</li>
+                        <li>Variables and data types</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <span style="color: #999;">Not yet available</span>
+                </div>
+            </div>
+
+            <!-- Day 7 -->
+            <div class="day-card upcoming">
+                <div class="day-number">Day 7</div>
+                <h3 class="day-title">Coming Soon</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>Coming Soon</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <span style="color: #999;">Not yet available</span>
+                </div>
+            </div>
+
+            <!-- Day 8 -->
+            <div class="day-card upcoming">
+                <div class="day-number">Day 8</div>
+                <h3 class="day-title">Coming Soon</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>Coming Soon</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <span style="color: #999;">Not yet available</span>
+                </div>
+            </div>
+
+            <!-- Day 9 -->
+            <div class="day-card upcoming">
+                <div class="day-number">Day 9</div>
+                <h3 class="day-title">Coming Soon</h3>
+                <div class="day-topics">
+                    <ul>
+                        <li>Coming Soon</li>
+                    </ul>
+                </div>
+                <div class="materials-section">
+                    <p class="materials-title">Materials:</p>
+                    <span style="color: #999;">Not yet available</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="vocabulary">
+            <h2>📖 Vocabulary Terms</h2>
+            
+            <div class="vocab-day collapsed" id="vocab-day-1">
+                <div class="vocab-day-title" onclick="toggleVocab('vocab-day-1')">
+                    <span class="vocab-toggle">▼</span>
+                    Day 1: Introduction & Binary Basics
+                </div>
+                <div class="vocab-content">
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Bit</div>
+                        <div class="vocab-definition">The smallest unit of data in computing, representing a single 0 or 1.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Byte</div>
+                        <div class="vocab-definition">A unit of digital information that consists of 8 bits.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Repository</div>
+                        <div class="vocab-definition">A storage location for code and project files, often used for collaboration and version control (e.g., on GitHub).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vocab-day collapsed" id="vocab-day-2">
+                <div class="vocab-day-title" onclick="toggleVocab('vocab-day-2')">
+                    <span class="vocab-toggle">▼</span>
+                    Day 2: Binary Math & Computer Basics
+                </div>
+                <div class="vocab-content">
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Operating System</div>
+                        <div class="vocab-definition">The main software that manages a computer's hardware and software resources, and provides common services for computer programs. Examples include Windows, MacOS, Linux, Android, and iOS.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">File Extension</div>
+                        <div class="vocab-definition">The suffix at the end of a filename that indicates what type of file it is (for example, .docx for Word documents, .jpg for images, .exe for executable programs).</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Hard Drive</div>
+                        <div class="vocab-definition">A data storage device used for storing and retrieving digital information. It retains data even when the computer is turned off and is used to store files, programs, and the operating system.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">RAM (Random Access Memory)</div>
+                        <div class="vocab-definition">A type of computer memory that is used for temporary storage while a computer is running. It allows data to be read and written quickly, but all information is lost when the power is turned off.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vocab-day collapsed" id="vocab-day-3">
+                <div class="vocab-day-title" onclick="toggleVocab('vocab-day-3')">
+                    <span class="vocab-toggle">▼</span>
+                    Day 3: Command Line & Web Basics
+                </div>
+                <div class="vocab-content">
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Gigabyte (GB)</div>
+                        <div class="vocab-definition">A unit of digital storage equal to approximately 1 billion bytes (technically 1,024 megabytes). Think of it like a large box that can hold about 250 songs or a 30-minute HD video.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Command Line (Terminal)</div>
+                        <div class="vocab-definition">A text-based way to control your computer by typing commands instead of clicking with a mouse. On Mac, it's called Terminal. On Windows, it's called Command Prompt or PowerShell.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">HTML</div>
+                        <div class="vocab-definition">HyperText Markup Language - The standard language for creating web pages. It uses tags to tell the browser what each part of the page is: headings, paragraphs, images, links, etc.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vocab-day collapsed" id="vocab-day-4">
+                <div class="vocab-day-title" onclick="toggleVocab('vocab-day-4')">
+                    <span class="vocab-toggle">▼</span>
+                    Day 4: HTML & Git Hands-On
+                </div>
+                <div class="vocab-content">
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Open Source</div>
+                        <div class="vocab-definition">Software with source code that anyone can inspect, modify, and share. It's like a recipe that everyone can see, improve, and use for free! Examples include Linux, Firefox, Android, and VS Code.</div>
+                    </div>
+                    <div class="vocab-term-item">
+                        <div class="vocab-term">Git</div>
+                        <div class="vocab-definition">A version control system that tracks changes in your code. Think of it like a super-powered "undo" button that remembers every change you've ever made to your files. Git is the tool, while GitHub is a website that uses Git.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="resources">
+            <h2>🚀 Quick Resources</h2>
+            <div class="resource-grid">
+                <a href="https://chat.openai.com" class="resource-item" target="_blank">
+                    <div class="resource-icon">🤖</div>
+                    <div>ChatGPT</div>
+                </a>
+                <a href="https://github.com/landoncope/jeremy-pants" class="resource-item" target="_blank">
+                    <div class="resource-icon">📦</div>
+                    <div>Class GitHub</div>
+                </a>
+                <a href="https://grok.x.ai" class="resource-item" target="_blank">
+                    <div class="resource-icon">🎥</div>
+                    <div>Grok AI</div>
+                </a>
+                <a href="https://code.visualstudio.com" class="resource-item" target="_blank">
+                    <div class="resource-icon">💻</div>
+                    <div>VS Code</div>
+                </a>
+                <a href="https://liahonaeducation.schoology.com/course/7994510303/materials" class="resource-item" target="_blank">
+                    <div class="resource-icon">🎓</div>
+                    <div>Schoology</div>
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 Brother Cope's Exploring Computer Science Class</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                Remember: <strong>You're required to use AI in this class!</strong> 🤖
+            </p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                "Every job will involve spreadsheets" - Brother Cope
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Toggle vocabulary sections
+        function toggleVocab(dayId) {
+            const vocabDay = document.getElementById(dayId);
+            vocabDay.classList.toggle('collapsed');
+        }
+
+        // Add some interactive touches
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on page load
+            const cards = document.querySelectorAll('.day-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s, transform 0.5s';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Add current date
+            const today = new Date();
+            const dateElement = document.createElement('p');
+            dateElement.style.marginTop = '10px';
+            dateElement.style.fontSize = '0.9em';
+            dateElement.textContent = `Last updated: ${today.toLocaleDateString()}`;
+            document.querySelector('footer').appendChild(dateElement);
+        });
+    </script>
+</body>
+</html>
