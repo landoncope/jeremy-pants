@@ -950,9 +950,7 @@ jeremy-pants/
             // Reset any active buttons when changing slides
             slides[currentSlide - 1].querySelectorAll('.quiz-option').forEach(btn => {
                 btn.classList.remove('correct', 'incorrect', 'disabled');
-                btn.onclick = function() { 
-                    checkAnswer(this, btn.getAttribute('data-correct') === 'true'); 
-                };
+                // Keep the original onclick handler intact - don't override it
             });
         }
         
@@ -981,14 +979,13 @@ jeremy-pants/
                 button.classList.add('incorrect');
                 button.innerHTML = button.innerHTML + ' ✗';
                 
-                // Show the correct answer
+                // Find and show the correct answer
                 options.forEach(option => {
-                    if (option !== button && !option.classList.contains('incorrect')) {
-                        const optionText = option.textContent.toLowerCase();
-                        if (optionText.includes('notepad') || 
-                            optionText.includes('hyper text markup') ||
-                            optionText.includes('true')) {
-                            option.classList.add('correct');
+                    // Check if this option has the correct answer by looking at its onclick
+                    const onclickStr = option.getAttribute('onclick');
+                    if (onclickStr && onclickStr.includes('true')) {
+                        option.classList.add('correct');
+                        if (!option.innerHTML.includes('✓')) {
                             option.innerHTML = option.innerHTML + ' ✓';
                         }
                     }
