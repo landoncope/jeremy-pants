@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 6: Spreadsheets - The Swiss Army Knife of Data</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .presentation-container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 16/10;
+        }
+
+        .slide {
+            display: none;
+            padding: 60px;
+            height: 100%;
+            overflow-y: auto;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h1 {
+            color: #764ba2;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin: 20px 0 15px 0;
+            font-size: 1.5em;
+        }
+
+        p {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .emoji-big {
+            font-size: 4em;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            color: #764ba2;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .quiz-option:hover:not(:disabled) {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+
+        .quiz-option.incorrect {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #c62828;
+        }
+
+        .quiz-option:disabled {
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .feedback.incorrect {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .vocab-term {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+        }
+
+        .vocab-def {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .activity-box p {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .fun-fact {
+            background: #fff3e0;
+            border-left: 5px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .fun-fact strong {
+            color: #f57c00;
+        }
+
+        .spreadsheet-demo {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .spreadsheet-header {
+            background: #f5f5f5;
+            padding: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            font-family: monospace;
+        }
+
+        .spreadsheet-grid {
+            display: table;
+            width: 100%;
+        }
+
+        .spreadsheet-row {
+            display: table-row;
+        }
+
+        .spreadsheet-cell {
+            display: table-cell;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            text-align: center;
+            min-width: 80px;
+            font-family: monospace;
+        }
+
+        .spreadsheet-cell.header {
+            background: #f0f0f0;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .spreadsheet-cell.selected {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+        }
+
+        .formula-box {
+            background: #f5f5f5;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+        }
+
+        .formula-box .formula {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .formula-result {
+            color: #4caf50;
+            margin-left: 20px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        .command-practice {
+            background: #263238;
+            color: #aed581;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .command-practice .prompt {
+            color: #64b5f6;
+        }
+
+        .command-practice .command {
+            color: #fff;
+        }
+
+        .list-spaced {
+            line-height: 2;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .list-spaced li {
+            margin: 15px 0;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+            
+            p, .quiz-option, .vocab-def {
+                font-size: 1em;
+            }
+
+            .spreadsheet-cell {
+                min-width: 60px;
+                padding: 5px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-number">
+            <span id="current-slide">1</span> / <span id="total-slides">18</span>
+        </div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="emoji-big">📊</div>
+            <h1>Day 6: Spreadsheets</h1>
+            <h2>The Swiss Army Knife of Data!</h2>
+            <p style="text-align: center; font-size: 1.3em; margin-top: 40px;">
+                Today we're learning why spreadsheets run the world...
+            </p>
+            <p style="text-align: center; color: #666;">
+                (Seriously, every job uses them!)
+            </p>
+        </div>
+
+        <!-- Slide 2: Git Review -->
+        <div class="slide">
+            <h1>Quick Review: Git from Day 5 🔄</h1>
+            <div class="quiz-container">
+                <h3>What does "git add ." do?</h3>
+                <button class="quiz-option" onclick="checkAnswer(this, false, 'git-q1')">
+                    A) Deletes all files in the folder
+                </button>
+                <button class="quiz-option" onclick="checkAnswer(this, false, 'git-q1')">
+                    B) Downloads files from GitHub
+                </button>
+                <button class="quiz-option" onclick="checkAnswer(this, true, 'git-q1')">
+                    C) Stages all changed files for commit
+                </button>
+                <button class="quiz-option" onclick="checkAnswer(this, false, 'git-q1')">
+                    D) Creates a new GitHub repository
+                </button>
+                <div id="git-q1-feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Git Review 2 -->
+        <div class="slide">
+            <h1>Git Review: The Process 🚀</h1>
+            <div class="command-practice">
+                <span class="prompt">$</span> <span class="command">git add .</span><br>
+                <span class="prompt">$</span> <span class="command">git commit -m "Added spreadsheet homework"</span><br>
+                <span class="prompt">$</span> <span class="command">git push</span>
+            </div>
+            <div class="quiz-container">
+                <h3>What's the correct order?</h3>
+                <button class="quiz-option" onclick="checkAnswer(this, false, 'git-q2')">
+                    A) Push → Add → Commit
+                </button>
+                <button class="quiz-option" onclick="checkAnswer(this, true, 'git-q2')">
+                    B) Add → Commit → Push
+                </button>
+                <button class="quiz-option" onclick="checkAnswer(this, false, 'git-q2')">
+                    C) Commit → Push → Add
+                </button>
+                <button class="quiz-option" onclick="checkAnswer(this, false, 'git-q2')">
+                    D) It doesn't matter
+                </button>
+                <div id="git-q2-feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Why Spreadsheets? -->
+        <div class="slide">
+            <h1>Why Spreadsheets? 🤔</h1>
+            <p style="text-align: center; font-size: 1.5em; margin: 40px 0;">
+                True Story from Brother Cope:
+            </p>
+            <div class="fun-fact">
+                <strong>At Adobe:</strong> We used spreadsheets to track million-dollar marketing campaigns<br><br>
+                <strong>As an entrepreneur:</strong> I use spreadsheets for budgets, inventory, and planning<br><br>
+                <strong>At home:</strong> We use them for chore charts and vacation planning!
+            </div>
+            <p style="text-align: center; margin-top: 40px; font-size: 1.3em;">
+                <strong>Every single job</strong> uses spreadsheets somehow!
+            </p>
+        </div>
+
+        <!-- Slide 5: Real World Examples -->
+        <div class="slide">
+            <h1>Spreadsheets in the Real World 💼</h1>
+            <ul class="list-spaced">
+                <li>📱 <strong>TikTok creators:</strong> Track views, earnings, and posting schedules</li>
+                <li>🏀 <strong>Sports teams:</strong> Player stats, game schedules, scores</li>
+                <li>🎮 <strong>Game developers:</strong> Balance weapons, track bugs, plan updates</li>
+                <li>🍔 <strong>Restaurants:</strong> Food costs, employee schedules, inventory</li>
+                <li>🏫 <strong>Teachers:</strong> Grades, attendance, lesson planning</li>
+                <li>💰 <strong>Everyone:</strong> Personal budgets and expense tracking</li>
+            </ul>
+        </div>
+
+        <!-- Slide 6: Vocabulary -->
+        <div class="slide">
+            <h1>Vocabulary Time! 📚</h1>
+            
+            <div class="vocab-term">Cell</div>
+            <div class="vocab-def">
+                A single box in a spreadsheet where data lives. Like a parking spot for one piece of information. Named by column letter and row number (A1, B2, etc.)
+            </div>
+
+            <div class="vocab-term">Formula</div>
+            <div class="vocab-def">
+                A calculation that starts with = sign. Like giving the spreadsheet math homework that it solves instantly. Example: =A1+B1
+            </div>
+
+            <div class="vocab-term">Function</div>
+            <div class="vocab-def">
+                A pre-built formula that does common tasks. Like shortcuts on your phone - instead of typing a whole address, you just tap "Home". Example: =SUM(A1:A10)
+            </div>
+        </div>
+
+        <!-- Slide 7: More Vocabulary -->
+        <div class="slide">
+            <h1>More Vocabulary! 📖</h1>
+            
+            <div class="vocab-term">Range</div>
+            <div class="vocab-def">
+                A group of cells selected together. Like highlighting multiple messages to delete at once. Written as A1:B5 (from top-left to bottom-right)
+            </div>
+
+            <div class="vocab-term">Cell Reference</div>
+            <div class="vocab-def">
+                Using a cell's address in a formula. Like tagging a friend in a post - you're pointing to their content. When you type =A1*2, you're referencing cell A1
+            </div>
+        </div>
+
+        <!-- Slide 8: Spreadsheet Anatomy -->
+        <div class="slide">
+            <h1>Anatomy of a Spreadsheet 🔬</h1>
+            <div class="spreadsheet-demo">
+                <div class="spreadsheet-header">
+                    Formula Bar: =B2+B3+B4
+                </div>
+                <div class="spreadsheet-grid">
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header"></div>
+                        <div class="spreadsheet-cell header">A</div>
+                        <div class="spreadsheet-cell header">B</div>
+                        <div class="spreadsheet-cell header">C</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">1</div>
+                        <div class="spreadsheet-cell">Item</div>
+                        <div class="spreadsheet-cell">Price</div>
+                        <div class="spreadsheet-cell">Quantity</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">2</div>
+                        <div class="spreadsheet-cell">Pizza</div>
+                        <div class="spreadsheet-cell">$12</div>
+                        <div class="spreadsheet-cell">2</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">3</div>
+                        <div class="spreadsheet-cell">Soda</div>
+                        <div class="spreadsheet-cell">$3</div>
+                        <div class="spreadsheet-cell">4</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">4</div>
+                        <div class="spreadsheet-cell">Chips</div>
+                        <div class="spreadsheet-cell">$5</div>
+                        <div class="spreadsheet-cell">3</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">5</div>
+                        <div class="spreadsheet-cell">Total</div>
+                        <div class="spreadsheet-cell selected">$20</div>
+                        <div class="spreadsheet-cell"></div>
+                    </div>
+                </div>
+            </div>
+            <p style="text-align: center;">Columns are letters (A, B, C...) • Rows are numbers (1, 2, 3...)</p>
+        </div>
+
+        <!-- Slide 9: Excel vs Google Sheets -->
+        <div class="slide">
+            <h1>Excel vs Google Sheets 🥊</h1>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div>
+                    <h3 style="color: #217346;">Microsoft Excel</h3>
+                    <ul style="line-height: 2;">
+                        <li>The OG spreadsheet king 👑</li>
+                        <li>Costs money (part of Office)</li>
+                        <li>Super powerful</li>
+                        <li>Works offline</li>
+                        <li>Used by most businesses</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="color: #0f9d58;">Google Sheets</h3>
+                    <ul style="line-height: 2;">
+                        <li>The free challenger 🆓</li>
+                        <li>100% free with Google account</li>
+                        <li>Auto-saves everything</li>
+                        <li>Easy sharing & collaboration</li>
+                        <li>Works in any browser</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 30px; font-size: 1.2em;">
+                <strong>Good news:</strong> They work almost exactly the same! Learn one, know both! 🎉
+            </p>
+        </div>
+
+        <!-- Slide 10: Basic Formulas -->
+        <div class="slide">
+            <h1>Basic Formulas 🧮</h1>
+            <p>Every formula starts with <code>=</code> to tell the spreadsheet "Hey, calculate this!"</p>
+            
+            <div class="formula-box">
+                <span class="formula">=A1+B1</span>
+                <span class="formula-result">→ Adds two cells</span>
+            </div>
+            
+            <div class="formula-box">
+                <span class="formula">=A2-B2</span>
+                <span class="formula-result">→ Subtracts B2 from A2</span>
+            </div>
+            
+            <div class="formula-box">
+                <span class="formula">=C3*D3</span>
+                <span class="formula-result">→ Multiplies (use * not x)</span>
+            </div>
+            
+            <div class="formula-box">
+                <span class="formula">=E4/F4</span>
+                <span class="formula-result">→ Divides E4 by F4</span>
+            </div>
+
+            <div class="fun-fact">
+                <strong>Pro tip:</strong> Click on cells instead of typing their addresses - less mistakes!
+            </div>
+        </div>
+
+        <!-- Slide 11: Common Functions -->
+        <div class="slide">
+            <h1>Power Functions 💪</h1>
+            <p>Functions are like cheat codes for common calculations:</p>
+            
+            <div class="formula-box">
+                <span class="formula">=SUM(A1:A10)</span>
+                <span class="formula-result">→ Adds all cells from A1 to A10</span>
+            </div>
+            
+            <div class="formula-box">
+                <span class="formula">=AVERAGE(B1:B20)</span>
+                <span class="formula-result">→ Finds the average (mean)</span>
+            </div>
+            
+            <div class="formula-box">
+                <span class="formula">=MAX(C1:C100)</span>
+                <span class="formula-result">→ Finds the biggest number</span>
+            </div>
+            
+            <div class="formula-box">
+                <span class="formula">=MIN(D1:D50)</span>
+                <span class="formula-result">→ Finds the smallest number</span>
+            </div>
+            
+            <div class="formula-box">
+                <span class="formula">=COUNT(E:E)</span>
+                <span class="formula-result">→ Counts how many numbers in column E</span>
+            </div>
+        </div>
+
+        <!-- Slide 12: Cell References -->
+        <div class="slide">
+            <h1>Cell References Magic 🎩</h1>
+            <p>The real power: When you change a number, everything updates automatically!</p>
+            
+            <div class="spreadsheet-demo">
+                <div class="spreadsheet-grid">
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header"></div>
+                        <div class="spreadsheet-cell header">A</div>
+                        <div class="spreadsheet-cell header">B</div>
+                        <div class="spreadsheet-cell header">C</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">1</div>
+                        <div class="spreadsheet-cell">Hours</div>
+                        <div class="spreadsheet-cell">Rate</div>
+                        <div class="spreadsheet-cell">Pay</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">2</div>
+                        <div class="spreadsheet-cell">40</div>
+                        <div class="spreadsheet-cell">$15</div>
+                        <div class="spreadsheet-cell selected">=A2*B2</div>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 20px;">
+                If you change the hours to 45, the pay automatically recalculates! 🤯
+            </p>
+            
+            <div class="fun-fact">
+                <strong>Real talk:</strong> This is how your boss calculates your paycheck!
+            </div>
+        </div>
+
+        <!-- Slide 13: Practical Example -->
+        <div class="slide">
+            <h1>Let's Plan a Party! 🎉</h1>
+            <p>Using a spreadsheet to budget our class party:</p>
+            
+            <div class="spreadsheet-demo">
+                <div class="spreadsheet-grid">
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header"></div>
+                        <div class="spreadsheet-cell header">A</div>
+                        <div class="spreadsheet-cell header">B</div>
+                        <div class="spreadsheet-cell header">C</div>
+                        <div class="spreadsheet-cell header">D</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">1</div>
+                        <div class="spreadsheet-cell">Item</div>
+                        <div class="spreadsheet-cell">Price Each</div>
+                        <div class="spreadsheet-cell">Quantity</div>
+                        <div class="spreadsheet-cell">Total</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">2</div>
+                        <div class="spreadsheet-cell">Pizza</div>
+                        <div class="spreadsheet-cell">$8</div>
+                        <div class="spreadsheet-cell">5</div>
+                        <div class="spreadsheet-cell">=B2*C2</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">3</div>
+                        <div class="spreadsheet-cell">Soda 2L</div>
+                        <div class="spreadsheet-cell">$2</div>
+                        <div class="spreadsheet-cell">8</div>
+                        <div class="spreadsheet-cell">=B3*C3</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">4</div>
+                        <div class="spreadsheet-cell">Chips</div>
+                        <div class="spreadsheet-cell">$3</div>
+                        <div class="spreadsheet-cell">6</div>
+                        <div class="spreadsheet-cell">=B4*C4</div>
+                    </div>
+                    <div class="spreadsheet-row">
+                        <div class="spreadsheet-cell header">5</div>
+                        <div class="spreadsheet-cell"></div>
+                        <div class="spreadsheet-cell"></div>
+                        <div class="spreadsheet-cell"><strong>TOTAL:</strong></div>
+                        <div class="spreadsheet-cell selected">=SUM(D2:D4)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Activity Time -->
+        <div class="slide">
+            <h1>Activity: Your Turn! 🚀</h1>
+            
+            <div class="activity-box">
+                <p><strong>Google Sheets Challenge!</strong></p>
+                <p>Create a spreadsheet to track something you care about:</p>
+                <p>• Gaming stats (K/D ratio, wins, XP)</p>
+                <p>• Sports stats (points, assists, games)</p>
+                <p>• Grade calculator</p>
+                <p>• Savings tracker for something you want</p>
+                <p>• Workout progress</p>
+            </div>
+
+            <h3>Requirements:</h3>
+            <ul class="list-spaced">
+                <li>✅ At least 5 rows of data</li>
+                <li>✅ Use at least 2 formulas (like =A1+B1)</li>
+                <li>✅ Use at least 1 function (SUM, AVERAGE, etc.)</li>
+                <li>✅ Make it colorful and organized!</li>
+            </ul>
+        </div>
+
+        <!-- Slide 15: Tips & Tricks -->
+        <div class="slide">
+            <h1>Pro Tips from Brother Cope 🎯</h1>
+            
+            <div class="fun-fact">
+                <strong>Tip 1:</strong> Double-click between column headers to auto-resize columns
+            </div>
+            
+            <div class="fun-fact">
+                <strong>Tip 2:</strong> Use Ctrl+C and Ctrl+V to copy formulas to other cells
+            </div>
+            
+            <div class="fun-fact">
+                <strong>Tip 3:</strong> Drag the little square in the corner of a cell to copy it down
+            </div>
+            
+            <div class="fun-fact">
+                <strong>Tip 4:</strong> Press Enter to move down, Tab to move right
+            </div>
+            
+            <div class="fun-fact">
+                <strong>Tip 5:</strong> Format as currency: Select cells → Format → Number → Currency
+            </div>
+        </div>
+
+        <!-- Slide 16: Common Mistakes -->
+        <div class="slide">
+            <h1>Common Rookie Mistakes 🚫</h1>
+            
+            <p style="font-size: 1.3em; margin-bottom: 30px;">Don't worry, we all make these at first!</p>
+            
+            <ul class="list-spaced">
+                <li>❌ Forgetting the <code>=</code> sign (nothing happens!)</li>
+                <li>❌ Using <code>x</code> instead of <code>*</code> for multiply</li>
+                <li>❌ Typing cell names wrong (=A11 instead of =A1)</li>
+                <li>❌ Wrong cell references (always double-check!)</li>
+                <li>❌ Deleting cells that formulas need (#REF! error)</li>
+            </ul>
+            
+            <div class="fun-fact">
+                <strong>Remember:</strong> Undo is your friend! Ctrl+Z saves the day!
+            </div>
+        </div>
+
+        <!-- Slide 17: Why This Matters -->
+        <div class="slide">
+            <h1>Why This Matters 💡</h1>
+            
+            <p style="font-size: 1.3em; text-align: center; margin: 40px 0;">
+                "In my 20+ years in tech, there wasn't a single week<br>
+                where I didn't use a spreadsheet" - Brother Cope
+            </p>
+            
+            <h3>Jobs that NEED spreadsheet skills:</h3>
+            <ul class="list-spaced">
+                <li>💼 Business analyst (average salary: $70,000)</li>
+                <li>📊 Data analyst (average salary: $65,000)</li>
+                <li>💰 Accountant (average salary: $55,000)</li>
+                <li>📈 Marketing coordinator (average salary: $45,000)</li>
+                <li>🎮 Game designer (tracking game balance)</li>
+                <li>🏗️ Project manager (ANY industry)</li>
+            </ul>
+            
+            <p style="text-align: center; margin-top: 30px; font-size: 1.2em;">
+                <strong>This skill = 💵 More money in ANY job!</strong>
+            </p>
+        </div>
+
+        <!-- Slide 18: Summary -->
+        <div class="slide">
+            <h1>Recap & Next Class 🎬</h1>
+            
+            <h3>Today we learned:</h3>
+            <ul class="list-spaced">
+                <li>✅ Why spreadsheets are everywhere</li>
+                <li>✅ Basic spreadsheet anatomy (cells, rows, columns)</li>
+                <li>✅ How to write formulas (start with =)</li>
+                <li>✅ Common functions (SUM, AVERAGE, MAX, MIN)</li>
+                <li>✅ Cell references and why they're powerful</li>
+            </ul>
+            
+            <p style="text-align: center; margin-top: 40px; font-size: 1.3em;">
+                <strong>Next class:</strong> Advanced spreadsheet magic - VLOOKUPs and more! 📊🔮
+            </p>
+        </div>
+
+        <div class="navigation">
+            <button id="prevBtn" onclick="changeSlide(-1)">Previous</button>
+            <button id="nextBtn" onclick="changeSlide(1)">Next</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide - 1].classList.add('active');
+            
+            document.getElementById('current-slide').textContent = currentSlide;
+            
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        }
+
+        function changeSlide(n) {
+            currentSlide += n;
+            showSlide(currentSlide);
+        }
+
+        function checkAnswer(button, isCorrect, quizId) {
+            const options = button.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.disabled = true);
+            
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.innerHTML = '✓ ' + button.innerHTML;
+                showFeedback(quizId, 'Correct! Great job! 🎉', true);
+            } else {
+                button.classList.add('incorrect');
+                button.innerHTML = '✗ ' + button.innerHTML;
+                const correctOption = Array.from(options).find(opt => 
+                    opt.onclick && opt.onclick.toString().includes('true')
+                );
+                if (correctOption) {
+                    correctOption.classList.add('correct');
+                    correctOption.innerHTML = '✓ ' + correctOption.innerHTML;
+                }
+                showFeedback(quizId, 'Not quite. Look at the correct answer above!', false);
+            }
+        }
+
+        function showFeedback(quizId, message, isCorrect) {
+            const feedback = document.getElementById(quizId + '-feedback');
+            if (feedback) {
+                feedback.textContent = message;
+                feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+                feedback.style.display = 'block';
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') {
+                changeSlide(-1);
+            } else if (event.key === 'ArrowRight' || event.key === ' ') {
+                event.preventDefault();
+                changeSlide(1);
+            }
+        });
+
+        // Initialize
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
