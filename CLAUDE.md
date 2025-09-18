@@ -196,14 +196,26 @@ Check that JavaScript is properly incrementing `currentSlide`
 ### Interactive Elements Not Working
 Ensure onclick handlers are properly defined and functions exist
 
-## Brother Cope's Preferences
+## Content Guidelines
+
+### Using Facts and Stories in Slides
+- **DO NOT** make up personal stories about Brother Cope (like "At Adobe, I saved 3 weeks...")
+- **DO** search for real, interesting facts about the subject matter instead
+- **DO** use actual historical facts, statistics, and verified information
+- When you need an interesting fact or story:
+  - Use WebSearch to find real facts about the topic
+  - Look up historical context, statistics, or fun trivia
+  - Cite real examples from actual companies or events
+  - Make facts relatable to students without inventing personal anecdotes
+
+### Brother Cope's Preferences
 - Loves puzzles and riddles
 - Former Adobe employee, now entrepreneur
 - Has 5 kids (Mona, Holden, Abby, Charlie, Lucy)
 - Emphasizes practical skills over theory
 - Requires AI use in class
 - Focuses on skills that will get jobs
-- Likes to show personal photos/stories
+- Likes to show personal photos/stories (but don't invent them)
 - Big on spreadsheets ("every job needs them")
 - Racquetball and pickleball enthusiast
 

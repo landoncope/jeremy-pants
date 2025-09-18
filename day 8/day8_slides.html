@@ -427,13 +427,13 @@
             </div>
 
             <div class="fun-fact">
-                <p><strong>Brother Cope Story:</strong> At Adobe, I once saved a project 3 weeks of work by using a single AVERAGE formula instead of calculating 10,000 values manually! 🚀</p>
+                <p><strong>Fun Fact:</strong> VisiCalc, the first spreadsheet program released in 1979, was so revolutionary that people bought $2,000 Apple II computers just to run the $100 software! It turned personal computers from hobbyist toys into serious business tools. 💡</p>
             </div>
         </div>
 
         <!-- Slide 5: New Functions Introduction -->
         <div class="slide">
-            <h1>Today's New Functions! 🆕</h1>
+            <h1>Advanced Function Review 📈</h1>
 
             <div class="vocab-term">VLOOKUP</div>
             <div class="vocab-def">
@@ -452,7 +452,121 @@
             </div>
         </div>
 
-        <!-- Slide 6: Project Introduction -->
+        <!-- Slide 6: Cell References Introduction -->
+        <div class="slide">
+            <h1>Cell References: The Basics 📍</h1>
+
+            <h2>What are Cell References?</h2>
+            <p>When you use a formula like =A1+B1, the A1 and B1 are <strong>cell references</strong> - they point to specific cells!</p>
+
+            <div class="activity-box">
+                <p><strong>Two Types of References:</strong></p>
+                <ul>
+                    <li><strong>Relative References</strong> (like A1) - Change when you copy them</li>
+                    <li><strong>Absolute References</strong> (like $A$1) - Stay the same when copied</li>
+                </ul>
+            </div>
+
+            <div class="example-card" style="margin: 20px auto; max-width: 600px;">
+                <h3>Think of it like directions:</h3>
+                <p><strong>Relative:</strong> "Turn left at the next street" (changes based on where you are)</p>
+                <p><strong>Absolute:</strong> "Go to 123 Main Street" (same address no matter where you start)</p>
+            </div>
+
+            <div class="tip-box">
+                <p><strong>💡 Remember:</strong> Most of the time you want relative references, but sometimes you need absolute!</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Relative References -->
+        <div class="slide">
+            <h1>Relative References (Default) 🔄</h1>
+
+            <h2>How Relative References Work</h2>
+
+            <div class="formula-box">
+                <p>Cell C1: =A1+B1</p>
+                <p>Copy to C2: Becomes =A2+B2</p>
+                <p>Copy to C3: Becomes =A3+B3</p>
+            </div>
+
+            <div class="example-card" style="margin: 20px auto;">
+                <h3>Example: Calculating Totals</h3>
+                <table class="spreadsheet-table" style="width: 60%; margin: 20px auto;">
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>5</td>
+                        <td>=A1+B1 (shows 15)</td>
+                    </tr>
+                    <tr>
+                        <td>20</td>
+                        <td>8</td>
+                        <td>=A2+B2 (shows 28)</td>
+                    </tr>
+                    <tr>
+                        <td>30</td>
+                        <td>12</td>
+                        <td>=A3+B3 (shows 42)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="activity-box">
+                <p><strong>Key Point:</strong> The formula adjusts automatically! Each row adds its own numbers.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Absolute References -->
+        <div class="slide">
+            <h1>Absolute References: The Dollar Signs! 💲</h1>
+
+            <h2>Locking Cells with $</h2>
+            <p>Dollar signs "lock" parts of your reference so they don't change when copied!</p>
+
+            <div class="formula-box">
+                <p><strong>$A$1</strong> = Both column (A) and row (1) are locked</p>
+                <p><strong>$A1</strong> = Only column is locked</p>
+                <p><strong>A$1</strong> = Only row is locked</p>
+            </div>
+
+            <div class="example-card" style="margin: 20px auto;">
+                <h3>Example: Sales Tax Calculation</h3>
+                <p>Tax Rate in cell E1: 0.08 (8%)</p>
+                <table class="spreadsheet-table" style="width: 70%; margin: 20px auto;">
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                    </tr>
+                    <tr>
+                        <td>Item</td>
+                        <td>Price</td>
+                        <td>Tax</td>
+                    </tr>
+                    <tr>
+                        <td>Shirt</td>
+                        <td>$20</td>
+                        <td>=B2*$E$1</td>
+                    </tr>
+                    <tr>
+                        <td>Pants</td>
+                        <td>$35</td>
+                        <td>=B3*$E$1</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="tip-box">
+                <p><strong>💡 Pro Tip:</strong> Press F4 (Windows) or Cmd+T (Mac) to quickly add $ signs to a reference!</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Project Introduction -->
         <div class="slide">
             <h1>Today's Project: Field Trip Budget 🚌</h1>
 
@@ -906,7 +1020,7 @@
 
     <script>
         let currentSlide = 1;
-        const totalSlides = 20;
+        const totalSlides = 23;
 
         function showSlide(n) {
             const slides = document.querySelectorAll('.slide');
