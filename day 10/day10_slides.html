@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 10: Python Decisions & Logic - Brother Cope's CS Class</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 90%;
+            max-width: 1000px;
+            height: 80vh;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            height: 100%;
+            overflow-y: auto;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h1 {
+            color: #764ba2;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin: 20px 0 10px;
+            font-size: 1.4em;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #764ba2;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            margin: 30px 0;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .quiz-option:hover:not(:disabled) {
+            background: #e0e0e0;
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #4caf50;
+            color: #333;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #f44336;
+            color: #333;
+        }
+
+        .quiz-option:disabled {
+            cursor: not-allowed;
+        }
+
+        .vocab-term {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .vocab-def {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 3px solid #667eea;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .activity-box p {
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 1.1em;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .output-box {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            min-height: 50px;
+        }
+
+        .fun-fact {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .emoji {
+            font-size: 2em;
+            margin: 0 10px;
+        }
+
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        ul {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            font-size: 1.1em;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .interactive-python {
+            margin: 20px 0;
+        }
+
+        .run-button {
+            background: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .fill-blank {
+            display: inline-block;
+            min-width: 100px;
+            border-bottom: 2px solid #667eea;
+            margin: 0 5px;
+            padding: 2px 5px;
+        }
+
+        .fill-blank input {
+            border: none;
+            outline: none;
+            font-size: 1.1em;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: transparent;
+            color: #333;
+            width: 100%;
+        }
+
+        .python-step {
+            background: #e8f4f8;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .python-step strong {
+            color: #1976D2;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .code-practice {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-number">Slide <span id="slideNumber">1</span> of 20</div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 10: Making Decisions in Python! 🤖</h1>
+            <div style="text-align: center; margin-top: 50px;">
+                <p style="font-size: 1.5em;">If, Elif, Else & Logic</p>
+                <span class="emoji">🎮</span>
+                <span class="emoji">🤔</span>
+                <span class="emoji">💡</span>
+            </div>
+            <div class="fun-fact" style="margin-top: 50px;">
+                <strong>Fun Fact:</strong> Every app on your phone makes thousands of decisions per second using if statements! From checking if you tapped a button to deciding what to show on screen.
+            </div>
+        </div>
+
+        <!-- Slide 2: Review from Day 9 -->
+        <div class="slide">
+            <h1>Quick Review! 🎯</h1>
+            <h2>What will this Python code print?</h2>
+            <div class="code-block">name = "Jeremy"
+pants = "cool"
+message = name + " has " + pants + " pants!"
+print(message)</div>
+            <div class="quiz-container">
+                <button class="quiz-option" onclick="checkAnswer(this, false)">Jeremy pants cool</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">Jeremy has cool pants!</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">name has pants pants!</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">Error</button>
+            </div>
+        </div>
+
+        <!-- Slide 3: Today's Mission -->
+        <div class="slide">
+            <h1>Today's Mission 🎯</h1>
+            <p>Your programs need to make decisions!</p>
+            <ul>
+                <li>🤔 <strong>If statements:</strong> Make your code think!</li>
+                <li>⚖️ <strong>Comparisons:</strong> Is this bigger? Equal? Different?</li>
+                <li>🔗 <strong>Logic:</strong> Combine conditions (and, or, not)</li>
+                <li>🎮 <strong>Build:</strong> A simple game that makes decisions!</li>
+            </ul>
+            <div class="activity-box">
+                <p><strong>Get Ready!</strong> Open <a href="https://www.online-python.com/" target="_blank">online-python.com</a> in a new tab - we'll code along today!</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Vocabulary -->
+        <div class="slide">
+            <h1>New Vocabulary 📚</h1>
+
+            <div class="vocab-term">if statement</div>
+            <div class="vocab-def">Code that only runs when something is True - like "if it's raining, bring umbrella"</div>
+
+            <div class="vocab-term">Condition</div>
+            <div class="vocab-def">A test that results in True or False - like checking if your phone battery > 20%</div>
+
+            <div class="vocab-term">Boolean</div>
+            <div class="vocab-def">A value that's either True or False - like a light switch (on/off)</div>
+
+            <div class="vocab-term">Comparison Operator</div>
+            <div class="vocab-def">Symbols that compare values: == (equals), > (greater), < (less), etc.</div>
+
+            <div class="vocab-term">elif (else if)</div>
+            <div class="vocab-def">Another condition to check if the first one was False</div>
+        </div>
+
+        <!-- Slide 5: Your First If Statement -->
+        <div class="slide">
+            <h1>Your First If Statement! 🚦</h1>
+            <p>If statements let your code make decisions:</p>
+            <div class="code-block">age = 16
+
+if age >= 16:
+    print("You can drive! 🚗")
+    print("Remember to buckle up!")
+
+print("Have a great day!")</div>
+
+            <div class="python-step">
+                <p><span class="step-number">1</span> <strong>Go to online-python.com</strong></p>
+                <p><span class="step-number">2</span> <strong>Type this code exactly (watch the indentation!)</strong></p>
+                <p><span class="step-number">3</span> <strong>Click "Run" and see what happens</strong></p>
+                <p><span class="step-number">4</span> <strong>Change age to 14 and run again</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 6: How If Statements Work -->
+        <div class="slide">
+            <h1>How If Statements Work 🔍</h1>
+            <div class="code-block">if condition:
+    # This code runs if condition is True
+    # Notice the indentation!
+    print("Condition was True!")
+
+# This code always runs (not indented)
+print("After the if statement")</div>
+
+            <p><strong>Key Rules:</strong></p>
+            <ul>
+                <li>✅ End the if line with a colon <strong>:</strong></li>
+                <li>✅ Indent the code that should run (use Tab or 4 spaces - just be consistent!)</li>
+                <li>✅ The condition must be True or False</li>
+                <li>✅ Code continues normally after the indented block</li>
+            </ul>
+
+            <div class="activity-box">
+                <p><strong>Common Mistake!</strong> Forgetting the colon or indentation will cause errors!</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Comparison Operators -->
+        <div class="slide">
+            <h1>Comparison Operators ⚖️</h1>
+            <table class="comparison-table">
+                <tr>
+                    <th>Operator</th>
+                    <th>Meaning</th>
+                    <th>Example</th>
+                    <th>Result</th>
+                </tr>
+                <tr>
+                    <td><strong>==</strong></td>
+                    <td>Equal to</td>
+                    <td>5 == 5</td>
+                    <td>True</td>
+                </tr>
+                <tr>
+                    <td><strong>!=</strong></td>
+                    <td>Not equal to</td>
+                    <td>5 != 3</td>
+                    <td>True</td>
+                </tr>
+                <tr>
+                    <td><strong>&gt;</strong></td>
+                    <td>Greater than</td>
+                    <td>10 &gt; 5</td>
+                    <td>True</td>
+                </tr>
+                <tr>
+                    <td><strong>&lt;</strong></td>
+                    <td>Less than</td>
+                    <td>3 &lt; 7</td>
+                    <td>True</td>
+                </tr>
+                <tr>
+                    <td><strong>&gt;=</strong></td>
+                    <td>Greater or equal</td>
+                    <td>5 &gt;= 5</td>
+                    <td>True</td>
+                </tr>
+                <tr>
+                    <td><strong>&lt;=</strong></td>
+                    <td>Less or equal</td>
+                    <td>4 &lt;= 8</td>
+                    <td>True</td>
+                </tr>
+            </table>
+
+            <div class="fun-fact">
+                <strong>Remember:</strong> Use == for comparison, = for assignment!<br>
+                <code>x = 5</code> assigns 5 to x<br>
+                <code>x == 5</code> checks if x equals 5
+            </div>
+        </div>
+
+        <!-- Slide 8: Practice Comparisons -->
+        <div class="slide">
+            <h1>Let's Practice Comparisons! 💻</h1>
+            <div class="python-step">
+                <p><strong>Copy this code to online-python.com:</strong></p>
+            </div>
+            <div class="code-block"># Test different comparisons
+score = 85
+passing_grade = 70
+
+print("Score:", score)
+print("Passing grade:", passing_grade)
+print("Score > passing_grade:", score > passing_grade)
+print("Score == 85:", score == 85)
+print("Score != 100:", score != 100)
+
+# Now with if statement
+if score >= passing_grade:
+    print("You passed! 🎉")
+    print("Great job!")</div>
+
+            <div class="activity-box">
+                <p><strong>Try This!</strong></p>
+                <p>1. Change score to different values (50, 70, 100)</p>
+                <p>2. See how the comparisons change</p>
+                <p>3. What happens when score equals passing_grade?</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: else Statement -->
+        <div class="slide">
+            <h1>Adding else - Plan B! 🔄</h1>
+            <p>The else block runs when the if condition is False:</p>
+            <div class="code-block">temperature = 75
+
+if temperature > 80:
+    print("It's hot! 🌞")
+    print("Drink water!")
+else:
+    print("Nice weather! 🌤️")
+    print("Perfect for outside!")
+
+print("Enjoy your day!")</div>
+
+            <div class="python-step">
+                <p><strong>Practice Time!</strong></p>
+                <p><span class="step-number">1</span> Copy this code to online-python.com</p>
+                <p><span class="step-number">2</span> Run it with temperature = 75</p>
+                <p><span class="step-number">3</span> Change to temperature = 85 and run again</p>
+                <p><span class="step-number">4</span> Notice which messages appear!</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: elif - Multiple Choices -->
+        <div class="slide">
+            <h1>elif - Multiple Choices! 🎯</h1>
+            <p>Use elif when you have multiple conditions to check:</p>
+            <div class="code-block">grade = 85
+
+if grade >= 90:
+    print("A - Excellent! 🌟")
+elif grade >= 80:
+    print("B - Great job! 👍")
+elif grade >= 70:
+    print("C - Good work! ✓")
+elif grade >= 60:
+    print("D - Keep trying!")
+else:
+    print("F - Need more practice")</div>
+
+            <div class="activity-box">
+                <p><strong>How it works:</strong></p>
+                <p>• Checks conditions from top to bottom</p>
+                <p>• Stops at the first True condition</p>
+                <p>• Only one block runs!</p>
+            </div>
+
+            <div class="python-step">
+                <p><strong>Test with different grades:</strong> 95, 85, 75, 65, 55</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: String Comparisons -->
+        <div class="slide">
+            <h1>Comparing Strings 📝</h1>
+            <p>You can compare text too!</p>
+            <div class="code-block">password = "minecraft123"
+user_input = input("Enter password: ")
+
+if user_input == password:
+    print("Access granted! ✅")
+    print("Welcome to the game!")
+else:
+    print("Wrong password! ❌")
+    print("Try again!")
+
+# You can also check if text is in another string
+name = "Brother Cope"
+if "Cope" in name:
+    print("Found Cope in the name!")</div>
+
+            <div class="python-step">
+                <p><strong>Try This Code!</strong></p>
+                <p>1. Run it and enter the correct password</p>
+                <p>2. Run again with wrong password</p>
+                <p>3. Passwords are case-sensitive!</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Logical Operators -->
+        <div class="slide">
+            <h1>Logical Operators - Combine Conditions! 🔗</h1>
+
+            <h3>and - Both must be True</h3>
+            <div class="code-block">age = 16
+has_permit = True
+
+if age >= 16 and has_permit:
+    print("You can practice driving! 🚗")</div>
+
+            <h3>or - At least one must be True</h3>
+            <div class="code-block">day = "Saturday"
+
+if day == "Saturday" or day == "Sunday":
+    print("It's the weekend! 🎉")</div>
+
+            <h3>not - Flips True/False</h3>
+            <div class="code-block">raining = False
+
+if not raining:
+    print("No rain - let's go outside! ☀️")</div>
+
+            <div class="activity-box">
+                <p><strong>Remember:</strong> and needs BOTH, or needs ONE, not flips the value!</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Practice with Logic -->
+        <div class="slide">
+            <h1>Logic Practice! 🧠</h1>
+            <div class="python-step">
+                <p><strong>Copy and run this game eligibility checker:</strong></p>
+            </div>
+            <div class="code-block"># Game eligibility checker
+age = int(input("Enter your age: "))
+has_permission = input("Parent permission? (yes/no): ")
+
+# Check if they can play rated T game
+if age >= 13:
+    print("✅ Old enough for Teen games!")
+elif age >= 10 and has_permission == "yes":
+    print("✅ Can play with parent permission!")
+else:
+    print("❌ Sorry, too young for this game")
+
+# Check time restrictions
+hour = int(input("What hour is it? (0-23): "))
+
+if hour >= 22 or hour < 6:
+    print("🌙 Too late/early - bedtime!")
+elif hour >= 8 and hour < 22:
+    print("⏰ Good time to play!")
+else:
+    print("🍳 Time for breakfast first!")</div>
+
+            <div class="activity-box">
+                <p><strong>Test Cases:</strong> Age 15, Age 11 with permission, Age 8, Different hours</p>
+            </div>
+        </div>
+
+        <!-- Slide 14: Number Guessing Game -->
+        <div class="slide">
+            <h1>Build: Number Guessing Game! 🎲</h1>
+            <div class="python-step">
+                <p><strong>Let's build a simple game together!</strong></p>
+            </div>
+            <div class="code-block">import random
+
+# Computer picks a random number
+secret = random.randint(1, 10)
+print("I'm thinking of a number between 1 and 10!")
+
+# Get player's guess
+guess = int(input("Your guess: "))
+
+# Check the guess
+if guess == secret:
+    print("🎉 YOU WIN! Perfect guess!")
+elif guess > secret:
+    print("📉 Too high! The number was", secret)
+elif guess < secret:
+    print("📈 Too low! The number was", secret)
+
+# Give a hint about how close they were
+difference = abs(guess - secret)
+if difference == 1:
+    print("So close! Off by just 1!")
+elif difference <= 3:
+    print("Pretty close! Within 3!")
+else:
+    print("Not even close!")</div>
+
+            <div class="activity-box">
+                <p><strong>Run multiple times to play again!</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Activity - Grade Calculator -->
+        <div class="slide">
+            <h1>Activity: Grade Calculator 📊</h1>
+            <div class="python-step">
+                <p><strong>Create this grade calculator:</strong></p>
+            </div>
+            <div class="code-block"># Grade Calculator
+print("=== Grade Calculator ===")
+
+# Get three test scores
+test1 = int(input("Enter test 1 score: "))
+test2 = int(input("Enter test 2 score: "))
+test3 = int(input("Enter test 3 score: "))
+
+# Calculate average
+average = (test1 + test2 + test3) / 3
+print(f"Your average: {average:.1f}")
+
+# Determine letter grade and feedback
+if average >= 90:
+    print("Grade: A 🌟")
+    print("Outstanding work!")
+elif average >= 80:
+    print("Grade: B 👍")
+    print("Great job!")
+elif average >= 70:
+    print("Grade: C ✓")
+    print("Doing well!")
+elif average >= 60:
+    print("Grade: D")
+    print("Need improvement")
+else:
+    print("Grade: F")
+    print("Please see teacher")
+
+# Bonus check
+if test1 >= 95 and test2 >= 95 and test3 >= 95:
+    print("🏆 PERFECT SCORES! Amazing!")</div>
+        </div>
+
+        <!-- Slide 16: Challenge - Adventure Game -->
+        <div class="slide">
+            <h1>Challenge: Mini Adventure! 🗺️</h1>
+            <div class="python-step">
+                <p><strong>Build your own text adventure:</strong></p>
+            </div>
+            <div class="code-block">print("🏰 Welcome to Castle Adventure!")
+print("You're at the castle entrance.")
+
+choice1 = input("Go (left) to the garden or (right) to the tower? ")
+
+if choice1 == "left":
+    print("🌳 You're in the beautiful garden!")
+    choice2 = input("Pick the (rose) or explore the (maze)? ")
+
+    if choice2 == "rose":
+        print("🌹 You found a magic rose! You win!")
+    elif choice2 == "maze":
+        print("🌀 You got lost in the maze! Game over!")
+    else:
+        print("Invalid choice! The guards caught you!")
+
+elif choice1 == "right":
+    print("🏰 You climb the tower stairs!")
+    choice2 = input("Open the (door) or look out the (window)? ")
+
+    if choice2 == "door":
+        print("🐉 A dragon appears! Game over!")
+    elif choice2 == "window":
+        print("🔭 You found a telescope with a treasure map! You win!")
+    else:
+        print("You tripped and fell! Game over!")
+else:
+    print("You must choose left or right! The guards caught you!")</div>
+
+            <div class="activity-box">
+                <p><strong>Customize it!</strong> Add more choices, change the story, make it yours!</p>
+            </div>
+        </div>
+
+        <!-- Slide 17: Common Mistakes -->
+        <div class="slide">
+            <h1>Common Mistakes to Avoid! ⚠️</h1>
+
+            <h3>❌ Using = instead of ==</h3>
+            <div class="code-block"># WRONG
+if score = 100:  # This is assignment!
+
+# CORRECT
+if score == 100:  # This is comparison!</div>
+
+            <h3>❌ Forgetting the colon</h3>
+            <div class="code-block"># WRONG
+if age > 18  # Missing colon!
+
+# CORRECT
+if age > 18:  # Don't forget the colon!</div>
+
+            <h3>❌ Wrong indentation</h3>
+            <div class="code-block"># WRONG
+if score > 90:
+print("Great!")  # Not indented!
+
+# CORRECT
+if score > 90:
+    print("Great!")  # Indented properly!</div>
+
+            <div class="fun-fact">
+                <strong>Pro Tip:</strong> Python uses indentation to know what code belongs to the if statement!
+            </div>
+        </div>
+
+        <!-- Slide 18: Quick Quiz -->
+        <div class="slide">
+            <h1>Quick Quiz! 🎯</h1>
+            <h2>What will this code print if x = 15?</h2>
+            <div class="code-block">x = 15
+
+if x > 20:
+    print("A")
+elif x > 10:
+    print("B")
+elif x > 5:
+    print("C")
+else:
+    print("D")</div>
+            <div class="quiz-container">
+                <button class="quiz-option" onclick="checkAnswer(this, false)">A</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">B</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">C</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">D</button>
+            </div>
+            <div class="fun-fact" style="margin-top: 30px;">
+                <strong>Remember:</strong> elif stops checking once it finds a True condition! Since 15 > 10 is True, it prints "B" and stops.
+            </div>
+        </div>
+
+        <!-- Slide 19: Your Turn! -->
+        <div class="slide">
+            <h1>Your Turn - Creative Challenge! 🚀</h1>
+            <div class="activity-box">
+                <p><strong>Create ONE of these programs:</strong></p>
+            </div>
+
+            <h3>Option 1: Password System 🔐</h3>
+            <p>Ask for username AND password, give 3 tries, lock out after failures</p>
+
+            <h3>Option 2: Quiz Game 🧠</h3>
+            <p>Ask 5 questions, keep score, give final grade</p>
+
+            <h3>Option 3: Restaurant Menu 🍕</h3>
+            <p>Show menu, take order, calculate total with tax</p>
+
+            <h3>Option 4: Character Creator 🎮</h3>
+            <p>Choose class (warrior/mage/rogue), assign stats based on choice</p>
+
+            <div class="python-step">
+                <p><strong>Requirements:</strong></p>
+                <p>• Use at least 3 if/elif/else statements</p>
+                <p>• Use at least one and/or operator</p>
+                <p>• Get input from the user</p>
+                <p>• Make it fun and creative!</p>
+            </div>
+        </div>
+
+        <!-- Slide 20: Summary -->
+        <div class="slide">
+            <h1>Awesome Job Today! 🌟</h1>
+            <h2>You Learned:</h2>
+            <ul>
+                <li>✅ How to use <strong>if statements</strong> to make decisions</li>
+                <li>✅ Using <strong>else</strong> for alternative paths</li>
+                <li>✅ Multiple conditions with <strong>elif</strong></li>
+                <li>✅ Comparison operators (==, !=, >, <, >=, <=)</li>
+                <li>✅ Logical operators (and, or, not)</li>
+                <li>✅ Building interactive programs that think!</li>
+            </ul>
+
+            <div class="activity-box">
+                <p><strong>Keep Practicing!</strong></p>
+                <p>• Finish your creative challenge program</p>
+                <p>• Try combining multiple conditions</p>
+                <p>• Make your programs more complex!</p>
+            </div>
+
+            <p style="text-align: center; margin-top: 30px; font-size: 1.3em;">
+                <strong>Next Class:</strong> Loops - Make Python Repeat Things! 🔄
+            </p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+            <button id="nextBtn" onclick="changeSlide(1)">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+
+            if (n >= totalSlides) {
+                currentSlide = totalSlides - 1;
+            } else if (n < 0) {
+                currentSlide = 0;
+            } else {
+                currentSlide = n;
+            }
+
+            slides[currentSlide].classList.add('active');
+            document.getElementById('slideNumber').textContent = currentSlide + 1;
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        function checkAnswer(button, isCorrect) {
+            const options = button.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.disabled = true);
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.innerHTML = button.innerHTML + ' ✓';
+            } else {
+                button.classList.add('incorrect');
+                button.innerHTML = button.innerHTML + ' ✗';
+                // Show correct answer
+                options.forEach(opt => {
+                    if (opt.onclick && opt.onclick.toString().includes('true')) {
+                        opt.classList.add('correct');
+                        opt.innerHTML = opt.innerHTML + ' ✓';
+                    }
+                });
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
