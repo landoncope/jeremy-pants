@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 11: Python Loops, Lists & Functions - Brother Cope's CS Class</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 90%;
+            max-width: 1000px;
+            height: 80vh;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            height: 100%;
+            overflow-y: auto;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h1 {
+            color: #764ba2;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin: 20px 0 10px;
+            font-size: 1.4em;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #764ba2;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            margin: 30px 0;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .quiz-option:hover:not(:disabled) {
+            background: #e0e0e0;
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #4caf50;
+            color: #333;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #f44336;
+            color: #333;
+        }
+
+        .quiz-option:disabled {
+            cursor: not-allowed;
+        }
+
+        .vocab-term {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .vocab-def {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 3px solid #667eea;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .activity-box p {
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 1.1em;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .fun-fact {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .emoji {
+            font-size: 2em;
+            margin: 0 10px;
+        }
+
+        ul {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            font-size: 1.1em;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .python-step {
+            background: #e8f4f8;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .review-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .review-card {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .review-card h4 {
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .output-preview {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            color: #333;
+        }
+
+        .loop-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            font-size: 1.3em;
+        }
+
+        .loop-item {
+            background: #e3f2fd;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-number">Slide <span id="slideNumber">1</span> of 22</div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 11: Loops, Lists & Functions! 🔄📝🔧</h1>
+            <div style="text-align: center; margin-top: 50px;">
+                <p style="font-size: 1.5em;">Level Up Your Python Skills!</p>
+                <span class="emoji">🐍</span>
+                <span class="emoji">💪</span>
+                <span class="emoji">🚀</span>
+            </div>
+            <div class="fun-fact" style="margin-top: 50px;">
+                <strong>Fun Fact:</strong> Netflix processes over 400 billion events per day using Python loops and functions! Every time you watch a show, Python code is working behind the scenes.
+            </div>
+        </div>
+
+        <!-- Slide 2: Quick Review Quiz -->
+        <div class="slide">
+            <h1>Quick Review! 🎯</h1>
+            <h2>What will this code print?</h2>
+            <div class="code-block">score = 75
+
+if score >= 90:
+    print("A")
+elif score >= 70:
+    print("B")
+else:
+    print("C")</div>
+            <div class="quiz-container">
+                <button class="quiz-option" onclick="checkAnswer(this, false)">A</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">B</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">C</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">Nothing</button>
+            </div>
+        </div>
+
+        <!-- Slide 3: Day 9 Review - Python Basics -->
+        <div class="slide">
+            <h1>Review: Day 9 - Python Basics 🐍</h1>
+            <h2>What We Learned:</h2>
+            <div class="review-grid">
+                <div class="review-card">
+                    <h4>Variables & Data Types</h4>
+                    <div class="code-block">name = "Alice"        # String
+age = 16             # Integer
+gpa = 3.75           # Float
+is_student = True    # Boolean</div>
+                </div>
+                <div class="review-card">
+                    <h4>Input & Output</h4>
+                    <div class="code-block">name = input("Name? ")
+print("Hello,", name)
+print(f"Hi {name}!")</div>
+                </div>
+                <div class="review-card">
+                    <h4>Basic Math</h4>
+                    <div class="code-block">total = 10 + 5     # 15
+result = 20 - 8    # 12
+score = 6 * 7      # 42
+avg = 100 / 4      # 25.0</div>
+                </div>
+                <div class="review-card">
+                    <h4>String Operations</h4>
+                    <div class="code-block">first = "Spider"
+last = "Man"
+hero = first + last
+# Result: "SpiderMan"</div>
+                </div>
+            </div>
+            <div class="fun-fact">
+                <strong>Key Concept:</strong> Variables are like labeled boxes that store data. You can change what's inside the box anytime!
+            </div>
+        </div>
+
+        <!-- Slide 4: Day 10 Review - Decisions & Logic -->
+        <div class="slide">
+            <h1>Review: Day 10 - Decisions & Logic 🤖</h1>
+            <h2>Making Programs Think:</h2>
+
+            <h3>If/Elif/Else Structure:</h3>
+            <div class="code-block">age = int(input("Your age? "))
+
+if age >= 18:
+    print("You can vote!")
+elif age >= 16:
+    print("You can drive!")
+elif age >= 13:
+    print("You're a teenager!")
+else:
+    print("You're a kid!")</div>
+
+            <h3>Comparison Operators We Learned:</h3>
+            <div class="review-grid">
+                <div class="review-card">
+                    <h4>Basic Comparisons</h4>
+                    <div class="code-block">x == 5   # equals
+x != 5   # not equal
+x > 5    # greater than
+x < 5    # less than
+x >= 5   # greater or equal
+x <= 5   # less or equal</div>
+                </div>
+                <div class="review-card">
+                    <h4>Logical Operators</h4>
+                    <div class="code-block"># AND - both must be true
+age >= 13 and has_ticket
+
+# OR - at least one true
+day == "Sat" or day == "Sun"
+
+# NOT - flips true/false
+not is_raining</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Review Practice -->
+        <div class="slide">
+            <h1>Let's Practice What We Know! 💻</h1>
+            <h2>Can you predict the output?</h2>
+
+            <div class="code-block"># Example 1
+name = "Jeremy"
+age = 15
+if age >= 16:
+    print(name + " can drive")
+else:
+    print(name + " can't drive yet")</div>
+
+            <div class="activity-box">
+                <p><strong>Output:</strong> <span id="answer1" style="display: none; color: green;">Jeremy can't drive yet</span></p>
+                <button onclick="document.getElementById('answer1').style.display='inline';">Show Answer</button>
+            </div>
+
+            <div class="code-block"># Example 2
+score = 85
+bonus = 10
+final = score + bonus
+
+if final >= 90 and final < 100:
+    grade = "A"
+elif final >= 80:
+    grade = "B"
+
+print(f"Grade: {grade}")</div>
+
+            <div class="activity-box">
+                <p><strong>Output:</strong> <span id="answer2" style="display: none; color: green;">Grade: A (because 95 is >= 90 and < 100)</span></p>
+                <button onclick="document.getElementById('answer2').style.display='inline';">Show Answer</button>
+            </div>
+
+            <div class="fun-fact">
+                <strong>Pro Tip:</strong> Always trace through your code line by line to predict what it will do!
+            </div>
+        </div>
+
+        <!-- Slide 6: Today's Mission -->
+        <div class="slide">
+            <h1>Today's Mission 🎯</h1>
+            <p>Learn THREE powerful Python concepts:</p>
+            <ul>
+                <li>🔄 <strong>Loops:</strong> Make Python repeat tasks automatically!</li>
+                <li>📝 <strong>Lists:</strong> Store multiple items in one variable!</li>
+                <li>🔧 <strong>Functions:</strong> Create reusable blocks of code!</li>
+            </ul>
+            <div class="activity-box">
+                <p><strong>Get Ready!</strong> Open <a href="https://www.online-python.com/" target="_blank">online-python.com</a> - we'll code together!</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: New Vocabulary -->
+        <div class="slide">
+            <h1>New Vocabulary 📚</h1>
+
+            <div class="vocab-term">Loop</div>
+            <div class="vocab-def">Code that repeats automatically - like playing a song on repeat</div>
+
+            <div class="vocab-term">List</div>
+            <div class="vocab-def">A container that holds multiple values - like a playlist of songs</div>
+
+            <div class="vocab-term">Function</div>
+            <div class="vocab-def">Reusable code with a name - like a recipe you can use over and over</div>
+
+            <div class="vocab-term">Iteration</div>
+            <div class="vocab-def">One cycle through a loop - like one lap around a track</div>
+
+            <div class="vocab-term">Index</div>
+            <div class="vocab-def">Position number in a list (starts at 0) - like seat numbers in a theater</div>
+        </div>
+
+        <!-- Slide 8: Intro to Loops -->
+        <div class="slide">
+            <h1>Why Loops? 🤔</h1>
+            <h3>Without loops (boring and repetitive):</h3>
+            <div class="code-block">print("Hello")
+print("Hello")
+print("Hello")
+print("Hello")
+print("Hello")</div>
+
+            <h3>With loops (smart and efficient):</h3>
+            <div class="code-block">for i in range(5):
+    print("Hello")</div>
+
+            <div class="fun-fact">
+                <strong>Real Example:</strong> Instagram uses loops to show all your photos. Without loops, they'd need separate code for each photo!
+            </div>
+        </div>
+
+        <!-- Slide 9: For Loops with range() -->
+        <div class="slide">
+            <h1>For Loops - Count It! 🔢</h1>
+            <p>The for loop repeats code a specific number of times:</p>
+            <div class="code-block"># Count from 0 to 4
+for i in range(5):
+    print(i)
+
+# Output: 0, 1, 2, 3, 4</div>
+
+            <h3>Different range() options:</h3>
+            <div class="code-block"># Start at 1, go to 5
+for i in range(1, 6):
+    print(i)  # 1, 2, 3, 4, 5
+
+# Count by 2s
+for i in range(0, 10, 2):
+    print(i)  # 0, 2, 4, 6, 8</div>
+
+            <div class="python-step">
+                <p><strong>Try it!</strong> Type this code and run it:</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Loop Practice -->
+        <div class="slide">
+            <h1>Loop Practice! 💻</h1>
+            <div class="python-step">
+                <p><strong>Copy this countdown timer:</strong></p>
+            </div>
+            <div class="code-block">print("Launching rocket! 🚀")
+
+for i in range(10, 0, -1):
+    print(i)
+
+print("BLAST OFF! 🔥")</div>
+
+            <div class="activity-box">
+                <p><strong>Challenge:</strong> Modify it to count from 5 to 1!</p>
+            </div>
+
+            <h3>Another example - Multiplication table:</h3>
+            <div class="code-block">num = 7
+print(f"Times table for {num}:")
+
+for i in range(1, 11):
+    result = num * i
+    print(f"{num} x {i} = {result}")</div>
+        </div>
+
+        <!-- Slide 11: While Loops -->
+        <div class="slide">
+            <h1>While Loops - Keep Going! 🔁</h1>
+            <p>While loops repeat as long as a condition is True:</p>
+            <div class="code-block"># Password checker
+password = "python123"
+guess = ""
+
+while guess != password:
+    guess = input("Password: ")
+    if guess != password:
+        print("Wrong! Try again.")
+
+print("Access granted! ✅")</div>
+
+            <h3>Simple counter with while:</h3>
+            <div class="code-block">count = 0
+
+while count < 5:
+    print(f"Count is {count}")
+    count = count + 1
+
+print("Done!")</div>
+
+            <div class="fun-fact">
+                <strong>Tip:</strong> Be careful! A while loop can run forever if the condition never becomes False!
+            </div>
+        </div>
+
+        <!-- Slide 12: Introduction to Lists -->
+        <div class="slide">
+            <h1>Lists - Store Multiple Items! 📝</h1>
+            <p>Lists let you store many values in one variable:</p>
+            <div class="code-block"># Creating lists
+friends = ["Alice", "Bob", "Charlie"]
+scores = [95, 87, 92, 88]
+mixed = ["Hello", 42, 3.14, True]
+
+# Print the whole list
+print(friends)
+
+# Access items by position (index)
+print(friends[0])  # Alice (first)
+print(friends[1])  # Bob (second)
+print(friends[2])  # Charlie (third)</div>
+
+            <div class="activity-box">
+                <p><strong>Remember:</strong> List positions start at 0, not 1!</p>
+                <p>First item = index 0, Second item = index 1, etc.</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Working with Lists -->
+        <div class="slide">
+            <h1>List Operations 🛠️</h1>
+            <div class="code-block"># Start with a list
+games = ["Minecraft", "Fortnite"]
+
+# Add items
+games.append("Roblox")
+print(games)  # Now has 3 games
+
+# Change an item
+games[1] = "Among Us"
+print(games)
+
+# Get list length
+size = len(games)
+print(f"You have {size} games")
+
+# Check if item is in list
+if "Minecraft" in games:
+    print("You have Minecraft!")</div>
+
+            <div class="python-step">
+                <p><strong>Try it!</strong> Create your own list of favorite foods and modify it!</p>
+            </div>
+        </div>
+
+        <!-- Slide 14: Loops with Lists -->
+        <div class="slide">
+            <h1>Loops + Lists = Power! 💪</h1>
+            <p>Loop through each item in a list:</p>
+            <div class="code-block"># List of students
+students = ["Emma", "Liam", "Olivia", "Noah"]
+
+# Print each student
+for student in students:
+    print(f"Hello, {student}!")
+
+# Calculate average
+grades = [85, 92, 78, 95, 88]
+total = 0
+
+for grade in grades:
+    total = total + grade
+
+average = total / len(grades)
+print(f"Average: {average}")</div>
+
+            <div class="activity-box">
+                <p><strong>Notice:</strong> The loop variable (student, grade) takes each value from the list!</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Functions Introduction -->
+        <div class="slide">
+            <h1>Functions - Reusable Code! 🔧</h1>
+            <p>Functions are like recipes - write once, use many times!</p>
+            <div class="code-block"># Define a function
+def greet():
+    print("Hello!")
+    print("Welcome to Python!")
+
+# Use (call) the function
+greet()  # Runs the code inside
+greet()  # Can use it again!
+
+# Function with a parameter
+def greet_person(name):
+    print(f"Hello, {name}!")
+
+greet_person("Alice")
+greet_person("Bob")</div>
+
+            <div class="fun-fact">
+                <strong>Real World:</strong> Every app button click calls a function! The "like" button on Instagram calls a function that adds a like.
+            </div>
+        </div>
+
+        <!-- Slide 16: Functions with Return -->
+        <div class="slide">
+            <h1>Functions that Return Values 📤</h1>
+            <p>Functions can calculate and send back a result:</p>
+            <div class="code-block"># Function that returns a value
+def add_numbers(a, b):
+    result = a + b
+    return result
+
+# Use the function
+answer = add_numbers(5, 3)
+print(answer)  # 8
+
+# Shorter version
+def multiply(x, y):
+    return x * y
+
+print(multiply(4, 7))  # 28</div>
+
+            <h3>Practical example:</h3>
+            <div class="code-block">def calculate_tax(price):
+    tax_rate = 0.08
+    tax = price * tax_rate
+    return tax
+
+item_cost = 25.00
+tax = calculate_tax(item_cost)
+total = item_cost + tax
+print(f"Total: ${total}")</div>
+        </div>
+
+        <!-- Slide 17: Activity - Build a Quiz -->
+        <div class="slide">
+            <h1>Activity: Build a Quiz Game! 🎮</h1>
+            <div class="python-step">
+                <p><strong>Let's combine everything we learned:</strong></p>
+            </div>
+            <div class="code-block"># Quiz Game
+def ask_question(question, answer):
+    user_answer = input(question + " ")
+    if user_answer.lower() == answer.lower():
+        print("Correct! ✓")
+        return 1
+    else:
+        print(f"Wrong. Answer: {answer}")
+        return 0
+
+# Main game
+score = 0
+print("=== Python Quiz ===\n")
+
+# Questions list
+questions = [
+    ("What starts list index?", "0"),
+    ("Loop keyword?", "for"),
+    ("Function keyword?", "def")
+]
+
+# Ask each question
+for q, a in questions:
+    score += ask_question(q, a)
+
+print(f"\nFinal Score: {score}/{len(questions)}")</div>
+        </div>
+
+        <!-- Slide 18: Practice Challenge -->
+        <div class="slide">
+            <h1>Practice Challenge! 🏆</h1>
+            <div class="activity-box">
+                <p><strong>Challenge 1: Shopping Cart</strong></p>
+            </div>
+            <div class="code-block"># Shopping cart program
+cart = []
+
+while True:
+    print("\n1. Add item")
+    print("2. View cart")
+    print("3. Exit")
+
+    choice = input("Choose: ")
+
+    if choice == "1":
+        item = input("Item name: ")
+        cart.append(item)
+        print(f"Added {item}")
+    elif choice == "2":
+        print("Your cart:")
+        for item in cart:
+            print(f"- {item}")
+    elif choice == "3":
+        break
+
+print("Thanks for shopping!")</div>
+
+            <div class="python-step">
+                <p><strong>Try it!</strong> Add a feature to remove items or count total items!</p>
+            </div>
+        </div>
+
+        <!-- Slide 19: Common Mistakes -->
+        <div class="slide">
+            <h1>Common Mistakes to Avoid! ⚠️</h1>
+
+            <h3>❌ Forgetting the colon in loops/functions</h3>
+            <div class="code-block"># WRONG
+for i in range(5)
+    print(i)
+
+# CORRECT
+for i in range(5):
+    print(i)</div>
+
+            <h3>❌ List index out of range</h3>
+            <div class="code-block">nums = [1, 2, 3]
+# WRONG - no index 3!
+print(nums[3])
+
+# CORRECT
+print(nums[2])  # Last item</div>
+
+            <h3>❌ Infinite while loop</h3>
+            <div class="code-block"># WRONG - never ends!
+while True:
+    print("Help!")
+
+# CORRECT - has an exit
+count = 0
+while count < 5:
+    print(count)
+    count += 1</div>
+        </div>
+
+        <!-- Slide 20: Quick Quiz -->
+        <div class="slide">
+            <h1>Quick Quiz! 🎯</h1>
+            <h2>What will this code print?</h2>
+            <div class="code-block">def double(n):
+    return n * 2
+
+numbers = [1, 2, 3]
+for num in numbers:
+    print(double(num))</div>
+            <div class="quiz-container">
+                <button class="quiz-option" onclick="checkAnswer(this, false)">1, 2, 3</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">2, 4, 6</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">Error</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">Nothing</button>
+            </div>
+            <div class="fun-fact" style="margin-top: 30px;">
+                <strong>Explanation:</strong> The function doubles each number (1×2=2, 2×2=4, 3×2=6) and the loop prints each result!
+            </div>
+        </div>
+
+        <!-- Slide 21: Your Turn! -->
+        <div class="slide">
+            <h1>Your Turn - Mini Projects! 🚀</h1>
+            <div class="activity-box">
+                <p><strong>Choose ONE project to build:</strong></p>
+            </div>
+
+            <h3>Option 1: Password Generator</h3>
+            <p>Create random passwords using lists of characters</p>
+
+            <h3>Option 2: Grade Calculator</h3>
+            <p>Input multiple grades, calculate average using functions</p>
+
+            <h3>Option 3: To-Do List</h3>
+            <p>Add tasks, mark complete, view all tasks</p>
+
+            <h3>Option 4: Number Guessing Game</h3>
+            <p>Use loops for multiple guesses, functions for game logic</p>
+
+            <div class="python-step">
+                <p><strong>Requirements:</strong></p>
+                <p>• Use at least one loop</p>
+                <p>• Use at least one list</p>
+                <p>• Use at least one function</p>
+                <p>• Make it interactive with input()</p>
+            </div>
+        </div>
+
+        <!-- Slide 22: Summary -->
+        <div class="slide">
+            <h1>Amazing Progress! 🌟</h1>
+            <h2>You Learned:</h2>
+            <ul>
+                <li>✅ <strong>For loops</strong> - repeat code a specific number of times</li>
+                <li>✅ <strong>While loops</strong> - repeat while condition is true</li>
+                <li>✅ <strong>Lists</strong> - store multiple values in one variable</li>
+                <li>✅ <strong>List operations</strong> - append, access by index, len()</li>
+                <li>✅ <strong>Functions</strong> - create reusable blocks of code</li>
+                <li>✅ <strong>Return values</strong> - functions that calculate results</li>
+            </ul>
+
+            <div class="activity-box">
+                <p><strong>Practice Makes Perfect!</strong></p>
+                <p>• Complete your mini project</p>
+                <p>• Try combining loops, lists, and functions</p>
+                <p>• Experiment and have fun!</p>
+            </div>
+
+            <p style="text-align: center; margin-top: 30px; font-size: 1.3em;">
+                <strong>Next Class:</strong> Advanced Python & Building Real Apps! 🎯
+            </p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+            <button id="nextBtn" onclick="changeSlide(1)">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+
+            if (n >= totalSlides) {
+                currentSlide = totalSlides - 1;
+            } else if (n < 0) {
+                currentSlide = 0;
+            } else {
+                currentSlide = n;
+            }
+
+            slides[currentSlide].classList.add('active');
+            document.getElementById('slideNumber').textContent = currentSlide + 1;
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        function checkAnswer(button, isCorrect) {
+            const options = button.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.disabled = true);
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.innerHTML = button.innerHTML + ' ✓';
+            } else {
+                button.classList.add('incorrect');
+                button.innerHTML = button.innerHTML + ' ✗';
+                // Show correct answer
+                options.forEach(opt => {
+                    if (opt.onclick && opt.onclick.toString().includes('true')) {
+                        opt.classList.add('correct');
+                        opt.innerHTML = opt.innerHTML + ' ✓';
+                    }
+                });
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
