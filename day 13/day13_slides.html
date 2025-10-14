@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 13 - Practice Exam Questions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .slide-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .slide {
+            display: none;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background: #f5f5f5;
+            border: 3px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .option:hover {
+            background: #e8e8e8;
+            transform: translateX(5px);
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #4caf50;
+        }
+
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #f44336;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .reveal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .reveal-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .explanation {
+            display: none;
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            color: #333;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation strong {
+            color: #764ba2;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            color: #667eea;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .intro-text {
+            font-size: 1.2em;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .tip-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .tip-box strong {
+            color: #1976d2;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        @media (max-width: 768px) {
+            .slide-container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .question-text {
+                font-size: 1.2em;
+            }
+
+            .option {
+                padding: 15px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 13: Practice Exam Questions 🎯</h1>
+            <h2>Test Your Knowledge!</h2>
+            <div class="subtitle">60 Questions from Days 1-11</div>
+            <div class="intro-text">
+                <p style="margin-bottom: 20px;">Welcome to your practice exam! This review covers everything we've learned from Day 1 through Day 11.</p>
+                <p style="margin-bottom: 20px;"><strong>What to expect:</strong></p>
+                <ul style="margin-left: 40px; margin-bottom: 20px; line-height: 2;">
+                    <li>50 Multiple Choice Questions</li>
+                    <li>10 True/False Questions</li>
+                    <li>Instant feedback with explanations</li>
+                    <li>Questions from all topics we've covered</li>
+                </ul>
+            </div>
+            <div class="tip-box">
+                <strong>Tips:</strong>
+                Think carefully before selecting your answer. After clicking an option, press "Reveal Answer" to see if you were correct and read the explanation!
+            </div>
+        </div>
+
+        <!-- Question 1: Binary Basics -->
+        <div class="slide">
+            <div class="question-number">Question 1 of 60</div>
+            <div class="question-text">What is a bit?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) 8 binary digits</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) A single binary digit (0 or 1)</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) A type of computer memory</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) A programming language</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                A bit is the smallest unit of data in computing and represents a single binary digit - either 0 or 1. The word "bit" is short for "binary digit."
+            </div>
+        </div>
+
+        <!-- Question 2: Binary Conversion -->
+        <div class="slide">
+            <div class="question-number">Question 2 of 60</div>
+            <div class="question-text">What is the decimal value of the binary number 1010?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) 8</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) 10</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) 12</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) 16</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                Binary 1010 = (1×8) + (0×4) + (1×2) + (0×1) = 8 + 0 + 2 + 0 = 10 in decimal.
+            </div>
+        </div>
+
+        <!-- Question 3: Byte Definition -->
+        <div class="slide">
+            <div class="question-number">Question 3 of 60</div>
+            <div class="question-text">How many bits are in one byte?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) 4</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) 6</div>
+                <div class="option" onclick="selectAnswer(this, true)">C) 8</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) 16</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: C</strong>
+                A byte is made up of 8 bits. This is a fundamental unit in computing, and all file sizes are ultimately measured in bytes.
+            </div>
+        </div>
+
+        <!-- Question 4: Storage Size Comparison -->
+        <div class="slide">
+            <div class="question-number">Question 4 of 60</div>
+            <div class="question-text">Which storage size is the LARGEST?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Megabyte (MB)</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) Kilobyte (KB)</div>
+                <div class="option" onclick="selectAnswer(this, true)">C) Terabyte (TB)</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Gigabyte (GB)</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: C</strong>
+                The order from smallest to largest is: Byte → KB → MB → GB → TB. A Terabyte is about 1,000 GB or 1 trillion bytes!
+            </div>
+        </div>
+
+        <!-- Question 5: Operating System -->
+        <div class="slide">
+            <div class="question-number">Question 5 of 60</div>
+            <div class="question-text">What does an operating system (OS) do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Only runs web browsers</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Manages computer hardware and software</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Creates websites</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Stores files only</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                An operating system is the main software that manages all hardware and software on your computer. Examples include Windows, macOS, and Linux.
+            </div>
+        </div>
+
+        <!-- Question 6: File Extension -->
+        <div class="slide">
+            <div class="question-number">Question 6 of 60</div>
+            <div class="question-text">What is a file extension?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) The size of a file</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) The suffix that indicates the file type (like .txt or .jpg)</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) The date a file was created</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) The name of the person who created the file</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                A file extension is the suffix at the end of a filename (after the dot) that tells the computer what type of file it is. For example: .txt for text files, .jpg for images, .html for web pages.
+            </div>
+        </div>
+
+        <!-- Question 7: RAM vs Storage -->
+        <div class="slide">
+            <div class="question-number">Question 7 of 60</div>
+            <div class="question-text">What is the main difference between RAM and storage?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) RAM is permanent, storage is temporary</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) RAM is temporary memory, storage is permanent</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) They are exactly the same thing</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) RAM is only used for games</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                RAM (Random Access Memory) is temporary memory that disappears when you turn off the computer. Storage (like your hard drive) is permanent and keeps your files even when the computer is off.
+            </div>
+        </div>
+
+        <!-- Question 8: Windows File Path -->
+        <div class="slide">
+            <div class="question-number">Question 8 of 60</div>
+            <div class="question-text">Which symbol is used in Windows file paths?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Forward slash (/)</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Backslash (\)</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Dash (-)</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Colon (:)</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                Windows uses backslashes (\) in file paths, like C:\Users\Documents\file.txt. Mac and Linux use forward slashes (/) instead.
+            </div>
+        </div>
+
+        <!-- Question 9: Windows dir command -->
+        <div class="slide">
+            <div class="question-number">Question 9 of 60</div>
+            <div class="question-text">What does the Windows command <code>dir</code> do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Deletes files</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Lists files and folders in the current directory</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Creates a new folder</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Clears the screen</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                The <code>dir</code> command lists all files and folders in your current directory. It's like opening a folder in File Explorer but in the command line.
+            </div>
+        </div>
+
+        <!-- Question 10: cd command -->
+        <div class="slide">
+            <div class="question-number">Question 10 of 60</div>
+            <div class="question-text">What does the <code>cd</code> command do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">A) Change directory (move to a different folder)</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) Copy files</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Create directory</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Clear display</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: A</strong>
+                <code>cd</code> stands for "change directory" and lets you navigate to different folders in the command line. For example: <code>cd Documents</code> moves you into the Documents folder.
+            </div>
+        </div>
+
+        <!-- Question 11: mkdir command -->
+        <div class="slide">
+            <div class="question-number">Question 11 of 60</div>
+            <div class="question-text">What does the <code>mkdir</code> command do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Moves files</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Creates a new folder/directory</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Deletes a folder</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Lists directories</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                <code>mkdir</code> stands for "make directory" and creates a new folder. For example: <code>mkdir MyFolder</code> creates a folder called "MyFolder".
+            </div>
+        </div>
+
+        <!-- Question 12: GitHub -->
+        <div class="slide">
+            <div class="question-number">Question 12 of 60</div>
+            <div class="question-text">What is GitHub primarily used for?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Editing photos online</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Hosting and sharing code repositories</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Creating spreadsheets</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Playing video games</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                GitHub is a platform for hosting Git repositories online, making it easy to share code, collaborate with others, and track project history. It's where we host the jeremy-pants repository!
+            </div>
+        </div>
+
+        <!-- Question 13: HTML Meaning -->
+        <div class="slide">
+            <div class="question-number">Question 13 of 60</div>
+            <div class="question-text">What does HTML stand for?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) High Text Markup Language</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) HyperText Markup Language</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Home Tool Markup Language</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Hyper Transfer Mode Language</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                HTML stands for HyperText Markup Language. It's the standard language used to create the structure and content of web pages.
+            </div>
+        </div>
+
+        <!-- Question 14: HTML Tag Purpose -->
+        <div class="slide">
+            <div class="question-number">Question 14 of 60</div>
+            <div class="question-text">What do HTML tags do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Make websites load faster</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Tell the browser how to display content</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Store data in databases</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Protect websites from hackers</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                HTML tags are code instructions that tell the web browser how to display different types of content - headings, paragraphs, images, links, etc.
+            </div>
+        </div>
+
+        <!-- Question 15: Git Definition -->
+        <div class="slide">
+            <div class="question-number">Question 15 of 60</div>
+            <div class="question-text">What is Git?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) A social media platform</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) A version control system that tracks code changes</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) A programming language</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) A type of computer</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                Git is a version control system that helps developers track changes to their code, collaborate with others, and maintain a history of their project.
+            </div>
+        </div>
+
+        <!-- Question 16: Open Source -->
+        <div class="slide">
+            <div class="question-number">Question 16 of 60</div>
+            <div class="question-text">What does "open source" mean?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">A) Software that anyone can inspect, modify, and share</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) Software that costs money</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Software that only works on Windows</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Software without any bugs</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: A</strong>
+                Open source software has its source code publicly available, allowing anyone to view, modify, and distribute it. This encourages collaboration and improvement.
+            </div>
+        </div>
+
+        <!-- Question 17: Spreadsheet Cell -->
+        <div class="slide">
+            <div class="question-number">Question 17 of 60</div>
+            <div class="question-text">What is a cell in a spreadsheet?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) A phone number</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) A single box in a spreadsheet (named by column + row like A1)</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) A type of formula</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) A file format</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                A cell is the basic unit of a spreadsheet - the intersection of a row and column. Each cell has a unique address like A1, B2, etc.
+            </div>
+        </div>
+
+        <!-- Question 18: Formula Start Symbol -->
+        <div class="slide">
+            <div class="question-number">Question 18 of 60</div>
+            <div class="question-text">What symbol must all spreadsheet formulas start with?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) # (hash)</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) @ (at)</div>
+                <div class="option" onclick="selectAnswer(this, true)">C) = (equals)</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) + (plus)</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: C</strong>
+                All spreadsheet formulas must start with an equals sign (=). This tells the spreadsheet you're entering a formula, not just typing text or numbers.
+            </div>
+        </div>
+
+        <!-- Question 19: SUM Function -->
+        <div class="slide">
+            <div class="question-number">Question 19 of 60</div>
+            <div class="question-text">What does the SUM function do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Finds the average of numbers</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Adds up a range of numbers</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Counts how many cells contain numbers</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Finds the largest number</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                The SUM function adds up all the numbers in a range of cells. For example: =SUM(A1:A10) adds up all values from cell A1 to A10.
+            </div>
+        </div>
+
+        <!-- Question 20: AVERAGE Function -->
+        <div class="slide">
+            <div class="question-number">Question 20 of 60</div>
+            <div class="question-text">What does the AVERAGE function calculate?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">A) The mean (average) of a group of numbers</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) The sum of numbers</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) The largest number</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) The smallest number</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: A</strong>
+                AVERAGE calculates the mean by adding all numbers together and dividing by how many numbers there are. Example: =AVERAGE(B1:B20)
+            </div>
+        </div>
+
+        <!-- Question 21: MAX Function -->
+        <div class="slide">
+            <div class="question-number">Question 21 of 60</div>
+            <div class="question-text">What does the MAX function find?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) The smallest number in a range</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) The largest number in a range</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) The average of numbers</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) How many numbers are in a range</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                MAX finds the highest/largest value in a range of cells. For example: =MAX(A1:A10) returns the biggest number from A1 to A10.
+            </div>
+        </div>
+
+        <!-- Question 22: Absolute Reference -->
+        <div class="slide">
+            <div class="question-number">Question 22 of 60</div>
+            <div class="question-text">What does an absolute reference like $A$1 do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Makes the cell value negative</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Keeps the cell reference fixed when copying the formula</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Deletes the cell</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Converts the value to dollars</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                Dollar signs ($) create an absolute reference that stays locked when you copy the formula. $A$1 will always refer to cell A1, no matter where you paste the formula.
+            </div>
+        </div>
+
+        <!-- Question 23: Relative Reference -->
+        <div class="slide">
+            <div class="question-number">Question 23 of 60</div>
+            <div class="question-text">What happens to a relative reference like A1 when you copy a formula down?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) It stays exactly the same</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) It automatically adjusts to A2, A3, A4, etc.</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) It causes an error</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) It becomes absolute</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                Relative references (without $) adjust automatically when copied. If you copy a formula with A1 down one row, it becomes A2, then A3, and so on.
+            </div>
+        </div>
+
+        <!-- Question 24: IF Function Purpose -->
+        <div class="slide">
+            <div class="question-number">Question 24 of 60</div>
+            <div class="question-text">What does the IF function do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Adds numbers together</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Makes decisions based on whether a condition is true or false</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Finds the maximum value</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Counts cells</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                The IF function tests a condition and returns one value if true, another if false. Syntax: =IF(condition, value_if_true, value_if_false)
+            </div>
+        </div>
+
+        <!-- Question 25: VLOOKUP Purpose -->
+        <div class="slide">
+            <div class="question-number">Question 25 of 60</div>
+            <div class="question-text">What does VLOOKUP do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Counts how many times a value appears</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Looks up a value in a table and returns data from another column</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Adds up values vertically</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Deletes duplicate values</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                VLOOKUP searches for a value in the first column of a table and returns a value from another column in the same row. It's like looking up information in a phone book!
+            </div>
+        </div>
+
+        <!-- Question 26: Python print() -->
+        <div class="slide">
+            <div class="question-number">Question 26 of 60</div>
+            <div class="question-text">What does the Python function <code>print()</code> do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">A) Displays text or values on the screen</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) Sends a document to the printer</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Creates a new variable</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Saves a file</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: A</strong>
+                The print() function displays output to the screen. For example: print("Hello World") shows "Hello World" when the program runs.
+            </div>
+        </div>
+
+        <!-- Question 27: Python Variable -->
+        <div class="slide">
+            <div class="question-number">Question 27 of 60</div>
+            <div class="question-text">What is a variable in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) A type of loop</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) A container that stores information</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) A function</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) An error message</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                A variable is like a labeled box that stores data. You create variables like: name = "Alice" or age = 16. The variable holds the value so you can use it later.
+            </div>
+        </div>
+
+        <!-- Question 28: String Data Type -->
+        <div class="slide">
+            <div class="question-number">Question 28 of 60</div>
+            <div class="question-text">In Python, what is a string?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) A number with decimals</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Text enclosed in quotes</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) A whole number</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) A True or False value</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                A string is text data enclosed in quotes. Examples: "Hello", "Python", "123" (in quotes makes it text, not a number).
+            </div>
+        </div>
+
+        <!-- Question 29: Integer Data Type -->
+        <div class="slide">
+            <div class="question-number">Question 29 of 60</div>
+            <div class="question-text">What is an integer in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Text in quotes</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) A number with decimals</div>
+                <div class="option" onclick="selectAnswer(this, true)">C) A whole number without decimals</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) A True/False value</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: C</strong>
+                An integer (int) is a whole number without any decimal point. Examples: 42, -10, 0, 1000.
+            </div>
+        </div>
+
+        <!-- Question 30: Float Data Type -->
+        <div class="slide">
+            <div class="question-number">Question 30 of 60</div>
+            <div class="question-text">What is a float in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) A whole number</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) A number with a decimal point</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Text data</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) A list of numbers</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                A float is a number with a decimal point. Examples: 3.14, -0.5, 2.0. Even if there's a .0, it's still a float, not an integer.
+            </div>
+        </div>
+
+        <!-- Question 31: Python input() -->
+        <div class="slide">
+            <div class="question-number">Question 31 of 60</div>
+            <div class="question-text">What does the Python function <code>input()</code> do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Displays text on screen</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Gets information from the user</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Creates a variable</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Performs calculations</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                The input() function asks the user to type something and stores what they type. Example: name = input("What's your name? ")
+            </div>
+        </div>
+
+        <!-- Question 32: Python Comments -->
+        <div class="slide">
+            <div class="question-number">Question 32 of 60</div>
+            <div class="question-text">How do you write a single-line comment in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) // comment</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) # comment</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) /* comment */</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) -- comment</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                In Python, use the # symbol to write comments. Everything after # on that line is ignored by Python. Comments help explain your code!
+            </div>
+        </div>
+
+        <!-- Question 33: if Statement -->
+        <div class="slide">
+            <div class="question-number">Question 33 of 60</div>
+            <div class="question-text">What does an <code>if</code> statement do in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Repeats code multiple times</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Runs code only when a condition is True</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Gets input from the user</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Displays output</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                An if statement tests a condition and only runs the indented code below it if the condition is True. It lets your program make decisions!
+            </div>
+        </div>
+
+        <!-- Question 34: Comparison Operators -->
+        <div class="slide">
+            <div class="question-number">Question 34 of 60</div>
+            <div class="question-text">Which operator checks if two values are equal in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) =</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) ==</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) !=</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) >=</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                Use == (double equals) to check if two values are equal. Single = is for assignment (creating variables), double == is for comparison.
+            </div>
+        </div>
+
+        <!-- Question 35: elif Purpose -->
+        <div class="slide">
+            <div class="question-number">Question 35 of 60</div>
+            <div class="question-text">What does <code>elif</code> mean in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) End the if statement</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) "Else if" - checks another condition if the first was False</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Repeats the if statement</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Exits the program</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                elif means "else if" and lets you check additional conditions when the first if is False. You can have multiple elif statements in a row.
+            </div>
+        </div>
+
+        <!-- Question 36: and Operator -->
+        <div class="slide">
+            <div class="question-number">Question 36 of 60</div>
+            <div class="question-text">When is an <code>and</code> condition True in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) When at least one condition is True</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Only when BOTH conditions are True</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) When neither condition is True</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) When exactly one condition is True</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                The "and" operator requires BOTH conditions to be True. Example: if age >= 16 and has_license == True: (both must be true to proceed)
+            </div>
+        </div>
+
+        <!-- Question 37: or Operator -->
+        <div class="slide">
+            <div class="question-number">Question 37 of 60</div>
+            <div class="question-text">When is an <code>or</code> condition True in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">A) When at least ONE condition is True</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) Only when BOTH conditions are True</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) When neither condition is True</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Never</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: A</strong>
+                The "or" operator is True when at least one condition is True. Example: if day == "Saturday" or day == "Sunday": (True on either weekend day)
+            </div>
+        </div>
+
+        <!-- Question 38: for Loop Purpose -->
+        <div class="slide">
+            <div class="question-number">Question 38 of 60</div>
+            <div class="question-text">What does a <code>for</code> loop do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">A) Repeats code a specific number of times</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) Makes decisions based on conditions</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Gets input from the user</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Creates a variable</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: A</strong>
+                A for loop repeats code a specific number of times. Example: for i in range(5): runs the code 5 times.
+            </div>
+        </div>
+
+        <!-- Question 39: range() Function -->
+        <div class="slide">
+            <div class="question-number">Question 39 of 60</div>
+            <div class="question-text">What does <code>range(5)</code> generate in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Numbers 1 through 5</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Numbers 0, 1, 2, 3, 4</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Numbers 0 through 5</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Just the number 5</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                range(5) generates numbers from 0 up to (but not including) 5. So it gives you: 0, 1, 2, 3, 4. Python starts counting at 0!
+            </div>
+        </div>
+
+        <!-- Question 40: while Loop -->
+        <div class="slide">
+            <div class="question-number">Question 40 of 60</div>
+            <div class="question-text">What does a <code>while</code> loop do?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Runs code exactly once</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Repeats code as long as a condition is True</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Runs code a fixed number of times</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Never runs the code</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                A while loop keeps repeating as long as its condition is True. Example: while count < 10: will keep running until count reaches 10.
+            </div>
+        </div>
+
+        <!-- Question 41: Python Lists -->
+        <div class="slide">
+            <div class="question-number">Question 41 of 60</div>
+            <div class="question-text">What is a list in Python?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) A single number</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) A container that holds multiple values</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) A type of loop</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) A comparison operator</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                A list is like a container that can hold multiple items. Example: friends = ["Alice", "Bob", "Charlie"] stores three names in one variable.
+            </div>
+        </div>
+
+        <!-- Question 42: List Index -->
+        <div class="slide">
+            <div class="question-number">Question 42 of 60</div>
+            <div class="question-text">In Python, what is the index of the FIRST item in a list?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">A) 0</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) 1</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) -1</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) 2</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: A</strong>
+                Python lists start counting at 0, not 1! The first item is at index 0, the second at index 1, etc. Example: fruits[0] gets the first fruit.
+            </div>
+        </div>
+
+        <!-- Question 43: Binary Subtraction -->
+        <div class="slide">
+            <div class="question-number">Question 43 of 60</div>
+            <div class="question-text">What is 1001 (9 in decimal) minus 0101 (5 in decimal) in binary?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">A) 0100</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) 0110</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) 1000</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) 1110</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: A</strong>
+                9 - 5 = 4, which is 0100 in binary. Day 2 taught binary subtraction including the borrowing rule when subtracting larger digits from smaller ones.
+            </div>
+        </div>
+
+        <!-- Question 44: Operating System Most Common -->
+        <div class="slide">
+            <div class="question-number">Question 44 of 60</div>
+            <div class="question-text">Which operating system is most commonly used for business and gaming?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Linux</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) macOS</div>
+                <div class="option" onclick="selectAnswer(this, true)">C) Windows</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Android</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: C</strong>
+                Windows is the most common operating system for business and gaming environments, with the largest market share on desktop computers.
+            </div>
+        </div>
+
+        <!-- Question 45: HTML File Extension -->
+        <div class="slide">
+            <div class="question-number">Question 45 of 60</div>
+            <div class="question-text">Which file extension is used for web pages?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) .txt</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) .exe</div>
+                <div class="option" onclick="selectAnswer(this, true)">C) .html</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) .jpg</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: C</strong>
+                .html files are web pages. Day 2 taught various file extensions including .txt (text), .exe (programs), .jpg (images), and .html (web pages).
+            </div>
+        </div>
+
+        <!-- Question 46: RAM Characteristics -->
+        <div class="slide">
+            <div class="question-number">Question 46 of 60</div>
+            <div class="question-text">Which statement about RAM is TRUE?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) It permanently stores files even after power off</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) It's slower than a hard drive</div>
+                <div class="option" onclick="selectAnswer(this, true)">C) It's temporary memory that's lost when power turns off</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) It typically has 2 TB of capacity</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: C</strong>
+                RAM is fast but temporary memory that is erased when the computer powers off. Storage (hard drive/SSD) is permanent but slower.
+            </div>
+        </div>
+
+        <!-- Question 47: Fork vs Clone -->
+        <div class="slide">
+            <div class="question-number">Question 47 of 60</div>
+            <div class="question-text">What is the difference between forking and cloning a repository?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) They are the same thing</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Forking creates a copy on GitHub, cloning downloads it to your computer</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Forking is only for private repos, cloning is for public</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Cloning requires payment, forking is free</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                Forking creates your own copy of a repository on GitHub (in the cloud), while cloning downloads a repository from GitHub to your local computer.
+            </div>
+        </div>
+
+        <!-- Question 48: Pull Request -->
+        <div class="slide">
+            <div class="question-number">Question 48 of 60</div>
+            <div class="question-text">What is a Pull Request in GitHub?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Downloading code from GitHub to your computer</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Asking to merge your changes into someone else's project</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Deleting a repository</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Creating a new branch</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                A Pull Request (PR) is when you ask the owner of a project to merge your changes into their code. It's a key part of collaborative coding on GitHub!
+            </div>
+        </div>
+
+        <!-- Question 49: String Concatenation Code -->
+        <div class="slide">
+            <div class="question-number">Question 49 of 60</div>
+            <div class="question-text">What will this Python code output?<br><code>first = "Spider"</code><br><code>last = "Man"</code><br><code>hero = first + last</code><br><code>print(hero)</code></div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Spider Man (with a space)</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) SpiderMan (no space)</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) firstlast</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Error</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                String concatenation with + joins strings directly together without adding spaces. To get a space, you'd need: first + " " + last
+            </div>
+        </div>
+
+        <!-- Question 50: For vs While Loop -->
+        <div class="slide">
+            <div class="question-number">Question 50 of 60</div>
+            <div class="question-text">What is the main difference between a for loop and a while loop?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) For loops are faster than while loops</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) While loops can only count numbers</div>
+                <div class="option" onclick="selectAnswer(this, true)">C) For loops repeat a specific number of times, while loops repeat as long as a condition is True</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) While loops cannot use variables</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: C</strong>
+                For loops are for definite iteration (you know how many times), while loops are for indefinite iteration (repeating until a condition becomes False).
+            </div>
+        </div>
+
+        <!-- Question 51: List append() Method -->
+        <div class="slide">
+            <div class="question-number">Question 51 of 60</div>
+            <div class="question-text">What does the <code>append()</code> method do to a Python list?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Removes the last item from the list</div>
+                <div class="option" onclick="selectAnswer(this, true)">B) Adds a new item to the end of the list</div>
+                <div class="option" onclick="selectAnswer(this, false)">C) Sorts the list alphabetically</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Counts how many items are in the list</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: B</strong>
+                The append() method adds a new item to the end of a list. Example: games.append("Roblox") adds "Roblox" to the end of the games list.
+            </div>
+        </div>
+
+        <!-- Question 52: COUNT Function -->
+        <div class="slide">
+            <div class="question-number">Question 52 of 60</div>
+            <div class="question-text">What does the COUNT function do in spreadsheets?</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">A) Adds up all the numbers</div>
+                <div class="option" onclick="selectAnswer(this, false)">B) Finds the average</div>
+                <div class="option" onclick="selectAnswer(this, true)">C) Counts how many cells contain numbers</div>
+                <div class="option" onclick="selectAnswer(this, false)">D) Finds the largest number</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: C</strong>
+                COUNT counts how many cells in a range contain numbers. It's useful for finding how many data points you have. Example: =COUNT(A1:A10)
+            </div>
+        </div>
+
+        <!-- Question 53: Boolean True/False -->
+        <div class="slide">
+            <div class="question-number">Question 53 of 60 (True/False)</div>
+            <div class="question-text">True or False: A Boolean value can only be True or False.</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">True</div>
+                <div class="option" onclick="selectAnswer(this, false)">False</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: True</strong>
+                Boolean is a data type that can only have two values: True or False. It's named after mathematician George Boole.
+            </div>
+        </div>
+
+        <!-- Question 54: Binary True/False -->
+        <div class="slide">
+            <div class="question-number">Question 54 of 60 (True/False)</div>
+            <div class="question-text">True or False: Binary only uses the digits 0 and 1.</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">True</div>
+                <div class="option" onclick="selectAnswer(this, false)">False</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: True</strong>
+                Binary (base-2) is a number system that uses only two digits: 0 and 1. All computer data is ultimately stored in binary.
+            </div>
+        </div>
+
+        <!-- Question 55: GB > MB True/False -->
+        <div class="slide">
+            <div class="question-number">Question 55 of 60 (True/False)</div>
+            <div class="question-text">True or False: A Gigabyte (GB) is larger than a Megabyte (MB).</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">True</div>
+                <div class="option" onclick="selectAnswer(this, false)">False</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: True</strong>
+                A Gigabyte (GB) is about 1,000 Megabytes (MB). The order is: Byte < KB < MB < GB < TB.
+            </div>
+        </div>
+
+        <!-- Question 56: RAM Permanent True/False -->
+        <div class="slide">
+            <div class="question-number">Question 56 of 60 (True/False)</div>
+            <div class="question-text">True or False: RAM keeps all your data even when you turn off the computer.</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">True</div>
+                <div class="option" onclick="selectAnswer(this, true)">False</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: False</strong>
+                RAM is temporary memory that is erased when the computer turns off. Only storage (hard drive/SSD) keeps data permanently.
+            </div>
+        </div>
+
+        <!-- Question 57: Formula = True/False -->
+        <div class="slide">
+            <div class="question-number">Question 57 of 60 (True/False)</div>
+            <div class="question-text">True or False: In spreadsheets, all formulas must start with an equals sign (=).</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">True</div>
+                <div class="option" onclick="selectAnswer(this, false)">False</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: True</strong>
+                Every formula in Excel or Google Sheets must begin with = to tell the spreadsheet you're entering a calculation, not plain text.
+            </div>
+        </div>
+
+        <!-- Question 58: Indentation True/False -->
+        <div class="slide">
+            <div class="question-number">Question 58 of 60 (True/False)</div>
+            <div class="question-text">True or False: Indentation (spacing) doesn't matter in Python code.</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, false)">True</div>
+                <div class="option" onclick="selectAnswer(this, true)">False</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: False</strong>
+                Indentation is CRITICAL in Python! It shows which code belongs inside if statements, loops, and functions. Incorrect indentation causes errors.
+            </div>
+        </div>
+
+        <!-- Question 59: String Concatenation True/False -->
+        <div class="slide">
+            <div class="question-number">Question 59 of 60 (True/False)</div>
+            <div class="question-text">True or False: In Python, you can use + to join strings together.</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">True</div>
+                <div class="option" onclick="selectAnswer(this, false)">False</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: True</strong>
+                You can concatenate (join) strings using +. Example: "Hello" + " " + "World" becomes "Hello World".
+            </div>
+        </div>
+
+        <!-- Question 60: List Append True/False -->
+        <div class="slide">
+            <div class="question-number">Question 60 of 60 (True/False)</div>
+            <div class="question-text">True or False: The <code>append()</code> method adds an item to the end of a list.</div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, true)">True</div>
+                <div class="option" onclick="selectAnswer(this, false)">False</div>
+            </div>
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>Reveal Answer</button>
+            <div class="explanation">
+                <strong>Correct Answer: True</strong>
+                The append() method adds a new item to the end of a list. Example: friends.append("Dave") adds "Dave" to the end of the friends list.
+            </div>
+        </div>
+
+        <!-- Final Slide -->
+        <div class="slide">
+            <h1>Great Job! 🎉</h1>
+            <h2>You've Completed the Practice Exam</h2>
+            <div class="intro-text">
+                <p style="margin-bottom: 30px; font-size: 1.3em;">You've reviewed all 60 practice questions covering Days 1-11!</p>
+
+                <div class="tip-box" style="background: #e8f5e9; border-color: #4caf50;">
+                    <strong style="color: #2e7d32;">Study Tips:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px; line-height: 2;">
+                        <li>Review questions you got wrong</li>
+                        <li>Go back through your notes and slide decks</li>
+                        <li>Practice the hands-on exercises again</li>
+                        <li>Make sure you understand the "why," not just the "what"</li>
+                        <li>Ask Brother Cope if anything is still unclear</li>
+                    </ul>
+                </div>
+
+                <p style="margin-top: 30px; font-size: 1.2em; color: #667eea; font-weight: bold;">
+                    You've got this! Good luck on your exam! 💪
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+        <span class="slide-number">Slide <span id="slideNum">1</span> of <span id="totalSlides">62</span></span>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+
+            if (n >= totalSlides) currentSlide = totalSlides - 1;
+            if (n < 0) currentSlide = 0;
+
+            slides[currentSlide].classList.add('active');
+            document.getElementById('slideNum').textContent = currentSlide + 1;
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            showSlide(currentSlide);
+        }
+
+        function selectAnswer(element, isCorrect) {
+            const options = element.parentElement.querySelectorAll('.option');
+            const revealBtn = element.parentElement.nextElementSibling;
+
+            // Disable all options after selection
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                opt.style.cursor = 'not-allowed';
+                opt.onclick = null; // Remove onclick handler
+            });
+
+            // Mark selected answer
+            if (isCorrect) {
+                element.classList.add('correct');
+                element.innerHTML += ' ✓';
+            } else {
+                element.classList.add('incorrect');
+                element.innerHTML += ' ✗';
+
+                // Find and show the correct answer
+                options.forEach(opt => {
+                    // Check if this option has onclick with true parameter
+                    const onclickAttr = opt.getAttribute('onclick');
+                    if (onclickAttr && onclickAttr.includes('true') && opt !== element) {
+                        opt.classList.add('correct');
+                        opt.innerHTML += ' ✓ (Correct)';
+                    }
+                });
+            }
+
+            // Enable reveal button
+            revealBtn.disabled = false;
+        }
+
+        function revealAnswer(button) {
+            const explanation = button.nextElementSibling;
+            explanation.classList.add('show');
+            button.style.display = 'none';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
+            }
+        });
+
+        // Initialize
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
