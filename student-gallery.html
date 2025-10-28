@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Gallery - Brother Cope's Class</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: #764ba2;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .project-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .project-title {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .project-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .project-link {
+            display: block;
+            text-align: center;
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background 0.3s;
+            margin-top: 15px;
+        }
+
+        .project-link:hover {
+            background: #764ba2;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+            font-size: 0.9em;
+            color: #999;
+        }
+
+        footer {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 40px;
+        }
+
+        footer p {
+            color: #666;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Student Gallery</h1>
+            <div class="subtitle">Amazing Projects from Brother Cope's Class</div>
+            <a href="index.html" class="back-link">← Back to Class Home</a>
+        </header>
+
+        <div class="gallery-grid">
+            <!-- Flappy Toilet Game -->
+            <div class="project-card">
+                <div class="project-icon">🚽</div>
+                <h2 class="project-title">Flappy Toilet</h2>
+                <p class="project-description">
+                    A Flappy Bird clone featuring a sentient toilet evading knockoff ninja turtles in the sewers! 
+                    Turtles attack with "BOWACUNGA!" projectiles. Eat baker turtles to unlock croissant boomerang weapons.
+                </p>
+                <a href="flappy-toilet/" class="project-link">Play Game →</a>
+                <div class="project-meta">
+                    <span>🎮 Game</span>
+                    <span>HTML/CSS/JS</span>
+                </div>
+            </div>
+
+            <!-- Placeholder for future student projects -->
+            <div class="project-card" style="opacity: 0.5;">
+                <div class="project-icon">🚀</div>
+                <h2 class="project-title">Your Project Here</h2>
+                <p class="project-description">
+                    Submit your awesome projects to be featured in the gallery!
+                </p>
+                <div class="project-meta">
+                    <span>Coming Soon</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 Brother Cope's Exploring Computer Science Class</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                Remember: <strong>You're required to use AI in this class!</strong> 🤖
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Animate cards on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.project-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s, transform 0.5s';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
