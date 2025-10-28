@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Toilet 🚽 - Brother Cope's Class</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #764ba2;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            background: linear-gradient(to bottom, #87CEEB 0%, #4a7ba7 70%, #2d4a5c 100%);
+            border-radius: 10px;
+            border: 3px solid #333;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            color: #764ba2;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .controls {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .controls p {
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .game-over-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            display: none;
+            z-index: 1000;
+        }
+
+        .game-over-screen h2 {
+            color: #f44336;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .game-over-screen p {
+            color: #333;
+            font-size: 1.3em;
+            margin: 10px 0;
+        }
+
+        .restart-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .restart-button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .power-up-notification {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4caf50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: none;
+            z-index: 999;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                top: -100px;
+                opacity: 0;
+            }
+            to {
+                top: 20px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🚽 Flappy Toilet 🚽</h1>
+        <div class="subtitle">Escape the Sewer Warriors!</div>
+        
+        <canvas id="gameCanvas" width="750" height="500"></canvas>
+        
+        <div class="game-info">
+            <div class="info-item">
+                <div class="info-label">Score</div>
+                <div class="info-value" id="score">0</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Health</div>
+                <div class="info-value" id="health">100</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Croissants</div>
+                <div class="info-value" id="croissants">0</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <p><strong>🎮 Controls:</strong></p>
+            <p><strong>SPACEBAR</strong> - Flap to fly</p>
+            <p><strong>CLICK</strong> - Throw croissant boomerang (after eating baker turtle)</p>
+        </div>
+
+        <div class="power-up-notification" id="powerUpNotification">
+            🥐 Croissant Boomerang Unlocked! 🥐
+        </div>
+
+        <div class="game-over-screen" id="gameOverScreen">
+            <h2>Game Over! 💀</h2>
+            <p id="finalScore">Final Score: 0</p>
+            <p id="gameOverMessage">The sewer warriors got you!</p>
+            <button class="restart-button" onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game state
+        let gameRunning = true;
+        let score = 0;
+        let health = 100;
+        let hasCroissant = false;
+        let croissantCount = 0;
+        let frameCount = 0;
+        let invincible = false;
+        let invincibleTimer = 0;
+
+        // Toilet (player)
+        const toilet = {
+            x: 100,
+            y: canvas.height / 2,
+            width: 50,
+            height: 50,
+            velocity: 0,
+            gravity: 0.5,
+            jump: -8,
+            rotation: 0
+        };
+
+        // Arrays for game objects
+        const pipes = [];
+        const turtles = [];
+        const projectiles = [];
+        const bakerTurtles = [];
+        const croissants = [];
+
+        // Spawn settings
+        let pipeSpawnTimer = 0;
+        let pipeSpawnInterval = 120; // frames
+        let turtleSpawnTimer = 0;
+        let turtleSpawnInterval = 250;
+        let bakerSpawnTimer = 0;
+        let bakerSpawnInterval = 600;
+
+        // Input handling
+        let spacePressed = false;
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && gameRunning) {
+                e.preventDefault();
+                if (!spacePressed) {
+                    toilet.velocity = toilet.jump;
+                    spacePressed = true;
+                }
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                spacePressed = false;
+            }
+        });
+
+        canvas.addEventListener('click', (e) => {
+            if (gameRunning && hasCroissant && croissantCount > 0) {
+                throwCroissant(e);
+            }
+        });
+
+        function throwCroissant(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            
+            const angle = Math.atan2(clickY - toilet.y, clickX - toilet.x);
+            
+            croissants.push({
+                x: toilet.x + toilet.width,
+                y: toilet.y + toilet.height / 2,
+                vx: Math.cos(angle) * 8,
+                vy: Math.sin(angle) * 8,
+                angle: angle,
+                rotation: 0,
+                returning: false,
+                maxDistance: 300,
+                startX: toilet.x
+            });
+            
+            croissantCount--;
+            updateUI();
+        }
+
+        function drawToilet() {
+            ctx.save();
+            ctx.translate(toilet.x + toilet.width / 2, toilet.y + toilet.height / 2);
+            ctx.rotate(toilet.rotation);
+            
+            // Flash when invincible
+            if (invincible && Math.floor(frameCount / 5) % 2 === 0) {
+                ctx.globalAlpha = 0.5;
+            }
+            
+            // Toilet bowl
+            ctx.fillStyle = 'white';
+            ctx.fillRect(-toilet.width / 2, -toilet.height / 2, toilet.width, toilet.height);
+            
+            // Toilet lid
+            ctx.fillStyle = '#e0e0e0';
+            ctx.fillRect(-toilet.width / 2, -toilet.height / 2 - 5, toilet.width, 10);
+            
+            // Toilet details
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(-toilet.width / 2, -toilet.height / 2, toilet.width, toilet.height);
+            
+            // Eyes
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(-10, -10, 4, 0, Math.PI * 2);
+            ctx.arc(10, -10, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+
+        function drawPipe(pipe) {
+            // Sewer pipe
+            ctx.fillStyle = '#2d5016';
+            ctx.fillRect(pipe.x, 0, pipe.width, pipe.topHeight);
+            ctx.fillRect(pipe.x, pipe.topHeight + pipe.gap, pipe.width, canvas.height);
+            
+            // Pipe highlights
+            ctx.strokeStyle = '#3d6026';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(pipe.x, 0, pipe.width, pipe.topHeight);
+            ctx.strokeRect(pipe.x, pipe.topHeight + pipe.gap, pipe.width, canvas.height);
+        }
+
+        function drawTurtle(turtle) {
+            ctx.save();
+            ctx.translate(turtle.x, turtle.y);
+            
+            // Shell
+            ctx.fillStyle = turtle.color;
+            ctx.beginPath();
+            ctx.arc(0, 0, 20, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Shell pattern
+            ctx.strokeStyle = '#2d4a2d';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 6; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(
+                    Math.cos(i * Math.PI / 3) * 20,
+                    Math.sin(i * Math.PI / 3) * 20
+                );
+                ctx.stroke();
+            }
+            
+            // Head
+            ctx.fillStyle = '#7cb342';
+            ctx.beginPath();
+            ctx.arc(-25, 0, 10, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Eyes
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(-28, -3, 3, 0, Math.PI * 2);
+            ctx.arc(-22, -3, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(-28, -3, 1.5, 0, Math.PI * 2);
+            ctx.arc(-22, -3, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Bandana
+            ctx.fillStyle = turtle.bandanaColor;
+            ctx.fillRect(-30, -8, 20, 4);
+            
+            ctx.restore();
+        }
+
+        function drawBakerTurtle(baker) {
+            ctx.save();
+            ctx.translate(baker.x, baker.y);
+            
+            // Shell
+            ctx.fillStyle = '#d4a574';
+            ctx.beginPath();
+            ctx.arc(0, 0, 20, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Head
+            ctx.fillStyle = '#c49563';
+            ctx.beginPath();
+            ctx.arc(-25, 0, 10, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Chef hat
+            ctx.fillStyle = 'white';
+            ctx.fillRect(-30, -20, 20, 10);
+            ctx.fillRect(-28, -15, 16, 8);
+            
+            // Eyes
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(-28, -3, 2, 0, Math.PI * 2);
+            ctx.arc(-22, -3, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+
+        function drawProjectile(proj) {
+            ctx.save();
+            ctx.translate(proj.x, proj.y);
+            
+            // Draw "BOWACUNGA!" text as projectile
+            ctx.font = 'bold 16px Arial';
+            ctx.fillStyle = '#ff6b6b';
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.strokeText('BOWACUNGA!', 0, 0);
+            ctx.fillText('BOWACUNGA!', 0, 0);
+            
+            ctx.restore();
+        }
+
+        function drawCroissant(croissant) {
+            ctx.save();
+            ctx.translate(croissant.x, croissant.y);
+            ctx.rotate(croissant.rotation);
+            
+            // Croissant shape
+            ctx.fillStyle = '#d4a574';
+            ctx.beginPath();
+            ctx.arc(-10, 0, 8, 0, Math.PI * 2);
+            ctx.arc(0, -5, 10, 0, Math.PI * 2);
+            ctx.arc(0, 5, 10, 0, Math.PI * 2);
+            ctx.arc(10, 0, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Croissant details
+            ctx.strokeStyle = '#c49563';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(-10, 0, 8, 0, Math.PI);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        function spawnPipe() {
+            const minHeight = 50;
+            const maxHeight = canvas.height - 200;
+            const topHeight = Math.random() * (maxHeight - minHeight) + minHeight;
+            
+            pipes.push({
+                x: canvas.width,
+                width: 60,
+                topHeight: topHeight,
+                gap: 150,
+                passed: false,
+                hit: false
+            });
+        }
+
+        function spawnTurtle() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffa500', '#9b59b6'];
+            const bandanaColors = ['red', 'blue', 'orange', 'purple'];
+            const colorIndex = Math.floor(Math.random() * colors.length);
+            
+            turtles.push({
+                x: canvas.width,
+                y: Math.random() * (canvas.height - 100) + 50,
+                speed: 1 + Math.random(),
+                color: colors[colorIndex],
+                bandanaColor: bandanaColors[colorIndex],
+                shootTimer: Math.random() * 100 + 50,
+                health: 2
+            });
+        }
+
+        function spawnBakerTurtle() {
+            bakerTurtles.push({
+                x: canvas.width,
+                y: Math.random() * (canvas.height - 100) + 50,
+                speed: 1.5
+            });
+        }
+
+        function updateToilet() {
+            toilet.velocity += toilet.gravity;
+            toilet.y += toilet.velocity;
+            
+            // Rotation based on velocity
+            toilet.rotation = Math.min(Math.max(toilet.velocity * 0.05, -0.5), 0.5);
+            
+            // Update invincibility
+            if (invincible) {
+                invincibleTimer--;
+                if (invincibleTimer <= 0) {
+                    invincible = false;
+                }
+            }
+            
+            // Boundaries
+            if (toilet.y + toilet.height > canvas.height) {
+                toilet.y = canvas.height - toilet.height;
+                toilet.velocity = 0;
+                if (!invincible) {
+                    health -= 10;
+                    invincible = true;
+                    invincibleTimer = 30;
+                    updateUI();
+                }
+            }
+            if (toilet.y < 0) {
+                toilet.y = 0;
+                toilet.velocity = 0;
+            }
+        }
+
+        function updatePipes() {
+            for (let i = pipes.length - 1; i >= 0; i--) {
+                pipes[i].x -= 3;
+                
+                // Check collision with toilet
+                if (!invincible && !pipes[i].hit && toilet.x + toilet.width > pipes[i].x && 
+                    toilet.x < pipes[i].x + pipes[i].width) {
+                    if (toilet.y < pipes[i].topHeight || 
+                        toilet.y + toilet.height > pipes[i].topHeight + pipes[i].gap) {
+                        health -= 20;
+                        pipes[i].hit = true;
+                        invincible = true;
+                        invincibleTimer = 30;
+                        updateUI();
+                    }
+                }
+                
+                // Score when passing pipe
+                if (!pipes[i].passed && toilet.x > pipes[i].x + pipes[i].width) {
+                    pipes[i].passed = true;
+                    score += 10;
+                    updateUI();
+                }
+                
+                // Remove off-screen pipes
+                if (pipes[i].x + pipes[i].width < 0) {
+                    pipes.splice(i, 1);
+                }
+            }
+        }
+
+        function updateTurtles() {
+            for (let i = turtles.length - 1; i >= 0; i--) {
+                turtles[i].x -= turtles[i].speed;
+                turtles[i].shootTimer--;
+                
+                // Shoot projectile
+                if (turtles[i].shootTimer <= 0) {
+                    projectiles.push({
+                        x: turtles[i].x,
+                        y: turtles[i].y,
+                        speed: 4
+                    });
+                    turtles[i].shootTimer = 100 + Math.random() * 100;
+                }
+                
+                // Remove off-screen turtles
+                if (turtles[i].x < -50) {
+                    turtles.splice(i, 1);
+                }
+            }
+        }
+
+        function updateProjectiles() {
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                projectiles[i].x -= projectiles[i].speed;
+                
+                // Check collision with toilet
+                if (!invincible && projectiles[i].x < toilet.x + toilet.width &&
+                    projectiles[i].x + 100 > toilet.x &&
+                    projectiles[i].y > toilet.y &&
+                    projectiles[i].y < toilet.y + toilet.height) {
+                    health -= 15;
+                    invincible = true;
+                    invincibleTimer = 30;
+                    updateUI();
+                    projectiles.splice(i, 1);
+                    continue;
+                }
+                
+                // Remove off-screen projectiles
+                if (projectiles[i].x < -100) {
+                    projectiles.splice(i, 1);
+                }
+            }
+        }
+
+        function updateBakerTurtles() {
+            for (let i = bakerTurtles.length - 1; i >= 0; i--) {
+                bakerTurtles[i].x -= bakerTurtles[i].speed;
+                
+                // Check collision with toilet (eating the baker)
+                const dx = toilet.x - bakerTurtles[i].x;
+                const dy = toilet.y + toilet.height / 2 - bakerTurtles[i].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 40) {
+                    if (!hasCroissant) {
+                        hasCroissant = true;
+                        showPowerUpNotification();
+                    }
+                    croissantCount += 5;
+                    score += 50;
+                    updateUI();
+                    bakerTurtles.splice(i, 1);
+                    continue;
+                }
+                
+                // Remove off-screen baker turtles
+                if (bakerTurtles[i].x < -50) {
+                    bakerTurtles.splice(i, 1);
+                }
+            }
+        }
+
+        function updateCroissants() {
+            for (let i = croissants.length - 1; i >= 0; i--) {
+                const croissant = croissants[i];
+                
+                // Check if should return
+                const distanceTraveled = Math.abs(croissant.x - croissant.startX);
+                if (distanceTraveled > croissant.maxDistance && !croissant.returning) {
+                    croissant.returning = true;
+                    croissant.vx = -croissant.vx;
+                    croissant.vy = -croissant.vy;
+                }
+                
+                croissant.x += croissant.vx;
+                croissant.y += croissant.vy;
+                croissant.rotation += 0.2;
+                
+                // Check if returned to toilet
+                if (croissant.returning) {
+                    const dx = toilet.x - croissant.x;
+                    const dy = toilet.y - croissant.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 50) {
+                        croissants.splice(i, 1);
+                        continue;
+                    }
+                }
+                
+                // Check collision with turtles
+                for (let j = turtles.length - 1; j >= 0; j--) {
+                    const dx = turtles[j].x - croissant.x;
+                    const dy = turtles[j].y - croissant.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 30) {
+                        turtles[j].health--;
+                        if (turtles[j].health <= 0) {
+                            score += 25;
+                            updateUI();
+                            turtles.splice(j, 1);
+                        }
+                        break;
+                    }
+                }
+                
+                // Remove if too far off screen
+                if (croissant.x < -100 || croissant.x > canvas.width + 100 ||
+                    croissant.y < -100 || croissant.y > canvas.height + 100) {
+                    croissants.splice(i, 1);
+                }
+            }
+        }
+
+        function showPowerUpNotification() {
+            const notification = document.getElementById('powerUpNotification');
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('health').textContent = Math.max(0, health);
+            document.getElementById('croissants').textContent = croissantCount;
+            
+            if (health <= 0) {
+                gameOver();
+            }
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+            
+            let message = 'The sewer warriors got you!';
+            if (score > 200) {
+                message = '🎉 Amazing! You survived the sewer!';
+            } else if (score > 100) {
+                message = '💪 Great job fighting back!';
+            } else if (score > 50) {
+                message = '👍 Not bad for a toilet!';
+            }
+            
+            document.getElementById('gameOverMessage').textContent = message;
+            document.getElementById('gameOverScreen').style.display = 'block';
+        }
+
+        function restartGame() {
+            // Reset game state
+            gameRunning = true;
+            score = 0;
+            health = 100;
+            hasCroissant = false;
+            croissantCount = 0;
+            frameCount = 0;
+            invincible = false;
+            invincibleTimer = 0;
+            
+            // Reset toilet
+            toilet.y = canvas.height / 2;
+            toilet.velocity = 0;
+            toilet.rotation = 0;
+            
+            // Clear arrays
+            pipes.length = 0;
+            turtles.length = 0;
+            projectiles.length = 0;
+            bakerTurtles.length = 0;
+            croissants.length = 0;
+            
+            // Reset timers with delay
+            pipeSpawnTimer = -60; // Start spawning after 1 second
+            turtleSpawnTimer = -120; // Start spawning after 2 seconds
+            bakerSpawnTimer = 0;
+            
+            // Hide game over screen
+            document.getElementById('gameOverScreen').style.display = 'none';
+            
+            updateUI();
+            gameLoop();
+        }
+
+        function drawBackground() {
+            // Sewer background (already set in CSS for canvas)
+            
+            // Draw some sewer details
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            for (let i = 0; i < 5; i++) {
+                const y = (frameCount + i * 100) % canvas.height;
+                ctx.fillRect(0, y, canvas.width, 2);
+            }
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background
+            drawBackground();
+            
+            // Update game objects
+            updateToilet();
+            updatePipes();
+            updateTurtles();
+            updateProjectiles();
+            updateBakerTurtles();
+            updateCroissants();
+            
+            // Spawn objects
+            pipeSpawnTimer++;
+            if (pipeSpawnTimer > pipeSpawnInterval) {
+                spawnPipe();
+                pipeSpawnTimer = 0;
+            }
+            
+            turtleSpawnTimer++;
+            if (turtleSpawnTimer > turtleSpawnInterval) {
+                spawnTurtle();
+                turtleSpawnTimer = 0;
+            }
+            
+            bakerSpawnTimer++;
+            if (bakerSpawnTimer > bakerSpawnInterval) {
+                spawnBakerTurtle();
+                bakerSpawnTimer = 0;
+            }
+            
+            // Draw game objects
+            pipes.forEach(drawPipe);
+            turtles.forEach(drawTurtle);
+            projectiles.forEach(drawProjectile);
+            bakerTurtles.forEach(drawBakerTurtle);
+            croissants.forEach(drawCroissant);
+            drawToilet();
+            
+            frameCount++;
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Start the game
+        updateUI();
+        gameLoop();
+    </script>
+</body>
+</html>
