@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 17 - AI Prompting & Game Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            min-height: 600px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            color: #667eea;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            color: #333;
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .emoji {
+            font-size: 4em;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .vocab-term {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .vocab-def {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .fun-fact {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .fun-fact strong {
+            color: #f57c00;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .activity-box strong {
+            font-size: 1.4em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .steps {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .steps ol, .steps ul {
+            margin-left: 25px;
+        }
+
+        .steps li {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-size: 1.1em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .comparison-item {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            border-top: 5px solid #667eea;
+        }
+
+        .comparison-item h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .comparison-item ul {
+            margin-left: 20px;
+        }
+
+        .comparison-item li {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .good-prompt {
+            background: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .bad-prompt {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            align-items: center;
+        }
+
+        .slide-number {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .important {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tip-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .tip-box strong {
+            color: #1976d2;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 17</h1>
+            <div class="emoji">🤖💡</div>
+            <h2>Mastering AI Prompts</h2>
+            <div class="subtitle">The Dunning-Kruger Effect + Effective Prompting Strategies</div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">1</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 2: Today's Plan -->
+        <div class="slide">
+            <h2>Today's Plan 📋</h2>
+            <div class="emoji">🎯</div>
+            <div class="steps">
+                <ol>
+                    <li><strong>The Dunning-Kruger Effect</strong> - A life lesson about confidence and competence</li>
+                    <li><strong>Quick Vocab Review</strong> - Bandwidth and Cache from Day 16</li>
+                    <li><strong>New Tech Terms</strong> - Streaming and Algorithm</li>
+                    <li><strong>Mastering AI Prompts</strong> - How to get better results from Copilot</li>
+                    <li><strong>Game Development Time</strong> - Work on your game assignment</li>
+                </ol>
+            </div>
+            <div class="fun-fact">
+                <strong>Assignment Reminder:</strong> Your game is due November 15th - that's about 2 weeks away!
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">2</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 3: Dunning-Kruger Effect - Image -->
+        <div class="slide">
+            <h2>The Dunning-Kruger Effect 📊</h2>
+            <div class="image-container">
+                <img src="Dunning–Kruger_Effect.png" alt="Dunning-Kruger Effect Graph">
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">3</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 4: Dunning-Kruger Effect - Explanation -->
+        <div class="slide">
+            <h2>Understanding the Curve 🧠</h2>
+            <h3>The Journey of Learning:</h3>
+            <ul style="margin-left: 40px; margin-top: 20px;">
+                <li><strong>"Mount Stupid"</strong> - When you first learn something, you think you know it all! Confidence is high, but actual competence is low.</li>
+                <li><strong>"Valley of Despair"</strong> - You realize how much you DON'T know. Confidence drops as you understand the complexity.</li>
+                <li><strong>"Slope of Enlightenment"</strong> - You're learning and improving. Confidence grows with actual competence.</li>
+                <li><strong>"Plateau of Sustainability"</strong> - You've gained real expertise. Confidence is calibrated with your actual ability.</li>
+            </ul>
+            <div class="tip-box">
+                <strong>💡 Life Lesson:</strong> If you feel super confident about something you just learned, you're probably on Mount Stupid! Real experts know how much they don't know.
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">4</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 5: Dunning-Kruger in Real Life -->
+        <div class="slide">
+            <h2>Real-World Applications 🌍</h2>
+            <h3>Where You'll See This:</h3>
+            <ul style="margin-left: 40px; margin-top: 20px;">
+                <li><strong>Learning to Code</strong> - First "Hello World" feels amazing, then you realize programming is hard!</li>
+                <li><strong>Starting a Business</strong> - Many new entrepreneurs are overly optimistic at first</li>
+                <li><strong>Driving</strong> - New drivers often overestimate their skills</li>
+                <li><strong>Video Games</strong> - Beat the tutorial level? Wait until you face real challenges!</li>
+                <li><strong>Social Media Experts</strong> - Someone posts 5 TikToks and thinks they're a marketing guru</li>
+            </ul>
+            <div class="important">
+                <strong>Key Takeaway:</strong> Be humble. When you're learning something new, remember you're probably on Mount Stupid. Keep learning, embrace the Valley of Despair, and climb toward real competence!
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">5</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 6: Vocab Review - Bandwidth -->
+        <div class="slide">
+            <h2>Vocab Review 📚</h2>
+            <div class="vocab-term">Bandwidth</div>
+            <div class="vocab-def">
+                <p><strong>Quick Reminder:</strong> The maximum amount of data that can be transmitted over an internet connection in a given amount of time, measured in Mbps.</p>
+                <p style="margin-top: 15px;"><strong>Think of it like:</strong> A pipe carrying water - bigger pipe (more bandwidth) = more data at once!</p>
+                <p style="margin-top: 15px;"><strong>Examples:</strong></p>
+                <ul style="margin-left: 30px; margin-top: 10px;">
+                    <li>Netflix 4K needs ~25 Mbps</li>
+                    <li>Gaming needs 3-6 Mbps</li>
+                    <li>Everyone in your house shares the total bandwidth</li>
+                </ul>
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">6</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 7: Vocab Review - Cache -->
+        <div class="slide">
+            <h2>Vocab Review 📚</h2>
+            <div class="vocab-term">Cache</div>
+            <div class="vocab-def">
+                <p><strong>Quick Reminder:</strong> Temporary storage where your browser saves copies of files to make things load faster next time.</p>
+                <p style="margin-top: 15px;"><strong>Think of it like:</strong> Keeping snacks in your backpack instead of going to the kitchen every time!</p>
+                <p style="margin-top: 15px;"><strong>Why "clear your cache" fixes things:</strong></p>
+                <ul style="margin-left: 30px; margin-top: 10px;">
+                    <li>Old cached files might be outdated or corrupted</li>
+                    <li>Forces browser to download fresh copies</li>
+                    <li>Trade-off: Sites load slower the first time after clearing</li>
+                </ul>
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">7</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 8: New Vocabulary - Streaming -->
+        <div class="slide">
+            <h2>New Vocabulary 📚</h2>
+            <div class="vocab-term">Streaming</div>
+            <div class="vocab-def">
+                <p><strong>Definition:</strong> A method of transmitting or receiving data (especially video and audio) over a network as a continuous flow, allowing playback to begin while the rest of the data is still being received.</p>
+                <p><strong>Real-world:</strong> Like watching a YouTube video that starts playing right away - you don't have to wait for the entire video to download first. The data "streams" to you in real-time!</p>
+            </div>
+            <h3 style="margin-top: 25px;">Streaming vs Downloading:</h3>
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>📺 Streaming</h4>
+                    <ul>
+                        <li>Watch/listen immediately</li>
+                        <li>Doesn't use device storage</li>
+                        <li>Needs internet connection</li>
+                        <li>Data not saved permanently</li>
+                    </ul>
+                </div>
+                <div class="comparison-item">
+                    <h4>💾 Downloading</h4>
+                    <ul>
+                        <li>Must wait for full download</li>
+                        <li>Uses device storage</li>
+                        <li>Works offline after download</li>
+                        <li>File saved permanently</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="fun-fact">
+                <strong>Fun Fact:</strong> In 2024, global internet video traffic accounts for over 82% of all consumer internet traffic! Netflix alone streams over 1 billion hours of content per week.
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">8</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 9: New Vocabulary - Algorithm -->
+        <div class="slide">
+            <h2>New Vocabulary 📚</h2>
+            <div class="vocab-term">Algorithm</div>
+            <div class="vocab-def">
+                <p><strong>Definition:</strong> A step-by-step set of instructions or rules designed to solve a specific problem or perform a specific task. In computing, it's the logic that tells a program what to do.</p>
+                <p><strong>Real-world:</strong> A recipe is an algorithm! It's step-by-step instructions to make a cake. Follow the steps in order, and you get the result you want.</p>
+            </div>
+            <h3 style="margin-top: 25px;">Algorithms You Use Every Day:</h3>
+            <ul style="margin-left: 40px; margin-top: 15px;">
+                <li><strong>Social Media Feeds</strong> - TikTok/Instagram algorithms decide what posts to show you</li>
+                <li><strong>Search Engines</strong> - Google's algorithm ranks which results to show first</li>
+                <li><strong>Netflix Recommendations</strong> - Algorithm suggests shows based on what you watch</li>
+                <li><strong>Spell Check</strong> - Algorithm finds and suggests corrections for typos</li>
+                <li><strong>Navigation Apps</strong> - Algorithm calculates the fastest route</li>
+            </ul>
+            <div class="fun-fact">
+                <strong>Fun Fact:</strong> The word "algorithm" comes from a 9th-century Persian mathematician named Muhammad ibn Musa al-Khwarizmi. His name became "algorism" in Latin, which evolved into "algorithm"!
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">9</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 10: Why Algorithms Matter -->
+        <div class="slide">
+            <h2>Why Should You Care? 🤔</h2>
+            <h3>Algorithms Shape Your World:</h3>
+            <ul style="margin-left: 40px; margin-top: 20px;">
+                <li><strong>What You See</strong> - Social media algorithms control what content appears in your feed</li>
+                <li><strong>What You Buy</strong> - E-commerce algorithms suggest products and set prices</li>
+                <li><strong>What You Learn</strong> - YouTube's algorithm affects what educational content you discover</li>
+                <li><strong>Who You Meet</strong> - Dating apps use algorithms to suggest matches</li>
+                <li><strong>Your Opportunities</strong> - Job sites use algorithms to match you with positions</li>
+            </ul>
+            <div class="important">
+                <strong>⚠️ Important:</strong> Understanding algorithms helps you be a smarter consumer of technology. You realize that what you see online isn't random - it's calculated to keep you engaged!
+            </div>
+            <div class="tip-box">
+                <strong>💡 Career Note:</strong> Algorithm design is one of the most valuable skills in tech. Companies like Google, Meta, and TikTok pay top dollar for engineers who can create better algorithms!
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">10</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 11: AI Prompting Introduction -->
+        <div class="slide">
+            <h2>Mastering AI Prompts 🤖</h2>
+            <div class="emoji">💬</div>
+            <p style="text-align: center; font-size: 1.4em; margin-bottom: 30px;">
+                Your game assignment quality depends heavily on how well you communicate with Copilot!
+            </p>
+            <h3>What is a Prompt?</h3>
+            <p style="margin-left: 40px; margin-top: 15px;">
+                A prompt is the instruction or question you give to an AI. Think of it as giving directions to someone who's really smart but needs clear, specific guidance.
+            </p>
+            <div class="tip-box">
+                <strong>Key Principle:</strong> AI is incredibly powerful, but it's only as good as the instructions you give it. Garbage in = Garbage out. Great prompts = Great results!
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">11</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 12: What Makes a BAD Prompt -->
+        <div class="slide">
+            <h2>What Makes a BAD Prompt? ❌</h2>
+
+            <div class="bad-prompt">
+                <h4>Example 1: Too Vague</h4>
+                <div class="code-box">
+"Make a game"
+                </div>
+                <p><strong>Why it's bad:</strong> No details! What kind of game? What features? What style? Copilot has to guess everything.</p>
+            </div>
+
+            <div class="bad-prompt">
+                <h4>Example 2: No Context</h4>
+                <div class="code-box">
+"Add sounds"
+                </div>
+                <p><strong>Why it's bad:</strong> What sounds? When should they play? What format? Too ambiguous.</p>
+            </div>
+
+            <div class="bad-prompt">
+                <h4>Example 3: Too Complex at Once</h4>
+                <div class="code-box">
+"Create a multiplayer RPG with 3D graphics, inventory system, quest system,
+chat, leaderboards, achievements, and boss battles"
+                </div>
+                <p><strong>Why it's bad:</strong> Way too much at once! Break it down into smaller tasks.</p>
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">12</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 13: What Makes a GOOD Prompt -->
+        <div class="slide">
+            <h2>What Makes a GOOD Prompt? ✅</h2>
+
+            <div class="good-prompt">
+                <h4>Example 1: Specific & Detailed</h4>
+                <div class="code-box">
+"Create a Snake game where the snake moves with arrow keys, eats red food
+dots to grow longer, and the game ends if the snake hits the wall or
+itself. Use a green snake on a white grid background."
+                </div>
+                <p><strong>Why it's good:</strong> Clear game type, specific controls, defined win/loss conditions, and visual details!</p>
+            </div>
+
+            <div class="good-prompt">
+                <h4>Example 2: Includes Context</h4>
+                <div class="code-box">
+"Add a 'pop' sound effect that plays whenever the snake eats food.
+Use the Web Audio API to generate the sound programmatically."
+                </div>
+                <p><strong>Why it's good:</strong> Says WHAT sound, WHEN it plays, and HOW to implement it.</p>
+            </div>
+
+            <div class="good-prompt">
+                <h4>Example 3: Builds Incrementally</h4>
+                <div class="code-box">
+"First, create basic Snake movement with arrow keys. Don't add food
+or collision detection yet - just get the snake moving smoothly."
+                </div>
+                <p><strong>Why it's good:</strong> One step at a time! Test each feature before adding more.</p>
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">13</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 14: The Anatomy of a Great Prompt -->
+        <div class="slide">
+            <h2>Anatomy of a Great Prompt 🔬</h2>
+            <h3>Include These Elements:</h3>
+
+            <div class="steps">
+                <ol>
+                    <li><strong>Context</strong> - What are you building? Where does this fit?</li>
+                    <li><strong>Specific Details</strong> - Colors, sizes, behaviors, exact requirements</li>
+                    <li><strong>Constraints</strong> - What NOT to do, limitations, required technologies</li>
+                    <li><strong>Examples</strong> - "Like [example]" or "Similar to [reference]"</li>
+                    <li><strong>Desired Outcome</strong> - What success looks like</li>
+                </ol>
+            </div>
+
+            <div class="good-prompt">
+                <h4>Perfect Example:</h4>
+                <div class="code-box">
+"I'm building a Flappy Bird clone. Create the bird sprite as a yellow
+circle with a small orange triangle for a beak. The bird should:
+
+- Start in the middle of the screen
+- Fall due to gravity (9.8 units/second squared)
+- Jump up when spacebar is pressed (jump height: 50px)
+- Rotate slightly based on vertical velocity
+
+Don't add pipes yet - just get the bird physics working smoothly.
+Similar to the original Flappy Bird movement feel."
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">14</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 15: Iterative Prompting - Part 1 -->
+        <div class="slide">
+            <h2>Real Example: Building a Snake Game 🐍</h2>
+            <h3>Step 1: Start with a Complete Basic Version</h3>
+
+            <div class="good-prompt">
+                <h4>Initial Prompt:</h4>
+                <div class="code-box">
+"Create a Snake game in HTML, CSS, and JavaScript. The game should have:
+
+- A 20x20 grid playing area
+- A green snake that starts in the center (3 segments long)
+- Arrow keys to control direction
+- Red food that appears randomly
+- Snake grows when eating food
+- Game over if snake hits walls or itself
+- Score display
+
+Use simple colored squares for the snake and food. Don't add sounds
+or fancy graphics yet - just get the core gameplay working."
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>What happens:</strong> Copilot creates a working basic game. You test it and notice some issues or missing features.
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">15</span> of <span id="totalSlides">19</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 16: Iterative Prompting - Part 2 -->
+        <div class="slide">
+            <h2>Real Example: Building a Snake Game 🐍</h2>
+            <h3>Step 2: Fix Issues & Add Polish</h3>
+
+            <div class="good-prompt">
+                <h4>Follow-up Prompts (based on testing):</h4>
+                <div class="code-box">
+Prompt 1: "The snake is moving too fast. Slow it down so each move
+takes 150 milliseconds instead."
+
+Prompt 2: "Add a start screen with a 'Press Space to Start' message
+and show the controls (arrow keys to move)."
+
+Prompt 3: "When the snake eats food, make the food appear in a new
+random location. Make sure it doesn't appear on the snake's body."
+
+Prompt 4: "Add a game over screen that shows the final score and a
+'Press R to Restart' button."
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Key Point:</strong> Each prompt fixes one specific issue or adds one feature. Test after each one!
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">16</span> of <span id="totalSlides">19</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 17: Iterative Prompting - Part 3 -->
+        <div class="slide">
+            <h2>Real Example: Building a Snake Game 🐍</h2>
+            <h3>Step 3: Add Assignment Requirements</h3>
+
+            <div class="good-prompt">
+                <h4>Adding Required Features:</h4>
+                <div class="code-box">
+Prompt 5: "Add two sound effects: a 'boop' sound when the snake eats
+food, and a 'crash' sound on game over. Include a mute button in the
+top right corner."
+
+Prompt 6: "Save the high score in localStorage. Display it on the
+start screen: 'High Score: [number]'. Update it if the player beats
+their previous high score."
+
+Prompt 7: "Make the game gradually get harder - increase the snake
+speed by 5% every time the score reaches a multiple of 5."
+
+Prompt 8: "Add a gradient background and make the game board have a
+border with a nice color scheme. Make the snake have a slightly darker
+head than the body."
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">17</span> of <span id="totalSlides">19</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 18: Debugging with AI -->
+        <div class="slide">
+            <h2>Debugging with AI 🐛</h2>
+            <h3>How to Ask for Help When Things Break:</h3>
+
+            <div class="bad-prompt">
+                <h4>❌ Bad Debugging Prompt:</h4>
+                <div class="code-box">
+"It's not working"
+                </div>
+                <p>Copilot has no idea WHAT isn't working or WHY.</p>
+            </div>
+
+            <div class="good-prompt">
+                <h4>✅ Good Debugging Prompt:</h4>
+                <div class="code-box">
+"The score counter shows 'NaN' instead of numbers. It should increment
+by 1 each time the player collects a coin, but something is wrong with
+the addition. The score variable starts at 0."
+                </div>
+                <p>Specific problem, expected behavior, and relevant context!</p>
+            </div>
+
+            <div class="steps">
+                <h4>Effective Debugging Prompts Include:</h4>
+                <ul>
+                    <li><strong>What's broken:</strong> "The restart button doesn't reset the score"</li>
+                    <li><strong>Expected behavior:</strong> "It should set score back to 0"</li>
+                    <li><strong>What's actually happening:</strong> "The score stays at the old value"</li>
+                    <li><strong>When it happens:</strong> "Only happens after game over screen"</li>
+                </ul>
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">18</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 19: Pro Tips for Your Game -->
+        <div class="slide">
+            <h2>Pro Tips for Your Game 🎮</h2>
+
+            <div class="tip-box">
+                <strong>1. Start with the Minimum Viable Game (MVG)</strong>
+                <p>Get the core gameplay working first. Don't worry about polish, sounds, or fancy features until the basic game is playable.</p>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Test Every Single Change</strong>
+                <p>After Copilot adds or modifies code, test it immediately in Live Preview. Catch bugs early!</p>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Ask Copilot to Explain</strong>
+                <p>If you don't understand the code: "Explain what this function does in simple terms"</p>
+            </div>
+
+            <div class="tip-box">
+                <strong>4. Reference Your Assignment Requirements</strong>
+                <p>When prompting, mention specific requirements: "Add sound effects (required for the assignment) when the player jumps and when game ends"</p>
+            </div>
+
+            <div class="tip-box">
+                <strong>5. Don't Give Up - Iterate!</strong>
+                <p>If first attempt isn't great, refine your prompt: "Make the colors brighter and more vibrant" or "The enemies are moving too fast - slow them to 70% speed"</p>
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">19</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 20: Work Time -->
+        <div class="slide">
+            <h2>Work Time! 🚀</h2>
+            <div class="emoji">💻</div>
+
+            <div class="activity-box">
+                <strong>Time to Build Your Game!</strong>
+                <p>Use what you learned about prompting to create an amazing game.</p>
+            </div>
+
+            <h3 style="margin-top: 30px;">Today's Goals:</h3>
+            <ul style="margin-left: 40px; margin-top: 15px;">
+                <li>Apply good prompting techniques with Copilot</li>
+                <li>Get your core game mechanics working</li>
+                <li>Test frequently and iterate</li>
+                <li>Ask for help when stuck!</li>
+            </ul>
+
+            <div class="important">
+                <strong>📅 Reminder:</strong> Game assignment due November 15th
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Deploy to GitHub Pages</li>
+                    <li>Submit your live game URL</li>
+                </ul>
+            </div>
+
+            <div class="fun-fact">
+                <strong>💡 Remember:</strong> Great prompts = Great results. Be specific, iterate in small steps, and test everything!
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">20</span> of <span id="totalSlides">20</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+
+        // Update total slides count
+        document.querySelectorAll('#totalSlides').forEach(el => {
+            el.textContent = totalSlides;
+        });
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+
+            if (n > totalSlides) {
+                currentSlide = 1;
+            }
+            if (n < 1) {
+                currentSlide = totalSlides;
+            }
+
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            slides[currentSlide - 1].classList.add('active');
+
+            // Update slide numbers
+            document.querySelectorAll('#slideNum').forEach(el => {
+                el.textContent = currentSlide;
+            });
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
