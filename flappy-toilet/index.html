@@ -729,8 +729,8 @@
             hasCroissant = false;
             croissantCount = 0;
             frameCount = 0;
-            invincible = false;
-            invincibleTimer = 0;
+            invincible = true; // Start with invincibility
+            invincibleTimer = 60; // 1 second of invincibility at start
             
             // Reset toilet
             toilet.y = canvas.height / 2;
@@ -816,6 +816,8 @@
         }
 
         // Start the game
+        invincible = true;
+        invincibleTimer = 60;
         updateUI();
         gameLoop();
     </script>
