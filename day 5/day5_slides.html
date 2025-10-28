@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 5: Git, GitHub & Command Line</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .presentation-container {
+            width: 90%;
+            max-width: 1000px;
+            height: 90vh;
+            max-height: 700px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 60px;
+            overflow-y: auto;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #764ba2;
+            font-size: 2em;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .vocab-term {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+        }
+        
+        .vocab-def {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            color: #333;
+            border-left: 4px solid #667eea;
+        }
+        
+        .quiz-container {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            text-align: left;
+            color: #333;
+        }
+        
+        .quiz-option:hover:not(.disabled) {
+            background: #f0f0f0;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+        
+        .quiz-option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+        
+        .quiz-option.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+        
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .activity-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .activity-box p {
+            color: #333;
+            margin: 10px 0;
+        }
+        
+        .activity-box strong {
+            color: #d84315;
+            font-size: 1.3em;
+        }
+        
+        .navigation {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .nav-button:active {
+            transform: scale(0.95);
+        }
+        
+        .slide-counter {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .fun-fact {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .fun-fact::before {
+            content: "💡";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2em;
+            opacity: 0.5;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.5;
+        }
+        
+        .code-block .comment {
+            color: #75715e;
+        }
+        
+        .code-block .command {
+            color: #66d9ef;
+        }
+        
+        .code-block .string {
+            color: #e6db74;
+        }
+        
+        .html-builder {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .html-preview {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            min-height: 100px;
+        }
+        
+        .command-practice {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+        }
+        
+        .command-practice p {
+            color: #f0f0f0;
+            margin-bottom: 15px;
+        }
+        
+        .command-practice p strong {
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        .command-line {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .command-prompt {
+            color: #888;
+        }
+        
+        .command-input {
+            color: #00ff00;
+        }
+        
+        .command-output {
+            color: #fff;
+            margin-left: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        li {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .emoji-large {
+            font-size: 3em;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        
+        .column-box {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .presentation-container {
+                width: 95%;
+                height: 95vh;
+            }
+            
+            .slide {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 5: Git & GitHub 🚀</h1>
+            <div class="emoji-large">💻 + 🐙 = 🎉</div>
+            <p style="text-align: center; font-size: 1.5em; color: #667eea;">Time to become a GitHub ninja!</p>
+            <div class="fun-fact">
+                <p><strong>Fun Fact:</strong> Git was created by Linus Torvalds (who also created Linux) in just 2 weeks because he was frustrated with existing version control systems!</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Review from Day 4 - HTML Basics -->
+        <div class="slide">
+            <h2>Quick Review: HTML Basics 📝</h2>
+            <div class="quiz-container">
+                <p><strong>What does HTML stand for?</strong></p>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">Hyper Text Making Language</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">Hyper Text Markup Language</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">High Tech Modern Language</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">Home Tool Markup Language</button>
+            </div>
+            <div class="html-builder">
+                <p><strong>Remember our basic HTML structure:</strong></p>
+                <div class="code-block">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;My Page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello World!&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Review - Creating Files and Folders -->
+        <div class="slide">
+            <h2>Review: Files & Folders 📁</h2>
+            <div class="quiz-container">
+                <p><strong>What program do we use to create HTML files on Windows?</strong></p>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">Microsoft Word</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">Notepad</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">Paint</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">Calculator</button>
+            </div>
+            <div class="activity-box">
+                <p><strong>Remember:</strong> We created folders and HTML files last week!</p>
+                <ul>
+                    <li>Created a folder on our Desktop</li>
+                    <li>Made an index.html file with Notepad</li>
+                    <li>Added basic HTML tags</li>
+                    <li>Opened it in our browser to see it work!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 4: Vocabulary - Git -->
+        <div class="slide">
+            <h2>Vocabulary Time! 📚</h2>
+            <div class="vocab-term">Git</div>
+            <div class="vocab-def">A version control system that tracks changes to your files over time. Think of it like Google Docs' version history, but for code! It lets you save snapshots of your work and collaborate with others.</div>
+            
+            <div class="fun-fact">
+                <p><strong>Real-world analogy:</strong> Git is like having a time machine for your code. You can go back to any point in time and see what your code looked like, or even restore it if you mess something up!</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Vocabulary - HTML Tag -->
+        <div class="slide">
+            <h2>Vocabulary: HTML Tag 🏷️</h2>
+            <div class="vocab-term">Tag (HTML)</div>
+            <div class="vocab-def">A piece of code that tells the browser how to display content. Tags usually come in pairs with an opening tag like &lt;p&gt; and a closing tag like &lt;/p&gt;. They're like instructions that wrap around your content.</div>
+            
+            <div class="html-builder">
+                <p><strong>Examples of HTML tags:</strong></p>
+                <ul>
+                    <li><span class="highlight">&lt;h1&gt;</span> - Makes a big heading</li>
+                    <li><span class="highlight">&lt;p&gt;</span> - Creates a paragraph</li>
+                    <li><span class="highlight">&lt;strong&gt;</span> - Makes text bold</li>
+                    <li><span class="highlight">&lt;img&gt;</span> - Adds an image (no closing tag!)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 6: What is GitHub? -->
+        <div class="slide">
+            <h2>GitHub: Where Code Lives Online 🐙</h2>
+            <p style="text-align: center; font-size: 1.3em;">GitHub is like Instagram for programmers!</p>
+            
+            <div class="two-column">
+                <div class="column-box">
+                    <h3>What GitHub Does:</h3>
+                    <ul>
+                        <li>Stores your code online</li>
+                        <li>Shows your coding activity</li>
+                        <li>Lets you collaborate</li>
+                        <li>Backs up your work</li>
+                    </ul>
+                </div>
+                <div class="column-box">
+                    <h3>Why It Matters:</h3>
+                    <ul>
+                        <li>Employers look at it</li>
+                        <li>Share projects easily</li>
+                        <li>Learn from others</li>
+                        <li>Build your portfolio</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="fun-fact">
+                <p><strong>Did you know?</strong> Microsoft bought GitHub for $7.5 billion! That's how important code sharing is!</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Command Line Basics -->
+        <div class="slide">
+            <h2>Command Line: Talk to Your Computer! 💬</h2>
+            <p>The command line lets you control your computer with text commands instead of clicking.</p>
+            
+            <div class="command-practice">
+                <div class="command-line">
+                    <span class="command-prompt">C:\Users\Student&gt;</span>
+                    <span class="command-input">dir</span>
+                </div>
+                <div class="command-output">Lists all files and folders</div>
+                
+                <div class="command-line">
+                    <span class="command-prompt">C:\Users\Student&gt;</span>
+                    <span class="command-input">cd Desktop</span>
+                </div>
+                <div class="command-output">Changes to Desktop folder</div>
+                
+                <div class="command-line">
+                    <span class="command-prompt">C:\Users\Student\Desktop&gt;</span>
+                    <span class="command-input">mkdir my-project</span>
+                </div>
+                <div class="command-output">Creates a new folder called my-project</div>
+            </div>
+            
+            <p><strong>Pro tip:</strong> Press Tab to auto-complete file and folder names!</p>
+        </div>
+
+        <!-- Slide 8: Essential Windows Commands -->
+        <div class="slide">
+            <h2>Essential Windows Commands 🖥️</h2>
+            <div class="code-block">
+<span class="comment"># Navigate folders</span>
+<span class="command">cd</span> foldername     <span class="comment"># Go into a folder</span>
+<span class="command">cd ..</span>            <span class="comment"># Go back one folder</span>
+<span class="command">dir</span>              <span class="comment"># List files and folders</span>
+
+<span class="comment"># Create and remove</span>
+<span class="command">mkdir</span> newfolder  <span class="comment"># Make a new folder</span>
+<span class="command">rmdir</span> folder     <span class="comment"># Remove empty folder</span>
+<span class="command">del</span> filename     <span class="comment"># Delete a file</span>
+
+<span class="comment"># Other useful commands</span>
+<span class="command">cls</span>              <span class="comment"># Clear the screen</span>
+<span class="command">echo</span> Hello       <span class="comment"># Print text</span>
+<span class="command">type</span> file.txt    <span class="comment"># Show file contents</span>
+            </div>
+            
+            <div class="activity-box">
+                <p><strong>Try This!</strong> Open Command Prompt and practice these commands. Don't worry - you can't break anything!</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Git Commands -->
+        <div class="slide">
+            <h2>Essential Git Commands 🔧</h2>
+            <div class="code-block">
+<span class="comment"># Setup (only do once)</span>
+<span class="command">git config --global user.name</span> <span class="string">"Your Name"</span>
+<span class="command">git config --global user.email</span> <span class="string">"email@example.com"</span>
+
+<span class="comment"># Working with repositories</span>
+<span class="command">git clone</span> [url]         <span class="comment"># Copy a repo from GitHub</span>
+<span class="command">git status</span>              <span class="comment"># Check what's changed</span>
+<span class="command">git add .</span>              <span class="comment"># Stage all changes</span>
+<span class="command">git commit -m</span> <span class="string">"message"</span> <span class="comment"># Save changes</span>
+<span class="command">git push</span>                <span class="comment"># Upload to GitHub</span>
+<span class="command">git pull</span>                <span class="comment"># Download latest changes</span>
+            </div>
+            
+            <p><strong>Remember:</strong> Always add, then commit, then push!</p>
+        </div>
+
+        <!-- Slide 10: GitHub Desktop -->
+        <div class="slide">
+            <h2>GitHub Desktop: The Easy Way! 🎨</h2>
+            <p>GitHub Desktop is a visual tool that does all the Git commands for you with buttons!</p>
+            
+            <div class="two-column">
+                <div class="column-box">
+                    <h3>Advantages:</h3>
+                    <ul>
+                        <li>No commands to remember</li>
+                        <li>Visual interface</li>
+                        <li>See changes easily</li>
+                        <li>One-click operations</li>
+                    </ul>
+                </div>
+                <div class="column-box">
+                    <h3>But Command Line:</h3>
+                    <ul>
+                        <li>Works everywhere</li>
+                        <li>More powerful</li>
+                        <li>Industry standard</li>
+                        <li>Makes you look cool 😎</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="fun-fact">
+                <p><strong>Brother Cope says:</strong> "Learn both! Use Desktop when learning, command line when you're ready to impress!"</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Fork and Clone -->
+        <div class="slide">
+            <h2>Fork and Clone: Make It Yours! 🍴</h2>
+            
+            <div class="vocab-term">Fork</div>
+            <div class="vocab-def">Creating your own copy of someone else's repository on GitHub. Like making a photocopy of a recipe so you can modify it.</div>
+            
+            <div class="vocab-term">Clone</div>
+            <div class="vocab-def">Downloading a repository from GitHub to your computer. Like downloading a game so you can play it offline.</div>
+            
+            <div class="activity-box">
+                <p><strong>The Process:</strong></p>
+                <ol>
+                    <li>Fork on GitHub (makes your online copy)</li>
+                    <li>Clone to computer (downloads your copy)</li>
+                    <li>Make changes locally</li>
+                    <li>Push back to GitHub</li>
+                    <li>Create Pull Request (ask to merge changes)</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 12: Today's Assignment Overview -->
+        <div class="slide">
+            <h2>Today's Mission: Build & Share! 🚀</h2>
+            <h1 style="font-size: 1.8em;">Create Your Personal Webpage and Contribute to GitHub</h1>
+            
+            <div class="activity-box">
+                <p><strong>What You'll Do:</strong></p>
+                <ol>
+                    <li>Create your own HTML webpage from scratch</li>
+                    <li>Sign up for GitHub (free account)</li>
+                    <li>Fork our class repository</li>
+                    <li>Add your webpage to the repo</li>
+                    <li>Submit a pull request</li>
+                </ol>
+                <p style="text-align: center; font-size: 1.3em; margin-top: 20px;">
+                    <strong>Total Points: 50</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Part 1 - Create HTML -->
+        <div class="slide">
+            <h2>Part 1: Create Your HTML Webpage 📝</h2>
+            
+            <div class="code-block">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Your Name's Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome! I'm [Your Name]&lt;/h1&gt;
+    &lt;p&gt;Introduction paragraph...&lt;/p&gt;
+    
+    &lt;h2&gt;About Me&lt;/h2&gt;
+    &lt;p&gt;Favorite hobby, food, game...&lt;/p&gt;
+    
+    &lt;h2&gt;What I'm Learning&lt;/h2&gt;
+    &lt;ul&gt;
+        &lt;li&gt;HTML&lt;/li&gt;
+        &lt;li&gt;Git and GitHub&lt;/li&gt;
+        &lt;li&gt;Binary (remember the cats?)&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+            </div>
+            
+            <p><strong>Save as:</strong> index.html in a folder called "my-website"</p>
+        </div>
+
+        <!-- Slide 14: Part 2 - GitHub Setup -->
+        <div class="slide">
+            <h2>Part 2: GitHub Account Setup 🐙</h2>
+            
+            <div class="activity-box">
+                <p><strong>Steps to Sign Up:</strong></p>
+                <ol>
+                    <li>Go to <span class="highlight">github.com</span></li>
+                    <li>Click "Sign up"</li>
+                    <li>Use your Google account (easiest!)</li>
+                    <li>Choose a professional username:
+                        <ul>
+                            <li>✅ firstname-lastname</li>
+                            <li>✅ firstnamelast</li>
+                            <li>❌ xXcoolgamer420Xx</li>
+                        </ul>
+                    </li>
+                    <li>Verify your email</li>
+                </ol>
+            </div>
+            
+            <div class="fun-fact">
+                <p><strong>Pro tip:</strong> Your GitHub username becomes part of your professional identity. Choose wisely!</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Part 3 - Fork and Clone -->
+        <div class="slide">
+            <h2>Part 3: Fork and Clone Our Repo 🍴</h2>
+            
+            <div class="command-practice">
+                <p><strong>Step 1: Fork on GitHub</strong></p>
+                <p>Go to: github.com/landoncope/jeremy-pants</p>
+                <p>Click the "Fork" button (top right)</p>
+                
+                <p style="margin-top: 20px;"><strong>Step 2: Configure Git</strong></p>
+                <div class="command-line">
+                    <span class="command-input">git config --global user.name "Your Name"</span>
+                </div>
+                <div class="command-line">
+                    <span class="command-input">git config --global user.email "your.email@example.com"</span>
+                </div>
+                
+                <p style="margin-top: 20px;"><strong>Step 3: Clone Your Fork</strong></p>
+                <div class="command-line">
+                    <span class="command-input">cd Documents</span>
+                </div>
+                <div class="command-line">
+                    <span class="command-input">git clone [your-fork-url]</span>
+                </div>
+                <div class="command-line">
+                    <span class="command-input">cd jeremy-pants</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Part 4 - Add Your Webpage -->
+        <div class="slide">
+            <h2>Part 4: Add Your Webpage 📁</h2>
+            
+            <div class="command-practice">
+                <p><strong>Create your personal folder:</strong></p>
+                <div class="command-line">
+                    <span class="command-input">mkdir students/yourname</span>
+                </div>
+                <div class="command-output">Replace "yourname" with your actual name!</div>
+                
+                <p style="margin-top: 20px;"><strong>Copy your HTML file:</strong></p>
+                <div class="command-line">
+                    <span class="command-input">copy ..\my-website\index.html students\yourname\</span>
+                </div>
+                <div class="command-output">Windows uses backslashes!</div>
+            </div>
+            
+            <div class="activity-box">
+                <p><strong>Folder Structure:</strong></p>
+                <pre>
+jeremy-pants/
+  └── students/
+      └── yourname/
+          └── index.html
+                </pre>
+            </div>
+        </div>
+
+        <!-- Slide 17: Part 5 - Commit and Push -->
+        <div class="slide">
+            <h2>Part 5: Save and Upload Your Work 💾</h2>
+            
+            <div class="command-practice">
+                <p><strong>The Three Magic Commands:</strong></p>
+                
+                <div class="command-line">
+                    <span class="command-prompt">C:\...\jeremy-pants&gt;</span>
+                    <span class="command-input">git add .</span>
+                </div>
+                <div class="command-output">Stages all your changes</div>
+                
+                <div class="command-line">
+                    <span class="command-prompt">C:\...\jeremy-pants&gt;</span>
+                    <span class="command-input">git commit -m "Add my webpage to students folder"</span>
+                </div>
+                <div class="command-output">Saves changes with a message</div>
+                
+                <div class="command-line">
+                    <span class="command-prompt">C:\...\jeremy-pants&gt;</span>
+                    <span class="command-input">git push</span>
+                </div>
+                <div class="command-output">Uploads to GitHub!</div>
+            </div>
+            
+            <div class="fun-fact">
+                <p><strong>Remember:</strong> Add → Commit → Push. It's like Save → Name → Upload!</p>
+            </div>
+        </div>
+
+        <!-- Slide 18: Part 6 - Pull Request -->
+        <div class="slide">
+            <h2>Part 6: Create a Pull Request 🎯</h2>
+            
+            <div class="activity-box">
+                <p><strong>What's a Pull Request?</strong></p>
+                <p>It's like raising your hand and saying "Hey, I made something cool! Can you add it to the main project?"</p>
+            </div>
+            
+            <div class="two-column">
+                <div class="column-box">
+                    <h3>Steps:</h3>
+                    <ol>
+                        <li>Go to YOUR fork on GitHub</li>
+                        <li>Click "Contribute"</li>
+                        <li>Click "Open pull request"</li>
+                        <li>Add title: "Add [Your Name]'s webpage"</li>
+                        <li>Add description</li>
+                        <li>Click "Create pull request"</li>
+                    </ol>
+                </div>
+                <div class="column-box">
+                    <h3>What Happens Next:</h3>
+                    <ul>
+                        <li>Brother Cope reviews it</li>
+                        <li>If good, it gets merged!</li>
+                        <li>Your page joins the class repo</li>
+                        <li>You're officially a contributor!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19: Grading Rubric -->
+        <div class="slide">
+            <h2>How You'll Be Graded 📊</h2>
+            
+            <div class="activity-box">
+                <p><strong>Point Breakdown (50 points total):</strong></p>
+                <ul style="font-size: 1.3em;">
+                    <li>✅ HTML webpage creation: <strong>20 points</strong></li>
+                    <li>✅ Successful fork and clone: <strong>10 points</strong></li>
+                    <li>✅ Proper Git commits: <strong>10 points</strong></li>
+                    <li>✅ Pull request created: <strong>10 points</strong></li>
+                </ul>
+            </div>
+            
+            <div class="fun-fact">
+                <p><strong>Bonus:</strong> Make your webpage extra creative for kudos (not extra points, just bragging rights)!</p>
+            </div>
+            
+            <p style="text-align: center; font-size: 1.3em; margin-top: 30px;">
+                <strong>Remember:</strong> Ask for help if you get stuck! That's what programmers do!
+            </p>
+        </div>
+
+        <!-- Slide 20: Common Issues & Solutions -->
+        <div class="slide">
+            <h2>Troubleshooting Guide 🔧</h2>
+            
+            <div class="quiz-container">
+                <h3>Common Issues:</h3>
+                <p><strong>❌ "git is not recognized"</strong></p>
+                <p>✅ Solution: Install Git from git-scm.com</p>
+                
+                <p style="margin-top: 20px;"><strong>❌ "Permission denied"</strong></p>
+                <p>✅ Solution: Make sure you're in the right folder</p>
+                
+                <p style="margin-top: 20px;"><strong>❌ "Failed to push"</strong></p>
+                <p>✅ Solution: Check you're pushing to YOUR fork, not the original</p>
+                
+                <p style="margin-top: 20px;"><strong>❌ HTML doesn't look right</strong></p>
+                <p>✅ Solution: Check all tags are closed properly</p>
+            </div>
+            
+            <div class="activity-box">
+                <p><strong>Golden Rule:</strong> Read error messages! They usually tell you exactly what's wrong.</p>
+            </div>
+        </div>
+
+        <!-- Slide 21: Tips for Success -->
+        <div class="slide">
+            <h2>Pro Tips for Success 🏆</h2>
+            
+            <div class="two-column">
+                <div class="column-box">
+                    <h3>Do's ✅</h3>
+                    <ul>
+                        <li>Test your HTML locally first</li>
+                        <li>Use descriptive commit messages</li>
+                        <li>Check git status often</li>
+                        <li>Ask for help early</li>
+                        <li>Be creative with your page!</li>
+                    </ul>
+                </div>
+                <div class="column-box">
+                    <h3>Don'ts ❌</h3>
+                    <ul>
+                        <li>Don't commit without testing</li>
+                        <li>Don't use spaces in folder names</li>
+                        <li>Don't forget to push!</li>
+                        <li>Don't panic if something breaks</li>
+                        <li>Don't copy someone else's HTML</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="fun-fact">
+                <p><strong>Remember:</strong> Every professional programmer uses Git every day. You're learning a real skill that companies pay for!</p>
+            </div>
+        </div>
+
+        <!-- Slide 22: Let's Get Started! -->
+        <div class="slide">
+            <h2>Let's Build Something Awesome! 🚀</h2>
+            
+            <div class="emoji-large">💪 🧑‍💻 🎉</div>
+            
+            <div class="activity-box">
+                <p><strong>Your Mission Starts Now!</strong></p>
+                <ol style="font-size: 1.3em;">
+                    <li>Create your HTML masterpiece</li>
+                    <li>Set up your GitHub account</li>
+                    <li>Fork, clone, commit, push!</li>
+                    <li>Submit that pull request</li>
+                    <li>Celebrate being a real developer! 🎊</li>
+                </ol>
+            </div>
+            
+            <p style="text-align: center; font-size: 1.5em; margin-top: 30px; color: #667eea;">
+                <strong>You've got this! Let's code!</strong>
+            </p>
+            
+            <div class="fun-fact">
+                <p><strong>Brother Cope says:</strong> "By the end of today, you'll have code on GitHub. That's something many adults can't do!"</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-button" onclick="previousSlide()">← Previous</button>
+            <span class="slide-counter">
+                <span id="current-slide">1</span> / <span id="total-slides">22</span>
+            </span>
+            <button class="nav-button" onclick="nextSlide()">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            
+            if (n > totalSlides) {
+                currentSlide = 1;
+            }
+            if (n < 1) {
+                currentSlide = totalSlides;
+            }
+            
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            slides[currentSlide - 1].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide;
+            
+            // Reset any active buttons when changing slides
+            slides[currentSlide - 1].querySelectorAll('.quiz-option').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect', 'disabled');
+                // Keep the original onclick handler intact - don't override it
+            });
+        }
+        
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+        
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+        
+        function checkAnswer(button, isCorrect) {
+            const options = button.parentElement.querySelectorAll('.quiz-option');
+            
+            options.forEach(option => {
+                option.classList.add('disabled');
+                option.onclick = null;
+            });
+            
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.innerHTML = button.innerHTML + ' ✓';
+            } else {
+                button.classList.add('incorrect');
+                button.innerHTML = button.innerHTML + ' ✗';
+                
+                // Find and show the correct answer
+                options.forEach(option => {
+                    // Check if this option has the correct answer by looking at its onclick
+                    const onclickStr = option.getAttribute('onclick');
+                    if (onclickStr && onclickStr.includes('true')) {
+                        option.classList.add('correct');
+                        if (!option.innerHTML.includes('✓')) {
+                            option.innerHTML = option.innerHTML + ' ✓';
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                nextSlide();
+            } else if (event.key === 'ArrowLeft') {
+                previousSlide();
+            } else if (event.key === 'Home') {
+                currentSlide = 1;
+                showSlide(currentSlide);
+            } else if (event.key === 'End') {
+                currentSlide = totalSlides;
+                showSlide(currentSlide);
+            }
+        });
+        
+        // Touch navigation for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', function(event) {
+            touchStartX = event.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', function(event) {
+            touchEndX = event.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                previousSlide();
+            }
+        }
+    </script>
+</body>
+</html>

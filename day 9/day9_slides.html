@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 9: Python Basics - Brother Cope's CS Class</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 90%;
+            max-width: 1000px;
+            height: 80vh;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            height: 100%;
+            overflow-y: auto;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h1 {
+            color: #764ba2;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #764ba2;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            margin: 30px 0;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .quiz-option:hover:not(:disabled) {
+            background: #e0e0e0;
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #4caf50;
+            color: #333;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #f44336;
+            color: #333;
+        }
+
+        .quiz-option:disabled {
+            cursor: not-allowed;
+        }
+
+        .vocab-term {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .vocab-def {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 3px solid #667eea;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .activity-box p {
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 1.1em;
+            overflow-x: auto;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .output-box {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            min-height: 50px;
+        }
+
+        .fun-fact {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .emoji {
+            font-size: 2em;
+            margin: 0 10px;
+        }
+
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        ul {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            font-size: 1.1em;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .interactive-python {
+            margin: 20px 0;
+        }
+
+        .run-button {
+            background: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .fill-blank {
+            display: inline-block;
+            min-width: 100px;
+            border-bottom: 2px solid #667eea;
+            margin: 0 5px;
+            padding: 2px 5px;
+        }
+
+        .fill-blank input {
+            border: none;
+            outline: none;
+            font-size: 1.1em;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: transparent;
+            color: #333;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-number">Slide <span id="slideNumber">1</span> of 17</div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 9: Python Basics 🐍</h1>
+            <div style="text-align: center; margin-top: 50px;">
+                <p style="font-size: 1.5em;">Welcome to the World of Programming!</p>
+                <span class="emoji">💻</span>
+                <span class="emoji">🎮</span>
+                <span class="emoji">🤖</span>
+            </div>
+            <div class="fun-fact" style="margin-top: 50px;">
+                <strong>Fun Fact:</strong> Python wasn't named after a snake! It was named after "Monty Python's Flying Circus," a British comedy show from the 1970s that the creator loved!
+            </div>
+        </div>
+
+        <!-- Slide 2: Review from Previous Day -->
+        <div class="slide">
+            <h1>Quick Review! 🎯</h1>
+            <h2>What's the absolute path to a file called "game.exe" in the Program Files folder on Windows?</h2>
+            <div class="quiz-container">
+                <button class="quiz-option" onclick="checkAnswer(this, false)">A) /game.exe</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">B) Program Files/game.exe</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">C) C:\Program Files\game.exe</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">D) ~/Program Files/game.exe</button>
+            </div>
+        </div>
+
+        <!-- Slide 3: What is Python? -->
+        <div class="slide">
+            <h1>What is Python? 🤔</h1>
+            <p>Python is a programming language that lets you tell computers what to do!</p>
+            <ul>
+                <li>It's like giving your computer a recipe to follow</li>
+                <li>Python looks almost like English - super easy to read!</li>
+                <li>Used by Google, Netflix, Instagram, and NASA! 🚀</li>
+            </ul>
+            <div class="fun-fact">
+                <strong>Cool Fact:</strong> In the UK, more kids learn Python than French! 6 out of 10 parents prefer their kids learn Python over French language.
+            </div>
+        </div>
+
+        <!-- Slide 4: Why Python? -->
+        <div class="slide">
+            <h1>Why Learn Python? 💡</h1>
+            <ul>
+                <li><strong>Easy to Learn:</strong> Even 6th graders can start coding in Python!</li>
+                <li><strong>Super Popular:</strong> #1 programming language in 2024</li>
+                <li><strong>Get Jobs:</strong> Average Python developer makes $100,000+/year</li>
+                <li><strong>Build Cool Stuff:</strong> Games, websites, AI, robots!</li>
+            </ul>
+            <div class="activity-box">
+                <p><strong>Think About It!</strong> What would you build if you could program anything?</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Vocabulary -->
+        <div class="slide">
+            <h1>New Vocabulary 📚</h1>
+
+            <div class="vocab-term">print()</div>
+            <div class="vocab-def">Makes the computer show text on the screen - like posting a message!</div>
+
+            <div class="vocab-term">Variable</div>
+            <div class="vocab-def">A container that stores information - like a labeled box for your stuff</div>
+
+            <div class="vocab-term">String</div>
+            <div class="vocab-def">Text in quotes - like a text message you send to friends</div>
+
+            <div class="vocab-term">Integer</div>
+            <div class="vocab-def">A whole number with no decimals - like your age or score in a game</div>
+
+            <div class="vocab-term">Float</div>
+            <div class="vocab-def">A number with decimals - like your GPA, height, or the price of something</div>
+        </div>
+
+        <!-- Slide 6: Data Types -->
+        <div class="slide">
+            <h1>Data Types in Python 📊</h1>
+            <p>Python works with different types of data:</p>
+
+            <h2>🔤 Strings (Text)</h2>
+            <div class="code-block">name = "Brother Cope"<br>message = "Welcome to Python!"<br>emoji = "🐍"</div>
+            <p>Always in quotes! Single or double quotes work.</p>
+
+            <h2>🔢 Integers (Whole Numbers)</h2>
+            <div class="code-block">age = 35<br>students = 28<br>year = 2025</div>
+            <p>No quotes, no decimals - just whole numbers!</p>
+
+            <h2>🎯 Floats (Decimal Numbers)</h2>
+            <div class="code-block">height = 5.8<br>gpa = 3.75<br>price = 9.99<br>temperature = 98.6</div>
+            <p>Numbers with decimal points - great for precise measurements!</p>
+
+            <div class="activity-box">
+                <p><strong>Quick Check!</strong> What data type is each of these?</p>
+                <p>"Hello" = String | 42 = Integer | 3.14 = Float | "123" = String</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Your First Python Code -->
+        <div class="slide">
+            <h1>Your First Python Program! 🎉</h1>
+            <p>Let's start with the classic first program:</p>
+            <div class="code-block">print("Hello, World!")</div>
+            <p>This tells the computer to display "Hello, World!" on the screen!</p>
+
+            <div class="activity-box">
+                <p><strong>Try It!</strong> What do you think this will print?</p>
+                <div class="code-block">print("Jeremy has cool pants!")</div>
+                <button onclick="showOutput(this, 'Jeremy has cool pants!')">Run Code</button>
+                <div class="output-box" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Variables -->
+        <div class="slide">
+            <h1>Variables - Storage Boxes 📦</h1>
+            <p>Variables store information for later use:</p>
+            <div class="code-block">name = "Brother Cope"<br>age = 35<br>favorite_game = "Minecraft"<br><br>print(name)<br>print(age)<br>print(favorite_game)</div>
+            <p>Think of variables like labeled containers:</p>
+            <ul>
+                <li>📦 <strong>name</strong> box contains "Brother Cope"</li>
+                <li>📦 <strong>age</strong> box contains 35</li>
+                <li>📦 <strong>favorite_game</strong> box contains "Minecraft"</li>
+            </ul>
+        </div>
+
+        <!-- Slide 9: Interactive Variable Practice -->
+        <div class="slide">
+            <h1>Create Your Own Variables! ✍️</h1>
+            <p>Fill in the blanks to create variables:</p>
+            <div class="interactive-python">
+                <div class="code-block">my_name = "<span class="fill-blank"><input type="text" id="name-input" placeholder="Your name"></span>"<br>my_age = <span class="fill-blank"><input type="number" id="age-input" placeholder="Your age"></span><br>my_hobby = "<span class="fill-blank"><input type="text" id="hobby-input" placeholder="Your hobby"></span>"<br><br>print("Hi, I'm", my_name)<br>print("I am", my_age, "years old")<br>print("I love", my_hobby)</div>
+                <button onclick="runPersonalCode()">Run Your Code!</button>
+                <div class="output-box" id="personal-output" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Math with Python -->
+        <div class="slide">
+            <h1>Python is a Calculator! 🧮</h1>
+            <p>Python can do math for you:</p>
+            <div class="code-block"># Addition<br>print(5 + 3)      # Output: 8<br><br># Subtraction<br>print(10 - 4)     # Output: 6<br><br># Multiplication<br>print(6 * 7)      # Output: 42<br><br># Division<br>print(20 / 4)     # Output: 5.0</div>
+            <div class="activity-box">
+                <p><strong>Quick Math!</strong> What will this print?</p>
+                <div class="code-block">score = 100<br>bonus = 25<br>total = score + bonus<br>print(total)</div>
+                <div class="quiz-container">
+                    <button class="quiz-option" onclick="checkAnswer(this, false)">100</button>
+                    <button class="quiz-option" onclick="checkAnswer(this, true)">125</button>
+                    <button class="quiz-option" onclick="checkAnswer(this, false)">25</button>
+                    <button class="quiz-option" onclick="checkAnswer(this, false)">Error</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Strings and Combining -->
+        <div class="slide">
+            <h1>Working with Text (Strings) 📝</h1>
+            <p>You can combine text using the + sign:</p>
+            <div class="code-block">first_name = "Spider"<br>last_name = "Man"<br>superhero = first_name + last_name<br>print(superhero)  # Output: SpiderMan<br><br># With a space<br>superhero = first_name + " " + last_name<br>print(superhero)  # Output: Spider Man</div>
+            <div class="activity-box">
+                <p><strong>Try It!</strong> Combine these strings:</p>
+                <div class="code-block">game = "Fort"<br>type = "nite"<br>result = game + type</div>
+                <p>What will result contain? <span style="color: green; display: none;" id="fortnite-answer">Fortnite! ✓</span></p>
+                <button onclick="document.getElementById('fortnite-answer').style.display='inline';">Show Answer</button>
+            </div>
+        </div>
+
+        <!-- Slide 12: Input from User -->
+        <div class="slide">
+            <h1>Getting Input from Users 🎤</h1>
+            <p>Make your programs interactive with input():</p>
+            <div class="code-block">name = input("What's your name? ")<br>print("Nice to meet you, " + name + "!")<br><br>age = input("How old are you? ")<br>print("Wow,", age, "is a great age!")</div>
+            <p>The input() function:</p>
+            <ul>
+                <li>Stops and waits for the user to type something</li>
+                <li>Saves what they type into a variable</li>
+                <li>Like asking a question and waiting for an answer!</li>
+            </ul>
+        </div>
+
+        <!-- Slide 13: Comments -->
+        <div class="slide">
+            <h1>Comments - Notes for Humans 📌</h1>
+            <p>Comments help explain your code (computer ignores them):</p>
+            <div class="code-block"># This is a comment - Python ignores this line<br>print("Hello")  # This prints Hello<br><br># You can write multiple lines<br># of comments to explain<br># complicated stuff<br><br>"""<br>You can also use triple quotes<br>for multi-line comments<br>like this!<br>"""</div>
+            <p>Use comments to:</p>
+            <ul>
+                <li>Explain what your code does</li>
+                <li>Leave notes for yourself</li>
+                <li>Temporarily disable code</li>
+            </ul>
+        </div>
+
+        <!-- Slide 14: Activity Time -->
+        <div class="slide">
+            <h1>Activity: Mad Libs Game! 🎮</h1>
+            <p>Let's create a simple Mad Libs story! Here's the code:</p>
+            <div class="code-block"># Mad Libs Game<br>print("Let's create a funny story!")<br><br>adjective = input("Give me an adjective (describing word): ")<br>noun = input("Give me a noun (person/place/thing): ")<br>verb = input("Give me a verb (action word): ")<br>food = input("Name a food: ")<br><br>print("\n--- Your Story ---")<br>print("The", adjective, noun, "decided to", verb)<br>print("while eating", food, "for breakfast!")<br>print("What a weird morning!")</div>
+            <div class="activity-box">
+                <p><strong>Your Turn!</strong> Go to <a href="https://www.online-python.com/" target="_blank">online-python.com</a> and create your own Mad Libs!</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Practice Problems -->
+        <div class="slide">
+            <h1>Practice Time! 💪</h1>
+            <div class="activity-box">
+                <p><strong>Challenge 1: Calculator</strong></p>
+                <p>Create a program that asks for two numbers and adds them:</p>
+                <div class="code-block">num1 = input("Enter first number: ")<br>num2 = input("Enter second number: ")<br># Hint: Convert strings to integers with int()<br>total = int(num1) + int(num2)<br>print("The sum is:", total)</div>
+            </div>
+            <div class="activity-box">
+                <p><strong>Challenge 2: Greeting Bot</strong></p>
+                <p>Make a program that greets the user by name and tells them a joke!</p>
+            </div>
+        </div>
+
+        <!-- Slide 16: Python Quiz -->
+        <div class="slide">
+            <h1>Python Quiz! 🎯</h1>
+            <h2>What will this code print?</h2>
+            <div class="code-block">x = 5<br>y = 3<br>z = x + y<br>print(z * 2)</div>
+            <div class="quiz-container">
+                <button class="quiz-option" onclick="checkAnswer(this, false)">8</button>
+                <button class="quiz-option" onclick="checkAnswer(this, true)">16</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">10</button>
+                <button class="quiz-option" onclick="checkAnswer(this, false)">53</button>
+            </div>
+            <div class="fun-fact" style="margin-top: 30px;">
+                <strong>Remember:</strong> Python does math in order: First it calculates x + y (which is 8), stores it in z, then multiplies z by 2!
+            </div>
+        </div>
+
+        <!-- Slide 17: Summary -->
+        <div class="slide">
+            <h1>Great Job Today! 🌟</h1>
+            <h2>You Learned:</h2>
+            <ul>
+                <li>✅ What Python is and why it's awesome</li>
+                <li>✅ How to use print() to display text</li>
+                <li>✅ Creating and using variables</li>
+                <li>✅ Basic math operations</li>
+                <li>✅ Working with strings</li>
+                <li>✅ Getting input from users</li>
+                <li>✅ Adding comments to code</li>
+            </ul>
+            <div class="activity-box">
+                <p><strong>Homework:</strong> Practice on <a href="https://www.online-python.com/" target="_blank">online-python.com</a></p>
+                <p>Create a program that asks for your favorite things and makes a story!</p>
+            </div>
+            <p style="text-align: center; margin-top: 30px; font-size: 1.3em;">
+                <strong>Next Class:</strong> If Statements & Making Decisions! 🤖
+            </p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+            <button id="nextBtn" onclick="changeSlide(1)">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+
+            if (n >= totalSlides) {
+                currentSlide = totalSlides - 1;
+            } else if (n < 0) {
+                currentSlide = 0;
+            } else {
+                currentSlide = n;
+            }
+
+            slides[currentSlide].classList.add('active');
+            document.getElementById('slideNumber').textContent = currentSlide + 1;
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        function checkAnswer(button, isCorrect) {
+            const options = button.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.disabled = true);
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.innerHTML = button.innerHTML + ' ✓';
+            } else {
+                button.classList.add('incorrect');
+                button.innerHTML = button.innerHTML + ' ✗';
+                // Show correct answer
+                options.forEach(opt => {
+                    if (opt.onclick && opt.onclick.toString().includes('true')) {
+                        opt.classList.add('correct');
+                        opt.innerHTML = opt.innerHTML + ' ✓';
+                    }
+                });
+            }
+        }
+
+        function showOutput(button, output) {
+            const outputBox = button.nextElementSibling;
+            outputBox.style.display = 'block';
+            outputBox.textContent = output;
+        }
+
+        function runPersonalCode() {
+            const name = document.getElementById('name-input').value || 'Someone';
+            const age = document.getElementById('age-input').value || '0';
+            const hobby = document.getElementById('hobby-input').value || 'something';
+
+            const output = document.getElementById('personal-output');
+            output.style.display = 'block';
+            output.innerHTML = `Hi, I'm ${name}<br>I am ${age} years old<br>I love ${hobby}`;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 8: Spreadsheet Project - Field Trip Budget</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .presentation-container {
+            width: 90%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .slide {
+            padding: 60px;
+            min-height: 600px;
+            display: none;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h1 {
+            color: #764ba2;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        p, li {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            margin-left: 30px;
+        }
+
+        .nav-buttons {
+            text-align: center;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: transform 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .emoji-big {
+            font-size: 3em;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0e7ff 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border: 2px solid #764ba2;
+        }
+
+        .vocab-term {
+            font-weight: bold;
+            color: #764ba2;
+            font-size: 1.3em;
+            margin-top: 20px;
+        }
+
+        .vocab-def {
+            background: #f8f9ff;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            margin: 10px 0 20px 0;
+        }
+
+        .quiz-container {
+            margin: 30px 0;
+        }
+
+        .quiz-question {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background: #f8f9ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            background: #e0e7ff;
+            transform: translateY(-2px);
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #4caf50;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #f44336;
+            color: #721c24;
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .fun-fact {
+            background: linear-gradient(135deg, #fff9e0 0%, #fff5cc 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border: 2px solid #ffc107;
+        }
+
+        .formula-box {
+            background: #f0f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            margin: 20px 0;
+            border: 2px solid #667eea;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .example-card {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+        }
+
+        .code-snippet {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .checklist {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e7ff;
+            display: flex;
+            align-items: center;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            color: #4caf50;
+            margin-right: 10px;
+            font-size: 1.5em;
+        }
+
+        .spreadsheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+
+        .spreadsheet-table th,
+        .spreadsheet-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .spreadsheet-table th {
+            background: #667eea;
+            color: white;
+        }
+
+        .spreadsheet-table tr:nth-child(even) {
+            background: #f8f9ff;
+        }
+
+        .tip-box {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+            margin: 20px 0;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #ff9800;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-number">Slide <span id="slideNumber">1</span> of <span id="totalSlides">20</span></div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="emoji-big">📊</div>
+            <h1>Day 8: Spreadsheet Project</h1>
+            <h2 style="text-align: center; color: #667eea;">Field Trip Budget Assignment</h2>
+            <div class="emoji-big">🚌</div>
+            <p style="text-align: center; font-size: 1.3em; margin-top: 30px;">
+                Today we'll review spreadsheet basics and tackle our first real project!
+            </p>
+            <div class="fun-fact">
+                <p><strong>Fun Fact:</strong> Spreadsheets were invented in 1979! Before that, accountants used actual paper ledgers and calculators. One mistake meant starting over! 😱</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Review Quiz -->
+        <div class="slide">
+            <h1>Quick Review!</h1>
+            <div class="quiz-container">
+                <p class="quiz-question">What does the formula =A1+B1 do?</p>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkAnswer(this, false, 1)">Multiplies cell A1 by B1</button>
+                    <button class="quiz-option" onclick="checkAnswer(this, true, 1)">Adds the values in cells A1 and B1</button>
+                    <button class="quiz-option" onclick="checkAnswer(this, false, 1)">Puts "A1+B1" in the cell</button>
+                    <button class="quiz-option" onclick="checkAnswer(this, false, 1)">Creates a link between cells</button>
+                </div>
+            </div>
+            <div class="activity-box">
+                <p><strong>Remember:</strong> In spreadsheets, = means "calculate this formula"!</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Formula Review -->
+        <div class="slide">
+            <h1>Spreadsheet Formulas Review 📝</h1>
+
+            <div class="vocab-term">Basic Math Operations</div>
+            <div class="vocab-def">
+                <p>• Addition: =A1+B1</p>
+                <p>• Subtraction: =A1-B1</p>
+                <p>• Multiplication: =A1*B1</p>
+                <p>• Division: =A1/B1</p>
+            </div>
+
+            <div class="vocab-term">Cell References</div>
+            <div class="vocab-def">
+                <p>• Relative: A1 (changes when copied)</p>
+                <p>• Absolute: $A$1 (stays the same when copied)</p>
+                <p>• Mixed: $A1 or A$1 (one part fixed)</p>
+            </div>
+
+            <div class="tip-box">
+                <p><strong>💡 Pro Tip:</strong> Use $ to "lock" parts of your formula that shouldn't change!</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Function Review -->
+        <div class="slide">
+            <h1>Essential Functions Review 🧮</h1>
+
+            <div class="example-grid">
+                <div class="example-card">
+                    <h3>SUM</h3>
+                    <div class="code-snippet">=SUM(A1:A10)</div>
+                    <p>Adds up all values in range</p>
+                </div>
+
+                <div class="example-card">
+                    <h3>AVERAGE</h3>
+                    <div class="code-snippet">=AVERAGE(B1:B10)</div>
+                    <p>Finds the mean of values</p>
+                </div>
+
+                <div class="example-card">
+                    <h3>COUNT</h3>
+                    <div class="code-snippet">=COUNT(C1:C10)</div>
+                    <p>Counts cells with numbers</p>
+                </div>
+
+                <div class="example-card">
+                    <h3>MAX / MIN</h3>
+                    <div class="code-snippet">=MAX(D1:D10)</div>
+                    <p>Finds highest/lowest value</p>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                <p><strong>Fun Fact:</strong> VisiCalc, the first spreadsheet program released in 1979, was so revolutionary that people bought $2,000 Apple II computers just to run the $100 software! It turned personal computers from hobbyist toys into serious business tools. 💡</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: New Functions Introduction -->
+        <div class="slide">
+            <h1>Advanced Function Review 📈</h1>
+
+            <div class="vocab-term">VLOOKUP</div>
+            <div class="vocab-def">
+                <p>Vertical Lookup - Like a phone book! Look up a value in one column, get info from another column in the same row.</p>
+                <p>Think: "Find this person's name, tell me their phone number"</p>
+            </div>
+
+            <div class="vocab-term">IF Statement</div>
+            <div class="vocab-def">
+                <p>Makes decisions! If something is true, do one thing. If false, do another.</p>
+                <p>Like: "IF it's raining, bring umbrella, ELSE bring sunglasses"</p>
+            </div>
+
+            <div class="activity-box">
+                <p><strong>Real World:</strong> VLOOKUP is used in every business to match data. IF statements automate decision-making!</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Cell References Introduction -->
+        <div class="slide">
+            <h1>Cell References: The Basics 📍</h1>
+
+            <h2>What are Cell References?</h2>
+            <p>When you use a formula like =A1+B1, the A1 and B1 are <strong>cell references</strong> - they point to specific cells!</p>
+
+            <div class="activity-box">
+                <p><strong>Two Types of References:</strong></p>
+                <ul>
+                    <li><strong>Relative References</strong> (like A1) - Change when you copy them</li>
+                    <li><strong>Absolute References</strong> (like $A$1) - Stay the same when copied</li>
+                </ul>
+            </div>
+
+            <div class="example-card" style="margin: 20px auto; max-width: 600px;">
+                <h3>Think of it like directions:</h3>
+                <p><strong>Relative:</strong> "Turn left at the next street" (changes based on where you are)</p>
+                <p><strong>Absolute:</strong> "Go to 123 Main Street" (same address no matter where you start)</p>
+            </div>
+
+            <div class="tip-box">
+                <p><strong>💡 Remember:</strong> Most of the time you want relative references, but sometimes you need absolute!</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Relative References -->
+        <div class="slide">
+            <h1>Relative References (Default) 🔄</h1>
+
+            <h2>How Relative References Work</h2>
+
+            <div class="formula-box">
+                <p>Cell C1: =A1+B1</p>
+                <p>Copy to C2: Becomes =A2+B2</p>
+                <p>Copy to C3: Becomes =A3+B3</p>
+            </div>
+
+            <div class="example-card" style="margin: 20px auto;">
+                <h3>Example: Calculating Totals</h3>
+                <table class="spreadsheet-table" style="width: 60%; margin: 20px auto;">
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>5</td>
+                        <td>=A1+B1 (shows 15)</td>
+                    </tr>
+                    <tr>
+                        <td>20</td>
+                        <td>8</td>
+                        <td>=A2+B2 (shows 28)</td>
+                    </tr>
+                    <tr>
+                        <td>30</td>
+                        <td>12</td>
+                        <td>=A3+B3 (shows 42)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="activity-box">
+                <p><strong>Key Point:</strong> The formula adjusts automatically! Each row adds its own numbers.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Absolute References -->
+        <div class="slide">
+            <h1>Absolute References: The Dollar Signs! 💲</h1>
+
+            <h2>Locking Cells with $</h2>
+            <p>Dollar signs "lock" parts of your reference so they don't change when copied!</p>
+
+            <div class="formula-box">
+                <p><strong>$A$1</strong> = Both column (A) and row (1) are locked</p>
+                <p><strong>$A1</strong> = Only column is locked</p>
+                <p><strong>A$1</strong> = Only row is locked</p>
+            </div>
+
+            <div class="example-card" style="margin: 20px auto;">
+                <h3>Example: Sales Tax Calculation</h3>
+                <p>Tax Rate in cell E1: 0.08 (8%)</p>
+                <table class="spreadsheet-table" style="width: 70%; margin: 20px auto;">
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                    </tr>
+                    <tr>
+                        <td>Item</td>
+                        <td>Price</td>
+                        <td>Tax</td>
+                    </tr>
+                    <tr>
+                        <td>Shirt</td>
+                        <td>$20</td>
+                        <td>=B2*$E$1</td>
+                    </tr>
+                    <tr>
+                        <td>Pants</td>
+                        <td>$35</td>
+                        <td>=B3*$E$1</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="tip-box">
+                <p><strong>💡 Pro Tip:</strong> Press F4 (Windows) or Cmd+T (Mac) to quickly add $ signs to a reference!</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Project Introduction -->
+        <div class="slide">
+            <h1>Today's Project: Field Trip Budget 🚌</h1>
+
+            <h2>The Scenario</h2>
+            <p>You're the assistant at Liahona Preparatory Academy planning a field trip to BYU Museums!</p>
+
+            <div class="activity-box">
+                <p><strong>Your Mission:</strong></p>
+                <ul>
+                    <li>Track student registrations and fees</li>
+                    <li>Calculate shirt costs based on sizes</li>
+                    <li>Identify which parents need reminders</li>
+                    <li>Generate summary statistics for the principal</li>
+                </ul>
+            </div>
+
+            <div class="fun-fact">
+                <p><strong>Real World:</strong> This is exactly what school administrators do for every field trip, sports event, and activity!</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Getting Started -->
+        <div class="slide">
+            <h1>Step 1: Get Your Template 📥</h1>
+
+            <div class="step-number">1</div>
+            <p>Download the template file from Schoology: <br>
+            <strong>LPA_Spreadsheet_Assignment_Template_v2.xlsx</strong></p>
+
+            <div class="step-number">2</div>
+            <p>Open Google Drive</p>
+
+            <div class="step-number">3</div>
+            <p>Click "New" → "File upload"</p>
+
+            <div class="step-number">4</div>
+            <p>Upload and open in Google Sheets</p>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Important:</strong> Work in Google Sheets, not Excel! We'll export to Excel at the end for submission.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Template Overview -->
+        <div class="slide">
+            <h1>Understanding Your Template 📋</h1>
+
+            <h3>Main Sheet - Student Roster</h3>
+            <table class="spreadsheet-table">
+                <tr>
+                    <th>Column</th>
+                    <th>Purpose</th>
+                    <th>Your Task</th>
+                </tr>
+                <tr>
+                    <td>A-D</td>
+                    <td>Student Info</td>
+                    <td>Add 3 new students</td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Shirt Size</td>
+                    <td>Already filled</td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td>Field Trip Fee</td>
+                    <td>Reference cell M2</td>
+                </tr>
+                <tr>
+                    <td>G</td>
+                    <td>Shirt Price</td>
+                    <td>VLOOKUP formula</td>
+                </tr>
+                <tr>
+                    <td>H</td>
+                    <td>Total Due</td>
+                    <td>Add F + G</td>
+                </tr>
+                <tr>
+                    <td>J</td>
+                    <td>Action</td>
+                    <td>IF formula</td>
+                </tr>
+            </table>
+
+            <h3>Data Sheet - Shirt Pricing</h3>
+            <p>Contains size-to-price lookup table for VLOOKUP</p>
+        </div>
+
+        <!-- Slide 9: Adding Students -->
+        <div class="slide">
+            <h1>Task 1: Add Three Students 👥</h1>
+
+            <div class="activity-box">
+                <p><strong>Add to the roster (make them up!):</strong></p>
+                <ul>
+                    <li>Student ID (continue the pattern)</li>
+                    <li>First Name</li>
+                    <li>Last Name</li>
+                    <li>Grade (9-12)</li>
+                    <li>Shirt Size (S, M, L, XL)</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <p><strong>💡 Tip:</strong> Have fun with names! Past students used their favorite video game characters, TikTokers, or even "Jeremy Pants" himself! 😄</p>
+            </div>
+
+            <div class="checklist">
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <span>Added 3 new students with complete information</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Field Trip Fee Formula -->
+        <div class="slide">
+            <h1>Task 2: Field Trip Fee Formula 💰</h1>
+
+            <h3>The Challenge:</h3>
+            <p>Everyone pays the same field trip fee (shown in cell M2: $15.00)</p>
+
+            <div class="formula-box">
+                <p>In cell F3, type: <strong>=$M$2</strong></p>
+            </div>
+
+            <div class="vocab-term">Why the dollar signs?</div>
+            <div class="vocab-def">
+                <p>$M$2 is an <strong>absolute reference</strong> - it won't change when we copy the formula down!</p>
+            </div>
+
+            <h3>After typing the formula:</h3>
+            <ol>
+                <li>Press Enter</li>
+                <li>Click cell F3 again</li>
+                <li>Copy (Ctrl+C or Cmd+C)</li>
+                <li>Select F4 through the last student</li>
+                <li>Paste (Ctrl+V or Cmd+V)</li>
+            </ol>
+
+            <div class="tip-box">
+                <p><strong>Check:</strong> All students should show $15.00!</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: VLOOKUP Introduction -->
+        <div class="slide">
+            <h1>Task 3: VLOOKUP for Shirt Prices 👕</h1>
+
+            <h3>How VLOOKUP Works:</h3>
+            <div class="formula-box">
+                =VLOOKUP(what_to_find, where_to_look, which_column, exact_match)
+            </div>
+
+            <div class="example-grid">
+                <div class="example-card">
+                    <h3>Our Lookup Table (Data sheet)</h3>
+                    <table style="width: 100%; font-size: 0.9em;">
+                        <tr><th>Size</th><th>Price</th></tr>
+                        <tr><td>S</td><td>$8.00</td></tr>
+                        <tr><td>M</td><td>$9.00</td></tr>
+                        <tr><td>L</td><td>$10.00</td></tr>
+                        <tr><td>XL</td><td>$12.00</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="activity-box">
+                <p><strong>Think of it like:</strong> "Look up the size in column E, find it in the Data sheet, tell me the price from column 2"</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: VLOOKUP Formula -->
+        <div class="slide">
+            <h1>Writing the VLOOKUP Formula 🔍</h1>
+
+            <div class="formula-box">
+                <p>In cell G3, type exactly:</p>
+                <p><strong>=VLOOKUP(E3,Data!A:B,2,FALSE)</strong></p>
+            </div>
+
+            <h3>Breaking it down:</h3>
+            <ul>
+                <li><strong>E3</strong> = The shirt size to look up</li>
+                <li><strong>Data!A:B</strong> = Look in columns A and B of the Data sheet</li>
+                <li><strong>2</strong> = Return the value from the 2nd column (Price)</li>
+                <li><strong>FALSE</strong> = Find an exact match only</li>
+            </ul>
+
+            <div class="tip-box">
+                <p><strong>After entering:</strong> Copy this formula down to all students. Each should show the correct price for their size!</p>
+            </div>
+
+            <div class="warning-box">
+                <p><strong>Common Mistake:</strong> Forgetting "Data!" before A:B. This tells Sheets to look in the Data sheet!</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Total Due Formula -->
+        <div class="slide">
+            <h1>Task 4: Calculate Total Due 💵</h1>
+
+            <h3>Simple Addition!</h3>
+            <p>Each student's total = Field Trip Fee + Shirt Price</p>
+
+            <div class="formula-box">
+                <p>In cell H3, type: <strong>=F3+G3</strong></p>
+            </div>
+
+            <div class="activity-box">
+                <p><strong>Copy down for all students!</strong></p>
+                <p>Example results:</p>
+                <ul>
+                    <li>Small shirt: $15 + $8 = $23.00</li>
+                    <li>Medium shirt: $15 + $9 = $24.00</li>
+                    <li>Large shirt: $15 + $10 = $25.00</li>
+                    <li>XL shirt: $15 + $12 = $27.00</li>
+                </ul>
+            </div>
+
+            <div class="checklist">
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <span>All totals calculated correctly</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: IF Statement -->
+        <div class="slide">
+            <h1>Task 5: IF Statement for Actions 📧</h1>
+
+            <h3>The Logic:</h3>
+            <p>IF the form is not received → Email Parents<br>
+               ELSE → OK</p>
+
+            <div class="formula-box">
+                <p>In cell J3, type:</p>
+                <p><strong>=IF(I3="No","Email Parents","OK")</strong></p>
+            </div>
+
+            <h3>How it reads:</h3>
+            <ul>
+                <li>IF cell I3 equals "No"</li>
+                <li>THEN show "Email Parents"</li>
+                <li>ELSE show "OK"</li>
+            </ul>
+
+            <div class="tip-box">
+                <p><strong>Copy down!</strong> You should see "Email Parents" for students with "No" in Form Received, and "OK" for those with "Yes"</p>
+            </div>
+
+            <div class="fun-fact">
+                <p><strong>Real World:</strong> Schools use IF statements to automatically flag missing permissions, unpaid fees, and incomplete registrations!</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Summary Statistics -->
+        <div class="slide">
+            <h1>Task 6: Summary Statistics 📊</h1>
+
+            <h3>Find the Summary Section (around row 15-20)</h3>
+
+            <div class="example-grid">
+                <div class="example-card">
+                    <h3>Total Students</h3>
+                    <div class="code-snippet">=COUNT(A3:A50)</div>
+                    <p>Counts non-empty student IDs</p>
+                </div>
+
+                <div class="example-card">
+                    <h3>Total Revenue</h3>
+                    <div class="code-snippet">=SUM(H3:H50)</div>
+                    <p>Adds all Total Due amounts</p>
+                </div>
+
+                <div class="example-card">
+                    <h3>Average Cost</h3>
+                    <div class="code-snippet">=AVERAGE(H3:H50)</div>
+                    <p>Finds mean cost per student</p>
+                </div>
+
+                <div class="example-card">
+                    <h3>Max/Min Cost</h3>
+                    <div class="code-snippet">=MAX(H3:H50)
+=MIN(H3:H50)</div>
+                    <p>Highest and lowest amounts</p>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <p><strong>Note:</strong> Use a range that includes all your students but not too many empty rows!</p>
+            </div>
+        </div>
+
+        <!-- Slide 16: Formatting -->
+        <div class="slide">
+            <h1>Task 7: Format as Currency 💲</h1>
+
+            <h3>Make it look professional!</h3>
+
+            <div class="step-number">1</div>
+            <p>Select columns F, G, and H (all money columns)</p>
+
+            <div class="step-number">2</div>
+            <p>Click Format menu → Number → Currency</p>
+
+            <div class="step-number">3</div>
+            <p>Check that all values show with $ and two decimal places</p>
+
+            <div class="activity-box">
+                <p><strong>Also format:</strong> Any summary cells with money values!</p>
+            </div>
+
+            <div class="tip-box">
+                <p><strong>Quick Tip:</strong> You can also use the $ button in the toolbar!</p>
+            </div>
+        </div>
+
+        <!-- Slide 17: Checklist -->
+        <div class="slide">
+            <h1>Final Checklist ✅</h1>
+
+            <div class="checklist">
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <span>Three new students added with all info</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <span>Field Trip Fee (F) references $M$2</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <span>VLOOKUP in column G pulls correct shirt prices</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <span>Total Due (H) adds F + G correctly</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <span>IF statement in Action column (J) works</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <span>Summary statistics use correct functions</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <span>All money columns formatted as currency</span>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <p><strong>Test your formulas!</strong> Change a shirt size and see if the price updates. Change Form Received and check the Action column!</p>
+            </div>
+        </div>
+
+        <!-- Slide 18: Submission -->
+        <div class="slide">
+            <h1>Submitting Your Work 📤</h1>
+
+            <div class="step-number">1</div>
+            <p><strong>In Google Sheets:</strong> File → Download → Microsoft Excel (.xlsx)</p>
+
+            <div class="step-number">2</div>
+            <p><strong>Save to your computer</strong> (remember where!)</p>
+
+            <div class="step-number">3</div>
+            <p><strong>Go to Schoology</strong></p>
+
+            <div class="step-number">4</div>
+            <p><strong>Find the assignment</strong> (Due Tuesday, Sept 30 at 11:59pm)</p>
+
+            <div class="step-number">5</div>
+            <p><strong>Upload your .xlsx file</strong></p>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Don't submit the Google Sheets link!</strong> Submit the downloaded .xlsx file!</p>
+            </div>
+
+            <div class="tip-box">
+                <p><strong>Pro Tip:</strong> Download a backup copy for yourself too!</p>
+            </div>
+        </div>
+
+        <!-- Slide 19: Troubleshooting -->
+        <div class="slide">
+            <h1>Common Problems & Solutions 🔧</h1>
+
+            <div class="activity-box">
+                <p><strong>VLOOKUP shows #N/A?</strong></p>
+                <ul>
+                    <li>Check spelling of shirt sizes (must match exactly!)</li>
+                    <li>Make sure you typed Data!A:B not just A:B</li>
+                    <li>FALSE must be spelled correctly</li>
+                </ul>
+            </div>
+
+            <div class="activity-box">
+                <p><strong>Formulas not copying down?</strong></p>
+                <ul>
+                    <li>Select the cell with the formula</li>
+                    <li>Copy (Ctrl+C)</li>
+                    <li>Select ALL cells where you want it</li>
+                    <li>Paste (Ctrl+V)</li>
+                </ul>
+            </div>
+
+            <div class="activity-box">
+                <p><strong>Summary functions showing 0 or error?</strong></p>
+                <ul>
+                    <li>Check your range (A3:A50 etc.)</li>
+                    <li>Make sure you're counting the right column</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 20: Summary -->
+        <div class="slide">
+            <h1>You Did It! 🎉</h1>
+
+            <h2>Skills You Just Mastered:</h2>
+            <ul>
+                <li>✅ Cell references (relative and absolute)</li>
+                <li>✅ VLOOKUP for data matching</li>
+                <li>✅ IF statements for decision-making</li>
+                <li>✅ Summary statistics (COUNT, SUM, AVERAGE, MAX, MIN)</li>
+                <li>✅ Professional formatting</li>
+                <li>✅ Real-world problem solving!</li>
+            </ul>
+
+            <div class="fun-fact">
+                <p><strong>Brother Cope's Challenge:</strong> Can you add a column that calculates how many days until the field trip? Hint: Use =TODAY() function! 🤔</p>
+            </div>
+
+            <div class="activity-box">
+                <p><strong>Remember:</strong> These exact skills are used in EVERY business, EVERY day! You're learning skills that will actually get you hired! 💼</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-buttons">
+            <button onclick="previousSlide()" id="prevBtn">← Previous</button>
+            <button onclick="nextSlide()" id="nextBtn">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 23;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide - 1].classList.add('active');
+
+            document.getElementById('slideNumber').textContent = currentSlide;
+
+            // Update button states
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        function checkAnswer(button, isCorrect, questionNum) {
+            const options = button.parentElement.querySelectorAll('.quiz-option');
+
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                opt.onclick = null;
+            });
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.innerHTML += ' ✓';
+            } else {
+                button.classList.add('incorrect');
+                button.innerHTML += ' ✗';
+
+                // Show the correct answer
+                options.forEach(opt => {
+                    if (questionNum === 1 && opt.textContent.includes('Adds the values')) {
+                        opt.classList.add('correct');
+                        opt.innerHTML += ' ✓';
+                    }
+                });
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides) nextSlide();
+            if (e.key === 'ArrowLeft' && currentSlide > 1) previousSlide();
+            if (e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < totalSlides) {
+                    nextSlide();
+                }
+            }
+        });
+
+        // Initialize
+        document.getElementById('totalSlides').textContent = totalSlides;
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
