@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 18 - Deploying to GitHub Pages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            min-height: 600px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            color: #667eea;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            color: #333;
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .emoji {
+            font-size: 4em;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .vocab-term {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .vocab-def {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .fun-fact {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .fun-fact strong {
+            color: #f57c00;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .activity-box strong {
+            font-size: 1.4em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .steps {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .steps ol, .steps ul {
+            margin-left: 25px;
+        }
+
+        .steps li {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-size: 1.1em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .quiz-option {
+            background: #f5f5f5;
+            border: 3px solid #667eea;
+            padding: 15px 25px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .quiz-option:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(10px);
+        }
+
+        .quiz-option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .quiz-option.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .quiz-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            align-items: center;
+        }
+
+        .slide-number {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .important {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .tip-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .tip-box strong {
+            color: #1976d2;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 5px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .warning-box strong {
+            color: #f57c00;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 18</h1>
+            <div class="emoji">🚀🌐</div>
+            <h2>Deploy to GitHub Pages</h2>
+            <div class="subtitle">Exam Review + Making Your Game Live on the Internet</div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">1</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 2: Today's Plan -->
+        <div class="slide">
+            <h2>Today's Plan 📋</h2>
+            <div class="emoji">🎯</div>
+            <div class="steps">
+                <ol>
+                    <li><strong>Exam Review</strong> - Go over questions from the Day 15 exam</li>
+                    <li><strong>Quick Vocab Review</strong> - Streaming and Algorithm from Day 17</li>
+                    <li><strong>New Tech Terms</strong> - Phishing and Malware</li>
+                    <li><strong>GitHub Pages Tutorial</strong> - Deploy your game to the internet!</li>
+                    <li><strong>Game Development Time</strong> - Keep building your awesome games</li>
+                </ol>
+            </div>
+            <div class="fun-fact">
+                <strong>📅 Reminder:</strong> Game assignment due November 15th - Less than 2 weeks away!
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">2</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 3: Exam Review -->
+        <div class="slide">
+            <h2>Exam Review 📝</h2>
+            <div class="emoji">✅</div>
+            <p style="text-align: center; font-size: 1.4em; margin-bottom: 30px;">
+                Let's go over some questions from the exam and discuss the answers!
+            </p>
+            <div class="activity-box">
+                <strong>What We'll Cover:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Questions that many people missed</li>
+                    <li>Concepts that need clarification</li>
+                    <li>Why certain answers were correct</li>
+                    <li>Any questions YOU have about the exam</li>
+                </ul>
+            </div>
+            <div class="tip-box">
+                <strong>💡 Learning Opportunity:</strong> Reviewing wrong answers is one of the best ways to learn! Don't be discouraged - use this to strengthen your understanding.
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">3</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 4: Vocab Review - Streaming -->
+        <div class="slide">
+            <h2>Vocab Review 📚</h2>
+            <div class="vocab-term">Streaming</div>
+            <div class="vocab-def">
+                <p><strong>Quick Reminder:</strong> A method of transmitting data (especially video and audio) over a network as a continuous flow, allowing playback to begin while the rest is still being received.</p>
+                <p style="margin-top: 15px;"><strong>Think of it like:</strong> Watching a YouTube video that starts playing right away - you don't wait for the entire video to download!</p>
+                <p style="margin-top: 15px;"><strong>Examples:</strong></p>
+                <ul style="margin-left: 30px; margin-top: 10px;">
+                    <li>Netflix, YouTube, Disney+, Spotify</li>
+                    <li>Twitch live streams</li>
+                    <li>Video calls on Zoom or FaceTime</li>
+                </ul>
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">4</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 5: Vocab Review - Algorithm -->
+        <div class="slide">
+            <h2>Vocab Review 📚</h2>
+            <div class="vocab-term">Algorithm</div>
+            <div class="vocab-def">
+                <p><strong>Quick Reminder:</strong> A step-by-step set of instructions or rules designed to solve a specific problem or perform a specific task.</p>
+                <p style="margin-top: 15px;"><strong>Think of it like:</strong> A recipe - step-by-step instructions to achieve a result!</p>
+                <p style="margin-top: 15px;"><strong>Algorithms you use every day:</strong></p>
+                <ul style="margin-left: 30px; margin-top: 10px;">
+                    <li>TikTok/Instagram feed (what posts to show you)</li>
+                    <li>Google search results (ranking pages)</li>
+                    <li>Netflix recommendations</li>
+                    <li>Navigation apps (calculating routes)</li>
+                </ul>
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">5</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 6: New Vocabulary - Phishing -->
+        <div class="slide">
+            <h2>New Vocabulary 📚</h2>
+            <div class="vocab-term">Phishing</div>
+            <div class="vocab-def">
+                <p><strong>Definition:</strong> A type of online scam where criminals send fake emails, texts, or messages pretending to be from legitimate companies or people to trick you into giving away passwords, credit card numbers, or other personal information.</p>
+                <p><strong>Real-world:</strong> Imagine someone wearing a fake UPS uniform knocking on your door asking for your house keys "for a delivery." That's what phishing does online - criminals dress up as trusted companies to steal your info!</p>
+            </div>
+            <h3 style="margin-top: 25px;">Common Phishing Tricks:</h3>
+            <ul style="margin-left: 40px; margin-top: 15px;">
+                <li>🎣 Fake emails claiming your account will be "suspended"</li>
+                <li>🎣 Texts saying you "won a prize" - just click this link!</li>
+                <li>🎣 Messages with urgent language: "ACT NOW!" or "VERIFY IMMEDIATELY!"</li>
+                <li>🎣 Links that look almost right (paypa1.com instead of paypal.com)</li>
+            </ul>
+            <div class="important">
+                <strong>🚨 Red Flags:</strong> Spelling errors, generic greetings ("Dear Customer"), threats of account closure, requests for passwords or credit cards. Legitimate companies NEVER ask for passwords via email!
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">6</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 7: Phishing Examples -->
+        <div class="slide">
+            <h2>Real Phishing Examples 🎣</h2>
+            <h3>Example 1: Fake Netflix Email</h3>
+            <div class="code-box">
+From: netflix-billing@secure-update.net
+Subject: Your Account Has Been Suspended
+
+Dear Customer,
+
+Your payment method has failed. Click here to update
+your billing information within 24 hours or your
+account will be permanently deleted.
+
+[UPDATE PAYMENT NOW]
+            </div>
+
+            <div class="important">
+                <strong>🚨 Red Flags:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Email is NOT from @netflix.com</li>
+                    <li>Generic greeting ("Dear Customer" instead of your name)</li>
+                    <li>Creates panic with threats and deadlines</li>
+                    <li>Asks you to click a link to "verify" info</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 What to do:</strong> Delete it! If you're worried, go directly to netflix.com (don't click the email link) and check your account there.
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">7</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 8: New Vocabulary - Malware -->
+        <div class="slide">
+            <h2>New Vocabulary 📚</h2>
+            <div class="vocab-term">Malware</div>
+            <div class="vocab-def">
+                <p><strong>Definition:</strong> Malicious software designed to damage, disrupt, or steal data from your computer, phone, or network. It's the umbrella term for all bad software including viruses, ransomware, spyware, and trojans.</p>
+                <p><strong>Real-world:</strong> Think of it as digital germs or pests! Just like how bacteria makes you sick or termites destroy a house, malware infects your device to steal info, spy on you, or hold your files hostage.</p>
+            </div>
+            <h3 style="margin-top: 25px;">Types of Malware:</h3>
+            <ul style="margin-left: 40px; margin-top: 15px;">
+                <li>🦠 <strong>Virus:</strong> Copies itself to spread to other files/computers</li>
+                <li>🔒 <strong>Ransomware:</strong> Locks your files and demands payment to unlock them</li>
+                <li>👁️ <strong>Spyware:</strong> Secretly watches what you do and steals passwords</li>
+                <li>🐴 <strong>Trojan:</strong> Pretends to be legit software but does bad stuff in the background</li>
+                <li>🤖 <strong>Bot:</strong> Takes control of your device to attack others</li>
+            </ul>
+            <div class="warning-box">
+                <strong>⚠️ How to avoid malware:</strong> Don't download sketchy apps, keep software updated, use antivirus software, and don't click suspicious links or email attachments!
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">8</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 9: What is GitHub Pages? -->
+        <div class="slide">
+            <h2>What is GitHub Pages? 🌐</h2>
+            <div class="emoji">📄→🌍</div>
+            <div class="vocab-def">
+                <p><strong>GitHub Pages</strong> is a free hosting service from GitHub that turns your repository into a live website on the internet!</p>
+            </div>
+            <h3>Why It's Awesome:</h3>
+            <ul style="margin-left: 40px; margin-top: 20px;">
+                <li>✅ <strong>Completely FREE</strong> - No cost, no credit card needed</li>
+                <li>✅ <strong>Fast deployment</strong> - Live in 1-2 minutes after pushing code</li>
+                <li>✅ <strong>Automatic updates</strong> - Push new code, site updates automatically</li>
+                <li>✅ <strong>Gets you a real URL</strong> - Share your game with anyone!</li>
+                <li>✅ <strong>Perfect for static sites</strong> - Exactly what we're building</li>
+                <li>✅ <strong>Professional</strong> - Real developers use this for portfolios and projects</li>
+            </ul>
+            <div class="important">
+                <strong>⚠️ Limitation:</strong> Only works for static websites (HTML, CSS, JavaScript). Can't run server-side code or databases. But that's perfect for our games!
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">9</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 10: Deploying to GitHub Pages - Step 1 -->
+        <div class="slide">
+            <h2>Deploy Your Game! 🚀</h2>
+            <h3>Step 1: Make Sure Your File is Named Correctly</h3>
+
+            <div class="warning-box">
+                <strong>⚠️ CRITICAL:</strong> Your main file MUST be named <code>index.html</code> and be in the root directory (not in a subfolder)!
+            </div>
+
+            <div class="steps">
+                <h4>Check Your File:</h4>
+                <ol>
+                    <li>Look at the Explorer panel in Codespaces (left sidebar)</li>
+                    <li>Find your main HTML file</li>
+                    <li>✅ CORRECT: <code>index.html</code> (at the root level)</li>
+                    <li>❌ WRONG: <code>game.html</code> or <code>src/index.html</code></li>
+                </ol>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 If your file is named wrong:</strong> Right-click it → Rename → Change to "index.html"
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 If it's in a subfolder:</strong> Drag it to the root level (top of Explorer panel)
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">10</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 11: Deploying to GitHub Pages - Step 2 -->
+        <div class="slide">
+            <h2>Deploy Your Game! 🚀</h2>
+            <h3>Step 2: Commit and Push Your Code</h3>
+
+            <p style="margin-bottom: 25px;">We need to save your code to GitHub before we can deploy it.</p>
+
+            <div class="steps">
+                <h4>In the Codespaces Terminal:</h4>
+                <div class="code-box">
+git add .
+git commit -m "Add my game"
+git push
+                </div>
+            </div>
+
+            <div class="steps" style="background: white; border: 2px solid #667eea;">
+                <h4>What Each Command Does:</h4>
+                <ul>
+                    <li><strong>git add .</strong> - Stages all your files for commit</li>
+                    <li><strong>git commit -m "message"</strong> - Saves a snapshot with a message</li>
+                    <li><strong>git push</strong> - Uploads your code to GitHub</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Pro Tip:</strong> You can change "Add my game" to any message that describes your changes, like "Fix snake speed" or "Add sound effects"
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">11</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 12: Deploying to GitHub Pages - Step 3 -->
+        <div class="slide">
+            <h2>Deploy Your Game! 🚀</h2>
+            <h3>Step 3: Enable GitHub Pages</h3>
+
+            <div class="steps">
+                <ol>
+                    <li><strong>Go to your repository on GitHub.com</strong>
+                        <ul style="margin-left: 25px; margin-top: 8px;">
+                            <li>Open a new tab and go to github.com</li>
+                            <li>Click on your repository name</li>
+                        </ul>
+                    </li>
+                    <li><strong>Click "Settings"</strong> (in the top menu bar)</li>
+                    <li><strong>Click "Pages"</strong> (in the left sidebar)</li>
+                    <li><strong>Under "Source":</strong>
+                        <ul style="margin-left: 25px; margin-top: 8px;">
+                            <li>Select <strong>"Deploy from a branch"</strong></li>
+                            <li>Select <strong>"main"</strong> branch</li>
+                            <li>Leave folder as <strong>"/ (root)"</strong></li>
+                        </ul>
+                    </li>
+                    <li><strong>Click "Save"</strong></li>
+                </ol>
+            </div>
+
+            <div class="warning-box">
+                <strong>⏱️ Be Patient:</strong> It takes 1-2 minutes for your site to deploy. Don't panic if it doesn't work immediately!
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">12</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 13: Deploying to GitHub Pages - Step 4 -->
+        <div class="slide">
+            <h2>Deploy Your Game! 🚀</h2>
+            <h3>Step 4: Get Your URL!</h3>
+
+            <div class="steps">
+                <ol>
+                    <li>Stay on the "Pages" settings page</li>
+                    <li>Wait about 1-2 minutes</li>
+                    <li>Refresh the page</li>
+                    <li>At the top, you'll see a green success message with your URL!</li>
+                </ol>
+            </div>
+
+            <div class="code-box">
+Your site is live at:
+https://username.github.io/repository-name/
+            </div>
+
+            <div class="activity-box">
+                <strong>✅ Success!</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Click the URL to test your game</li>
+                    <li>Copy the URL - this is what you'll submit for the assignment!</li>
+                    <li>Share it with friends and family!</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Updating Your Game:</strong> Whenever you make changes, just commit and push again. GitHub Pages will automatically update within 1-2 minutes!
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">13</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 14: Troubleshooting -->
+        <div class="slide">
+            <h2>Troubleshooting 🔧</h2>
+            <h3>Common Issues and Fixes:</h3>
+
+            <div class="important">
+                <h4>❌ Problem: Blank page or 404 error</h4>
+                <p><strong>Solutions:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Make sure file is named <code>index.html</code> (lowercase, no typos)</li>
+                    <li>Make sure <code>index.html</code> is in root directory, NOT in a subfolder</li>
+                    <li>Did you push your code? Run: <code>git push</code></li>
+                    <li>Wait 2-3 minutes, then try again</li>
+                </ul>
+            </div>
+
+            <div class="important">
+                <h4>❌ Problem: Old version showing (changes not appearing)</h4>
+                <p><strong>Solutions:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Clear your browser cache (Ctrl+Shift+R or Cmd+Shift+R)</li>
+                    <li>Open in incognito/private window</li>
+                    <li>Make sure you ran <code>git add .</code> then <code>git commit</code> then <code>git push</code></li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Still stuck?</strong> Raise your hand and Brother Cope will help!
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">14</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 15: Work Time -->
+        <div class="slide">
+            <h2>Work Time! 💻</h2>
+            <div class="emoji">🎮</div>
+
+            <div class="activity-box">
+                <strong>Today's Goals:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Deploy your game to GitHub Pages</li>
+                    <li>Test your live URL to make sure it works</li>
+                    <li>Continue building and improving your game</li>
+                    <li>Make sure you're meeting assignment requirements</li>
+                </ul>
+            </div>
+
+            <div class="important">
+                <strong>📅 Assignment Reminder:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Due:</strong> November 15th</li>
+                    <li><strong>Submit:</strong> Your GitHub Pages URL</li>
+                    <li><strong>Include:</strong> Written reflection (3-5 sentences)</li>
+                </ul>
+            </div>
+
+            <div class="fun-fact">
+                <strong>🎯 Pro Tip:</strong> Deploy early and deploy often! Get your game on GitHub Pages TODAY, then you can keep improving it and the URL will automatically update.
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">15</span> of <span id="totalSlides">15</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+
+        // Update total slides count
+        document.querySelectorAll('#totalSlides').forEach(el => {
+            el.textContent = totalSlides;
+        });
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+
+            if (n > totalSlides) {
+                currentSlide = 1;
+            }
+            if (n < 1) {
+                currentSlide = totalSlides;
+            }
+
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            slides[currentSlide - 1].classList.add('active');
+
+            // Update slide numbers
+            document.querySelectorAll('#slideNum').forEach(el => {
+                el.textContent = currentSlide;
+            });
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Quiz function
+        function checkAnswer(button, isCorrect) {
+            const allOptions = button.parentElement.querySelectorAll('.quiz-option');
+
+            allOptions.forEach(option => {
+                option.disabled = true;
+                option.style.cursor = 'not-allowed';
+            });
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.innerHTML += ' ✓';
+            } else {
+                button.classList.add('incorrect');
+                button.innerHTML += ' ✗';
+                allOptions.forEach(option => {
+                    if (option !== button && !option.classList.contains('incorrect')) {
+                        option.classList.add('correct');
+                        option.innerHTML += ' ✓ (Correct Answer)';
+                    }
+                });
+            }
+        }
+
+        // Initialize
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
