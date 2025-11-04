@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Exploring Computer Science - Retake Exam</title>
+    <style>
+        @media print {
+            @page {
+                size: letter;
+                margin: 0.75in;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+
+            .no-break {
+                page-break-inside: avoid;
+            }
+
+            .answer-key {
+                page-break-before: always;
+            }
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #000;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 18pt;
+            text-align: center;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 14pt;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            border-bottom: 2px solid #333;
+            padding-bottom: 4px;
+        }
+
+        h3 {
+            font-size: 13pt;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .header-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .name-date {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .instructions {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .instructions ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .question {
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+
+        .question p {
+            margin: 5px 0 8px 0;
+            font-weight: normal;
+        }
+
+        .question strong {
+            font-weight: bold;
+        }
+
+        .options {
+            margin: 8px 0 8px 20px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .options li {
+            margin: 4px 0;
+            padding-left: 10px;
+        }
+
+        .code-block {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 11pt;
+            white-space: pre;
+            page-break-inside: avoid;
+        }
+
+        .inline-code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 11pt;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #333;
+            margin: 25px 0;
+        }
+
+        .tf-options {
+            font-weight: bold;
+            font-size: 13pt;
+        }
+
+        .answer-key {
+            page-break-before: always;
+        }
+
+        .scoring-section {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff9e6;
+            border: 2px solid #ffcc00;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Exploring Computer Science - Retake Exam</h1>
+<div class="header-info">
+    <h2 style="border: none; text-align: center; margin-top: 5px;">FALL Semester 2025</h2>
+    <h2 style="border: none; text-align: center; margin-top: 5px;">Days 1-11</h2>
+</div>
+
+<div class="name-date">
+    <span><strong>Name:</strong> _________________________________________</span>
+    <span><strong>Date:</strong> ______________________</span>
+</div>
+
+<div class="instructions">
+    <p><strong>Instructions:</strong></p>
+    <ul>
+        <li>This exam covers material from Day 1 through Day 11</li>
+        <li>You have <strong>60 minutes</strong> to complete this exam</li>
+        <li>Questions 46-50 are optional bonus questions. You will not be penalized if you get them wrong.</li>
+        <li>Good luck!</li>
+    </ul>
+    <p><strong>Exam Rules:</strong></p>
+    <ul>
+        <li><strong>Open notes test.</strong> All notes and materials are allowed, including those on your computers</li>
+        <li>You are NOT allowed to use AI or Google search (or other search engines)</li>
+        <li>You are NOT allowed to receive help from others</li>
+    </ul>
+</div>
+
+<hr>
+
+<h2>Multiple Choice Questions (39 questions)</h2>
+
+<div class="question">
+    <p><strong>1.</strong> In the binary number system, how many different values can a single bit store?</p>
+    <ul class="options">
+        <li>A) 10</li>
+        <li>B) 1</li>
+        <li>C) 8</li>
+        <li>D) 2</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>2.</strong> What is the decimal equivalent of the binary number 1110?</p>
+    <ul class="options">
+        <li>A) 12</li>
+        <li>B) 14</li>
+        <li>C) 16</li>
+        <li>D) 10</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>3.</strong> Which storage unit is larger than a Gigabyte (GB) but smaller than a Terabyte (TB)?</p>
+    <ul class="options">
+        <li>A) There is no unit between GB and TB</li>
+        <li>B) Megabyte (MB)</li>
+        <li>C) Kilobyte (KB)</li>
+        <li>D) Petabyte (PB)</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>4.</strong> Which statement correctly describes the difference between RAM and Storage?</p>
+    <ul class="options">
+        <li>A) RAM stores data permanently, Storage stores data temporarily</li>
+        <li>B) They both store data the same way</li>
+        <li>C) RAM is only for running applications</li>
+        <li>D) RAM is fast but temporary, Storage is slower but permanent</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>5.</strong> Which of these is a primary responsibility of an operating system?</p>
+    <ul class="options">
+        <li>A) Managing computer hardware and software resources</li>
+        <li>B) Creating spreadsheets</li>
+        <li>C) Editing photos</li>
+        <li>D) Playing games</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>6.</strong> A file extension indicates what about a file?</p>
+    <ul class="options">
+        <li>A) When it was created</li>
+        <li>B) What type of file it is</li>
+        <li>C) Who owns the file</li>
+        <li>D) How large the file is</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>7.</strong> Which path format is correct for Windows?</p>
+    <ul class="options">
+        <li>A) C:\Program Files\App\file.exe</li>
+        <li>B) /Program Files/App/file.exe</li>
+        <li>C) C:/Program Files/App/file.exe</li>
+        <li>D) ~Program Files/App/file.exe</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>8.</strong> The <span class="inline-code">dir</span> command in Windows is used to:</p>
+    <ul class="options">
+        <li>A) Delete files</li>
+        <li>B) Create directories</li>
+        <li>C) List the contents of a directory</li>
+        <li>D) Move files</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>9.</strong> How many Kilobytes (KB) are in 1 Megabyte (MB)?</p>
+    <ul class="options">
+        <li>A) 10 KB</li>
+        <li>B) 100 KB</li>
+        <li>C) 10,000 KB</li>
+        <li>D) 1,000 KB</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>10.</strong> A file path tells you:</p>
+    <ul class="options">
+        <li>A) How fast your computer is</li>
+        <li>B) Where a file is located on your computer</li>
+        <li>C) What program created the file</li>
+        <li>D) When the file was last opened</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>11.</strong> The acronym HTML means:</p>
+    <ul class="options">
+        <li>A) HyperText Markup Language</li>
+        <li>B) High Technology Markup Language</li>
+        <li>C) Hyperlink and Text Markup Language</li>
+        <li>D) Home Tool Markup Language</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>12.</strong> Which HTML tag would you use to create a medium-sized heading?</p>
+    <ul class="options">
+        <li>A) <span class="inline-code">&lt;h1&gt;</span></li>
+        <li>B) <span class="inline-code">&lt;h6&gt;</span></li>
+        <li>C) <span class="inline-code">&lt;h3&gt;</span></li>
+        <li>D) <span class="inline-code">&lt;heading&gt;</span></li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>13.</strong> The three core technologies for building websites are:</p>
+    <ul class="options">
+        <li>A) HTML, Python, and JavaScript</li>
+        <li>B) HTML, CSS, and JavaScript</li>
+        <li>C) HTML, Java, and CSS</li>
+        <li>D) XML, CSS, and JavaScript</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>14.</strong> What does the <span class="inline-code">&lt;a&gt;</span> tag do in HTML?</p>
+    <ul class="options">
+        <li>A) Creates an article</li>
+        <li>B) Creates an anchor/link</li>
+        <li>C) Creates an animation</li>
+        <li>D) Creates an audio element</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>15.</strong> JavaScript is primarily used to:</p>
+    <ul class="options">
+        <li>A) Add behavior and interactivity to websites</li>
+        <li>B) Style websites</li>
+        <li>C) Structure website content</li>
+        <li>D) Store website data</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>16.</strong> Which tag creates a line break in HTML?</p>
+    <ul class="options">
+        <li>A) <span class="inline-code">&lt;break&gt;</span></li>
+        <li>B) <span class="inline-code">&lt;lb&gt;</span></li>
+        <li>C) <span class="inline-code">&lt;newline&gt;</span></li>
+        <li>D) <span class="inline-code">&lt;br&gt;</span></li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>17.</strong> Which is a valid file extension?</p>
+    <ul class="options">
+        <li>A) MyFile</li>
+        <li>B) .docx</li>
+        <li>C) C:\</li>
+        <li>D) Document</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>18.</strong> Git is best described as:</p>
+    <ul class="options">
+        <li>A) A version control system for tracking code changes</li>
+        <li>B) A web browser</li>
+        <li>C) A programming language</li>
+        <li>D) A file storage service</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>19.</strong> When you "fork" a repository on GitHub, you:</p>
+    <ul class="options">
+        <li>A) Delete the original repository</li>
+        <li>B) Create your own copy of the repository on GitHub</li>
+        <li>C) Download it to your local computer</li>
+        <li>D) Send it to another user</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>20.</strong> A Git "commit" is:</p>
+    <ul class="options">
+        <li>A) Uploading files to the internet</li>
+        <li>B) A saved snapshot of your project at a point in time</li>
+        <li>C) Deleting old versions of code</li>
+        <li>D) Sharing code with other developers</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>21.</strong> The COUNT function in a spreadsheet:</p>
+    <ul class="options">
+        <li>A) Finds the average</li>
+        <li>B) Counts how many cells contain numbers</li>
+        <li>C) Adds all numbers together</li>
+        <li>D) Finds the maximum value</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>22.</strong> Open source software means:</p>
+    <ul class="options">
+        <li>A) Anyone can view and modify the source code</li>
+        <li>B) The software is free but you can't change it</li>
+        <li>C) Only businesses can use it</li>
+        <li>D) The software costs money</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>23.</strong> All spreadsheet formulas must begin with which symbol?</p>
+    <ul class="options">
+        <li>A) @</li>
+        <li>B) $</li>
+        <li>C) #</li>
+        <li>D) =</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>24.</strong> In a spreadsheet, the SUM function is used to:</p>
+    <ul class="options">
+        <li>A) Find the largest number</li>
+        <li>B) Add numbers together</li>
+        <li>C) Count numbers</li>
+        <li>D) Calculate the average</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>25.</strong> A cell in a spreadsheet is:</p>
+    <ul class="options">
+        <li>A) A column of data</li>
+        <li>B) The intersection of a row and column where you enter data</li>
+        <li>C) A sheet in a workbook</li>
+        <li>D) A formula</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>26.</strong> Which formula would calculate the average of cells A5 through A15, but only if cell B5 contains "Complete"?</p>
+    <ul class="options">
+        <li>A) <span class="inline-code">=AVERAGE(A5:A15)</span></li>
+        <li>B) <span class="inline-code">=IF(B5="Complete",AVERAGE(A5:A15),0)</span></li>
+        <li>C) <span class="inline-code">=SUM(A5:A15)/COUNT(A5:A15)</span></li>
+        <li>D) <span class="inline-code">=AVERAGE(B5,A5:A15)</span></li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>27.</strong> In a spreadsheet, to find the largest value in cells C1 through C20, you would use:</p>
+    <ul class="options">
+        <li>A) <span class="inline-code">=MIN(C1:C20)</span></li>
+        <li>B) <span class="inline-code">=SUM(C1:C20)</span></li>
+        <li>C) <span class="inline-code">=AVERAGE(C1:C20)</span></li>
+        <li>D) <span class="inline-code">=MAX(C1:C20)</span></li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>28.</strong> In the Windows Command Line, what is the purpose of the <span class="inline-code">mkdir</span> command:</p>
+    <ul class="options">
+        <li>A) Create a new directory/folder</li>
+        <li>B) Delete a directory</li>
+        <li>C) Move files between directories</li>
+        <li>D) List directory contents</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>29.</strong> Python is named after:</p>
+    <ul class="options">
+        <li>A) The python snake</li>
+        <li>B) A famous programmer</li>
+        <li>C) Monty Python, a comedy group</li>
+        <li>D) A Greek mathematician</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>30.</strong> Which of these is a string in Python?</p>
+    <ul class="options">
+        <li>A) 55</li>
+        <li>B) "Coding is fun"</li>
+        <li>C) True</li>
+        <li>D) 2.5</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>31.</strong> In Python, comments start with which symbol?</p>
+    <ul class="options">
+        <li>A) //</li>
+        <li>B) /*</li>
+        <li>C) #</li>
+        <li>D) --</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>32.</strong> The print() function in Python:</p>
+    <ul class="options">
+        <li>A) Saves your program</li>
+        <li>B) Displays output to the screen</li>
+        <li>C) Prints documents on a printer</li>
+        <li>D) Checks for syntax errors</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>33.</strong> To check if two values are equal in Python, use:</p>
+    <ul class="options">
+        <li>A) =</li>
+        <li>B) !=</li>
+        <li>C) ==</li>
+        <li>D) <></li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>34.</strong> Which is an integer in Python?</p>
+    <ul class="options">
+        <li>A) 50.0</li>
+        <li>B) "Hello"</li>
+        <li>C) 50</li>
+        <li>D) False</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>35.</strong> The <span class="inline-code">elif</span> keyword in Python means:</p>
+    <ul class="options">
+        <li>A) "Else if" - another condition to check</li>
+        <li>B) End the loop</li>
+        <li>C) Exit the if statement</li>
+        <li>D) Error if</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>36.</strong> A while loop in Python:</p>
+    <ul class="options">
+        <li>A) Runs exactly 10 times</li>
+        <li>B) Runs code as long as a condition remains True</li>
+        <li>C) Never runs</li>
+        <li>D) Runs code only once</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>37.</strong> In Python, a list is:</p>
+    <ul class="options">
+        <li>A) A data structure that holds multiple items</li>
+        <li>B) A single value</li>
+        <li>C) A type of function</li>
+        <li>D) An operator</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>38.</strong> Python lists use zero-based indexing, meaning the first item is at index:</p>
+    <ul class="options">
+        <li>A) 1</li>
+        <li>B) -1</li>
+        <li>C) 2</li>
+        <li>D) 0</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>39.</strong> What will this Python code output?</p>
+    <div class="code-block">person = "Charlie"
+score = 95
+print("Great job " + person)</div>
+    <ul class="options">
+        <li>A) Great job person</li>
+        <li>B) Great job Charlie</li>
+        <li>C) Great job 95</li>
+        <li>D) Error</li>
+    </ul>
+</div>
+
+<h3>True/False Questions (6 questions)</h3>
+
+<div class="question">
+    <p><strong>40.</strong> RAM retains all data even when the computer is powered off.</p>
+    <ul class="options">
+        <li>A) True</li>
+        <li>B) False</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>41.</strong> One Terabyte (TB) is larger than one Gigabyte (GB).</p>
+    <ul class="options">
+        <li>A) True</li>
+        <li>B) False</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>42.</strong> The input() function in Python gets data from the user.</p>
+    <ul class="options">
+        <li>A) True</li>
+        <li>B) False</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>43.</strong> GitHub allows developers to collaborate and share code online.</p>
+    <ul class="options">
+        <li>A) True</li>
+        <li>B) False</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>44.</strong> In Python, variables can change their value during program execution.</p>
+    <ul class="options">
+        <li>A) True</li>
+        <li>B) False</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>45.</strong> JavaScript is used to add style and formatting to websites.</p>
+    <ul class="options">
+        <li>A) True</li>
+        <li>B) False</li>
+    </ul>
+</div>
+
+<hr>
+
+<h2>Optional Bonus Questions (46-50)</h2>
+
+<div class="question">
+    <p><strong>46.</strong> What will this Python code output?</p>
+    <div class="code-block">m = 15
+n = 8
+if (m > 10 and n < 15) or m == 8:
+    print("Success")
+else:
+    print("Failure")</div>
+    <ul class="options">
+        <li>A) Error</li>
+        <li>B) Success</li>
+        <li>C) Failure</li>
+        <li>D) Nothing</li>
+        <li>E) True</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>47.</strong> You have the formula <span class="inline-code">=C5*$D$5</span> in cell E5. If you copy it to cell E6, what will the formula become?</p>
+    <ul class="options">
+        <li>A) =C5*D5</li>
+        <li>B) =C5*$D$5</li>
+        <li>C) =C6*$D$5</li>
+        <li>D) =C6*D6</li>
+        <li>E) =C6*$D$6</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>48.</strong> In the VLOOKUP formula <span class="inline-code">=VLOOKUP(G2,Inventory!A:D,4,FALSE)</span>, what does the "4" represent?</p>
+    <ul class="options">
+        <li>A) Look in the fourth row</li>
+        <li>B) Return the value from the fourth column</li>
+        <li>C) Search the first 4 rows</li>
+        <li>D) Look for the number 4</li>
+        <li>E) Return the fourth match</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>49.</strong> If cell C10 contains the value 78, what will this nested IF formula return: <span class="inline-code">=IF(C10&gt;85,"Pass",IF(C10&gt;70,"Retry","Fail"))</span>?</p>
+    <ul class="options">
+        <li>A) Pass</li>
+        <li>B) Error</li>
+        <li>C) Fail</li>
+        <li>D) Retry</li>
+        <li>E) TRUE</li>
+    </ul>
+</div>
+
+<div class="question">
+    <p><strong>50.</strong> What sequence does <span class="inline-code">range(3, 15, 4)</span> generate in Python?</p>
+    <ul class="options">
+        <li>A) 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14</li>
+        <li>B) 4, 8, 12</li>
+        <li>C) 3, 7, 11</li>
+        <li>D) 3, 7, 11, 15</li>
+        <li>E) 7, 11, 15</li>
+    </ul>
+</div>
+
+<hr>
+
+<p style="text-align: center; margin-top: 30px;"><strong>End of Exam</strong></p>
+
+</body>
+</html>

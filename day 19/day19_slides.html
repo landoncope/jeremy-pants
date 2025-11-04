@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 19 - Tech Vocabulary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            min-height: 600px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            color: #667eea;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            color: #333;
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .emoji {
+            font-size: 4em;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .vocab-term {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .vocab-def {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .fun-fact {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .fun-fact strong {
+            color: #f57c00;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .activity-box strong {
+            font-size: 1.4em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .steps {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .steps ol, .steps ul {
+            margin-left: 25px;
+        }
+
+        .steps li {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .important {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .tip-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .tip-box strong {
+            color: #1976d2;
+        }
+
+        .comparison-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .comparison-item {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .comparison-item h4 {
+            margin-bottom: 15px;
+        }
+
+        .historical-image {
+            width: 100%;
+            max-width: 450px;
+            border-radius: 10px;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            font-size: 1em;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            align-items: center;
+        }
+
+        .slide-number {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            .comparison-box {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 19</h1>
+            <div class="emoji">📚🐛</div>
+            <h2>Tech Vocabulary Day</h2>
+            <div class="subtitle">Review + Two New Terms</div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">1</span> of <span id="totalSlides">9</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 2: Today's Plan -->
+        <div class="slide">
+            <h2>Today's Plan 📋</h2>
+            <div class="emoji">🎯</div>
+            <div class="steps">
+                <ol>
+                    <li><strong>Quick Vocab Review</strong> - Phishing and Malware from Day 18</li>
+                    <li><strong>Test Review</strong> - Go over the exam from last week</li>
+                    <li><strong>New Term #1</strong> - Emoji vs Emoticon (what's the difference?)</li>
+                    <li><strong>New Term #2</strong> - Bug (the famous computer history story!)</li>
+                    <li><strong>Game Development Time</strong> - Keep building your projects</li>
+                </ol>
+            </div>
+            <div class="fun-fact">
+                <strong>📅 Reminder:</strong> Game assignment due November 15th!
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">2</span> of <span id="totalSlides">9</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 3: Vocab Review - Phishing -->
+        <div class="slide">
+            <h2>Vocab Review 📚</h2>
+            <div class="vocab-term">Phishing</div>
+            <div class="vocab-def">
+                <p><strong>Quick Reminder:</strong> A type of online scam where criminals send fake emails, texts, or messages pretending to be from legitimate companies or people to trick you into giving away passwords, credit card numbers, or other personal information.</p>
+                <p style="margin-top: 15px;"><strong>Think of it like:</strong> Someone wearing a fake UPS uniform knocking on your door asking for your house keys "for a delivery." That's what phishing does online - criminals dress up as trusted companies to steal your info!</p>
+            </div>
+            <div class="important">
+                <strong>🚨 Red Flags to Watch For:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Spelling errors and bad grammar</li>
+                    <li>Generic greetings ("Dear Customer")</li>
+                    <li>Urgent threats ("Your account will be suspended!")</li>
+                    <li>Requests for passwords or credit cards</li>
+                    <li>Suspicious links or email addresses</li>
+                </ul>
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">3</span> of <span id="totalSlides">9</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 4: Vocab Review - Malware -->
+        <div class="slide">
+            <h2>Vocab Review 📚</h2>
+            <div class="vocab-term">Malware</div>
+            <div class="vocab-def">
+                <p><strong>Quick Reminder:</strong> Malicious software designed to damage, disrupt, or steal data from your computer, phone, or network. It's the umbrella term for all bad software including viruses, ransomware, spyware, and trojans.</p>
+                <p style="margin-top: 15px;"><strong>Think of it like:</strong> Digital germs or pests! Just like how bacteria makes you sick or termites destroy a house, malware infects your device to steal info, spy on you, or hold your files hostage.</p>
+            </div>
+            <div class="steps">
+                <h4>Types You Should Know:</h4>
+                <ul>
+                    <li>🦠 <strong>Virus:</strong> Spreads and copies itself</li>
+                    <li>🔒 <strong>Ransomware:</strong> Locks your files for money</li>
+                    <li>👁️ <strong>Spyware:</strong> Watches and steals passwords</li>
+                    <li>🐴 <strong>Trojan:</strong> Pretends to be legit software</li>
+                </ul>
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">4</span> of <span id="totalSlides">9</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 5: Test Review -->
+        <div class="slide">
+            <h2>Test Review 📝</h2>
+            <div class="emoji">✅</div>
+            <p style="text-align: center; font-size: 1.4em; margin-bottom: 30px;">
+                Let's go over some questions from last week's exam and discuss the answers!
+            </p>
+            <div class="activity-box">
+                <strong>What We'll Cover:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Questions that many people missed</li>
+                    <li>Concepts that need clarification</li>
+                    <li>Why certain answers were correct</li>
+                    <li>Any questions YOU have about the exam</li>
+                </ul>
+            </div>
+            <div class="tip-box">
+                <strong>💡 Learning Opportunity:</strong> Reviewing wrong answers is one of the best ways to learn! Don't be discouraged - use this to strengthen your understanding.
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">5</span> of <span id="totalSlides">9</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 6: New Vocabulary - Emoji vs Emoticon -->
+        <div class="slide">
+            <h2>New Vocabulary 📚</h2>
+            <div class="vocab-term">Emoji vs Emoticon</div>
+
+            <div class="comparison-box">
+                <div class="comparison-item">
+                    <h4>😊 Emoji</h4>
+                    <p><strong>What:</strong> Actual small digital images/icons used to express emotions or ideas</p>
+                    <p><strong>Examples:</strong> 😂 🔥 💯 🎮 🍕 👍</p>
+                    <p><strong>Origin:</strong> Created in Japan in the late 1990s. "Emoji" = Japanese for "picture character"</p>
+                    <p><strong>How:</strong> Built into your device's keyboard. Thousands available!</p>
+                </div>
+
+                <div class="comparison-item">
+                    <h4>:-) Emoticon</h4>
+                    <p><strong>What:</strong> Text-based symbols made from keyboard characters to show emotions</p>
+                    <p><strong>Examples:</strong> :-) :( ;-) :P ^_^ ¯\_(ツ)_/¯</p>
+                    <p><strong>Origin:</strong> First used in 1982 by Scott Fahlman in an email</p>
+                    <p><strong>How:</strong> Type them with regular keyboard keys. Tilt your head left to see the face!</p>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                <strong>Fun Fact:</strong> The word "emoji" sounds like "emotion," but it's actually pure coincidence! "E" means picture and "moji" means character in Japanese. And "emoticon" comes from "emotion + icon."
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">6</span> of <span id="totalSlides">9</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 7: New Vocabulary - Bug -->
+        <div class="slide">
+            <h2>New Vocabulary 📚</h2>
+            <div class="vocab-term">Bug</div>
+            <div class="vocab-def">
+                <p><strong>Definition:</strong> An error, flaw, or fault in software or hardware that causes it to produce incorrect or unexpected results, or to behave in unintended ways.</p>
+                <p style="margin-top: 15px;"><strong>Real-world:</strong> Like a typo in code that breaks your program! When your game crashes, a character walks through walls, or a calculator gives wrong answers - that's a bug. "Debugging" means finding and fixing these problems.</p>
+            </div>
+            <div class="steps">
+                <h4>Common Types of Bugs:</h4>
+                <ul>
+                    <li>🔴 <strong>Syntax Error:</strong> Typos or wrong code grammar</li>
+                    <li>🟡 <strong>Logic Error:</strong> Code runs but does the wrong thing</li>
+                    <li>🟠 <strong>Runtime Error:</strong> Crashes while running (like dividing by zero)</li>
+                    <li>🔵 <strong>Infinite Loop:</strong> Code gets stuck repeating forever</li>
+                </ul>
+            </div>
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">7</span> of <span id="totalSlides">9</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 8: The First Actual Computer Bug -->
+        <div class="slide">
+            <h2>The First ACTUAL Bug! 🐛</h2>
+            <p style="text-align: center; margin-bottom: 25px;">On <strong>September 9, 1947</strong>, something incredible happened at Harvard University...</p>
+
+            <div class="fun-fact">
+                <strong>The Story:</strong> Engineers were working on the Harvard Mark II computer (a massive room-sized computer) when it malfunctioned. When they investigated, they found a moth trapped in one of the computer's mechanical relays! They carefully removed it and taped it into their logbook with the note: <em>"First actual case of bug being found."</em>
+            </div>
+
+            <img src="https://ids.si.edu/ids/deliveryService?id=NMAH-NMAH2000-03035&max=600" alt="Original 1947 logbook page with moth taped to it" class="historical-image">
+            <p class="image-caption">The original 1947 logbook with the moth taped to the page. Now at the Smithsonian!</p>
+
+            <div class="tip-box">
+                <strong>💡 Important Context:</strong> The term "bug" was actually used by engineers before 1947 (Thomas Edison used it in the 1870s!), but this was the first time an ACTUAL insect bug caused a computer problem. The team was making a joke when they wrote "first actual case of bug being found"!
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">8</span> of <span id="totalSlides">9</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Slide 9: The Harvard Mark II Computer -->
+        <div class="slide">
+            <h2>The Harvard Mark II Computer 🖥️</h2>
+            <p style="text-align: center; margin-bottom: 20px;">What computers looked like in 1947...</p>
+
+            <div class="steps">
+                <h4>About the Harvard Mark II:</h4>
+                <ul>
+                    <li>📏 <strong>Size:</strong> Filled an entire room - about 40 feet long!</li>
+                    <li>⚡ <strong>Technology:</strong> Used 13,000 electromechanical relays (physical switches that clicked)</li>
+                    <li>🐌 <strong>Speed:</strong> Could do about 3 calculations per second (your phone can do billions!)</li>
+                    <li>🎖️ <strong>Purpose:</strong> Built for the U.S. Navy for ballistic calculations</li>
+                    <li>🔊 <strong>Sound:</strong> Super loud! All those relays clicking made it sound like a room full of knitting needles</li>
+                    <li>💡 <strong>No Screen:</strong> Output was printed on paper or punched into cards - no monitors existed!</li>
+                    <li>👩‍💻 <strong>Grace Hopper:</strong> Famous computer scientist who worked on it and popularized "bug" and "debug" as programmer language</li>
+                </ul>
+            </div>
+
+            <div class="fun-fact">
+                <strong>🤯 Mind-Blowing:</strong> The Harvard Mark II filled an entire room and was less powerful than a calculator watch! Your smartphone is literally millions of times more powerful than this computer. We've come incredibly far in just 77 years!
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Why Relays?</strong> Before transistors and microchips were invented, computers used physical mechanical switches called relays. That's why a moth could get stuck in one - they were big enough for a bug to crawl into!
+            </div>
+
+            <div class="navigation">
+                <button onclick="previousSlide()">← Previous</button>
+                <span class="slide-number">Slide <span id="slideNum">9</span> of <span id="totalSlides">9</span></span>
+                <button onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+
+        // Update total slides count
+        document.querySelectorAll('#totalSlides').forEach(el => {
+            el.textContent = totalSlides;
+        });
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+
+            if (n > totalSlides) {
+                currentSlide = 1;
+            }
+            if (n < 1) {
+                currentSlide = totalSlides;
+            }
+
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            slides[currentSlide - 1].classList.add('active');
+
+            // Update slide numbers
+            document.querySelectorAll('#slideNum').forEach(el => {
+                el.textContent = currentSlide;
+            });
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
