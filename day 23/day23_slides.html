@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 23: Machine Learning & Teachable Machine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .slide-container {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            color: #764ba2;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            color: #333;
+            font-size: 1.3em;
+            line-height: 1.6;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+        }
+
+        .vocab-term {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .vocab-def {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+
+        .activity-box strong {
+            font-size: 1.3em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .fun-fact {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #f39c12;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .fun-fact strong {
+            color: #d68910;
+            font-size: 1.3em;
+        }
+
+        .quiz-container {
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            transform: translateX(10px);
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            color: #333;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            text-align: center;
+            color: #764ba2;
+            font-size: 1em;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.5em;
+            text-align: center;
+            margin-top: -10px;
+        }
+
+        .demo-steps {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #764ba2;
+        }
+
+        .demo-steps ol {
+            margin-left: 20px;
+        }
+
+        .demo-steps li {
+            margin: 15px 0;
+            font-size: 1.2em;
+        }
+
+        .example-box {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #2196F3;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #ffc107;
+            margin: 15px 0;
+            color: #856404;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .project-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .project-card h4 {
+            margin-bottom: 10px;
+        }
+
+        .project-card p {
+            font-size: 1.1em;
+        }
+
+        .project-card a {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+            height: 100%;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            border-color: #764ba2;
+        }
+
+        .project-card .demo-badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .slide-container {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            p, li {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>🤖 Day 23</h1>
+            <h2 style="text-align: center;">Machine Learning & Teachable Machine</h2>
+            <p class="subtitle">Teaching Computers to Learn</p>
+            <div class="emoji" style="text-align: center; font-size: 5em;">🧠</div>
+        </div>
+
+        <!-- Slide 2: Quick Review -->
+        <div class="slide">
+            <h2>Quick Review from Day 22!</h2>
+            <div class="quiz-container">
+                <p><strong>What makes a good web logo?</strong></p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    A) Lots of tiny details and realistic textures
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    B) Always use gradients and 3D effects
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">
+                    C) Simple, scalable, and works at small sizes ✓
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    D) Must include the company name in text
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Vocabulary - Machine Learning -->
+        <div class="slide">
+            <h2>New Vocabulary: Technical Terms</h2>
+            <div class="vocab-term">Machine Learning</div>
+            <div class="vocab-def">
+                <p><strong>Machine Learning</strong> is when computers learn from examples instead of being explicitly programmed with rules.</p>
+                <p style="margin-top: 15px;"><span class="emoji">🎯</span> <strong>Think of it like this:</strong> Instead of telling a computer "if the image has pointy ears and whiskers, it's a cat," you show it 1,000 pictures of cats and 1,000 pictures of dogs, and it figures out the difference on its own.</p>
+                <p style="margin-top: 15px;"><strong>Example:</strong> TikTok's algorithm learns what videos YOU like by watching what you watch, like, and skip. It doesn't have rules like "show everyone dance videos" - it learns YOUR preferences!</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Vocabulary - Training Data -->
+        <div class="slide">
+            <h2>New Vocabulary: Technical Terms</h2>
+            <div class="vocab-term">Training Data</div>
+            <div class="vocab-def">
+                <p><strong>Training Data</strong> is the collection of examples you use to teach a machine learning model what to recognize.</p>
+                <p style="margin-top: 15px;"><span class="emoji">📚</span> <strong>Think of it like this:</strong> Training data is like flashcards. If you want to learn Spanish, you need lots of example words and phrases. If you want AI to recognize your face, you need lots of pictures of your face from different angles.</p>
+                <p style="margin-top: 15px;"><strong>Important:</strong> The more examples (and more varied) your training data is, the smarter your AI becomes. Bad training data = bad AI!</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: What is Machine Learning? -->
+        <div class="slide">
+            <h2>What is Machine Learning? 🤖</h2>
+            <p><strong>Machine Learning (ML)</strong> is how we teach computers to recognize patterns and make decisions based on data, rather than following pre-programmed rules.</p>
+
+            <div class="fun-fact">
+                <strong>🎵 Real-World Example: Spotify</strong>
+                <p>Spotify's AI analyzes tracks for tempo, energy, danceability, and acousticness. That's how it knows you might like a new song even if you've never heard it before - it learned what musical patterns you enjoy!</p>
+            </div>
+
+            <h3>You Use Machine Learning Every Day:</h3>
+            <ul>
+                <li><strong>TikTok's For You Page</strong> - Learns what you like within minutes</li>
+                <li><strong>Snapchat Filters</strong> - Recognizes your face and features</li>
+                <li><strong>YouTube Recommendations</strong> - Predicts what you'll watch next</li>
+                <li><strong>Photo App Face Sorting</strong> - Groups pictures by person automatically</li>
+                <li><strong>Voice Assistants</strong> - Understand your voice and accent</li>
+            </ul>
+        </div>
+
+        <!-- Slide 6: How Does ML Work? -->
+        <div class="slide">
+            <h2>How Does Machine Learning Work?</h2>
+
+            <div class="demo-steps">
+                <h3>The 3-Step Process:</h3>
+                <ol>
+                    <li><strong>🎓 Training Phase:</strong> You show the AI lots of examples
+                        <ul>
+                            <li>Show 100 pictures of cats labeled "cat"</li>
+                            <li>Show 100 pictures of dogs labeled "dog"</li>
+                            <li>The AI finds patterns: pointy ears, whiskers, size, etc.</li>
+                        </ul>
+                    </li>
+                    <li><strong>🧪 Testing Phase:</strong> You show it NEW examples it hasn't seen
+                        <ul>
+                            <li>Show a new cat picture (without the label)</li>
+                            <li>AI makes a guess: "That's a cat!"</li>
+                            <li>You tell it if it's right or wrong</li>
+                        </ul>
+                    </li>
+                    <li><strong>🚀 Prediction Phase:</strong> The AI is ready to use in the real world
+                        <ul>
+                            <li>Now it can identify cats vs dogs it's never seen before</li>
+                            <li>The more it practiced, the more accurate it is</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 7: TikTok Example -->
+        <div class="slide">
+            <h2>Real Example: How TikTok's AI Works</h2>
+
+            <div class="fun-fact">
+                <strong>🎯 Mind-Blowing Stat:</strong>
+                <p>TikTok reaches 95 minutes of average daily usage (compared to 17 minutes for YouTube and 29 minutes for Instagram). Why? Their machine learning algorithm is THAT good at predicting what you'll watch!</p>
+            </div>
+
+            <h3>What TikTok's AI Learns From You:</h3>
+            <ul>
+                <li><strong>Videos you watch all the way through</strong> vs ones you skip</li>
+                <li><strong>Videos you like, comment on, or share</strong></li>
+                <li><strong>Accounts you follow</strong> and interact with</li>
+                <li><strong>Hashtags you search for</strong></li>
+                <li><strong>Sounds/music</strong> you engage with</li>
+                <li><strong>Time of day</strong> you're most active</li>
+            </ul>
+
+            <p style="margin-top: 20px;"><strong>The Result:</strong> Within minutes of using TikTok, the algorithm identifies your niche interests and serves content you'll probably love - even from creators you've never heard of!</p>
+        </div>
+
+        <!-- Slide 8: Real-World Applications -->
+        <div class="slide">
+            <h2>Cool Things You Can Build with Machine Learning</h2>
+            <p style="text-align: center; color: #4caf50; font-weight: bold; margin-bottom: 15px;">🔗 Try these live demos, then we'll build our own!</p>
+
+            <div class="project-grid">
+                <div class="project-card">
+                    <a href="https://silviueftimiedev.web.app/" target="_blank">
+                        <h4>✊✋✌️ Rock Paper Scissors</h4>
+                        <p>Play RPS against AI using your webcam!</p>
+                        <span class="demo-badge">TRY DEMO →</span>
+                    </a>
+                </div>
+                <div class="project-card">
+                    <a href="https://teachable-snake.netlify.app/" target="_blank">
+                        <h4>🐍 Teachable Snake</h4>
+                        <p>Control the classic snake game with your webcam movements</p>
+                        <span class="demo-badge">TRY DEMO →</span>
+                    </a>
+                </div>
+                <div class="project-card" style="border-color: #764ba2; background: #f5f0ff;">
+                    <h4>👍👎 Thumbs Reviewer</h4>
+                    <p><strong>Project Idea:</strong> Rate movies/games with thumbs up or down gestures</p>
+                </div>
+                <div class="project-card" style="border-color: #764ba2; background: #f5f0ff;">
+                    <h4>😊😢😮 Emotion Detector</h4>
+                    <p><strong>Project Idea:</strong> Recognize facial expressions in real-time</p>
+                </div>
+                <div class="project-card" style="border-color: #764ba2; background: #f5f0ff;">
+                    <h4>👏 Sound Detector</h4>
+                    <p><strong>Project Idea:</strong> Recognize different sounds like claps, snaps, whistles</p>
+                </div>
+                <div class="project-card" style="border-color: #764ba2; background: #f5f0ff;">
+                    <h4>🎮 Gesture Controller</h4>
+                    <p><strong>Project Idea:</strong> Control actions by moving your body or hands</p>
+                </div>
+            </div>
+
+            <p style="margin-top: 20px; text-align: center;"><strong>All of these were built by students and hobbyists - not professional programmers!</strong></p>
+        </div>
+
+        <!-- Slide 9: Introducing Teachable Machine -->
+        <div class="slide">
+            <h2>Introducing: Teachable Machine! 🎉</h2>
+
+            <div class="example-box">
+                <h3>What is Teachable Machine?</h3>
+                <p>A <strong>FREE</strong> tool by Google that lets you train your own AI models in your web browser - no coding required!</p>
+            </div>
+
+            <h3>Why It's Awesome:</h3>
+            <ul>
+                <li><span class="emoji">✅</span> <strong>100% Free</strong> - No cost, no subscription</li>
+                <li><span class="emoji">✅</span> <strong>No Login Required</strong> - Start immediately</li>
+                <li><span class="emoji">✅</span> <strong>Works in Browser</strong> - Nothing to download</li>
+                <li><span class="emoji">✅</span> <strong>Privacy-Friendly</strong> - All training happens on YOUR computer</li>
+                <li><span class="emoji">✅</span> <strong>No Coding Needed</strong> - Just point, click, and train</li>
+                <li><span class="emoji">✅</span> <strong>Export Your Model</strong> - Use it in websites or apps</li>
+            </ul>
+
+            <h3 style="margin-top: 30px;">Three Types of Projects:</h3>
+            <ol>
+                <li><strong>📸 Image Project</strong> - Teach it to recognize objects, gestures, faces</li>
+                <li><strong>🎵 Audio Project</strong> - Teach it to recognize sounds, voices, music</li>
+                <li><strong>🧍 Pose Project</strong> - Teach it to recognize body positions and movements</li>
+            </ol>
+        </div>
+
+        <!-- Slide 10: How to Use Teachable Machine -->
+        <div class="slide">
+            <h2>How to Use Teachable Machine</h2>
+
+            <div class="demo-steps">
+                <h3>Step-by-Step Demo Guide:</h3>
+                <ol>
+                    <li><strong>Go to the website:</strong> teachablemachine.withgoogle.com</li>
+                    <li><strong>Click "Get Started"</strong></li>
+                    <li><strong>Choose a project type:</strong> Image, Audio, or Pose</li>
+                    <li><strong>Create classes:</strong> What do you want to recognize?
+                        <ul>
+                            <li>Example: "Rock", "Paper", "Scissors"</li>
+                        </ul>
+                    </li>
+                    <li><strong>Add training data:</strong> Use your webcam or upload images
+                        <ul>
+                            <li>Add 30-50 examples per class for best results</li>
+                        </ul>
+                    </li>
+                    <li><strong>Click "Train Model"</strong> and wait (usually 10-30 seconds)</li>
+                    <li><strong>Test it!</strong> Use the preview to see if it works</li>
+                    <li><strong>Export:</strong> Download or get a link to use in projects</li>
+                </ol>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚡ Pro Tip:</strong> The more varied your training data, the better! Different lighting, angles, backgrounds help the AI learn better.
+            </div>
+        </div>
+
+        <!-- Slide 11: Today's Activity -->
+        <div class="slide">
+            <h2>🎯 Today's Activity: Rock Paper Scissors AI!</h2>
+
+            <div class="activity-box">
+                <strong>Your Challenge:</strong> Train an AI to recognize Rock, Paper, and Scissors hand gestures!
+            </div>
+
+            <div class="demo-steps">
+                <h3>Here's What You'll Do:</h3>
+                <ol>
+                    <li>Go to <strong>teachablemachine.withgoogle.com</strong></li>
+                    <li>Start an <strong>Image Project</strong></li>
+                    <li>Create 3 classes:
+                        <ul>
+                            <li>Class 1: "Rock" ✊</li>
+                            <li>Class 2: "Paper" ✋</li>
+                            <li>Class 3: "Scissors" ✌️</li>
+                        </ul>
+                    </li>
+                    <li>For each class, use your <strong>webcam</strong> to capture 30-50 images
+                        <ul>
+                            <li>Move your hand around!</li>
+                            <li>Try different angles</li>
+                            <li>Use both hands if you want</li>
+                        </ul>
+                    </li>
+                    <li><strong>Train</strong> your model</li>
+                    <li><strong>Test</strong> it - play rock paper scissors with your AI!</li>
+                    <li><strong>BONUS:</strong> Try to trick it! What makes it confused?</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 12: Alternative Projects -->
+        <div class="slide">
+            <h2>Other Project Ideas to Try:</h2>
+
+            <h3>If You Finish Early or Want Something Different:</h3>
+
+            <div class="project-grid">
+                <div class="project-card">
+                    <h4>👍👎 Thumbs Reviewer</h4>
+                    <p>Train it on thumbs up/down for a rating system</p>
+                </div>
+                <div class="project-card">
+                    <h4>😊😢😮 Emotion Detector</h4>
+                    <p>Recognize happy, sad, surprised faces</p>
+                </div>
+                <div class="project-card">
+                    <h4>👏👆🦶 Clap-Snap-Stomp</h4>
+                    <p>Audio project recognizing different sounds</p>
+                </div>
+                <div class="project-card">
+                    <h4>🎮 Pose Controller</h4>
+                    <p>Standing, sitting, arms up - body position detector</p>
+                </div>
+                <div class="project-card">
+                    <h4>🗣️ Voice Commands</h4>
+                    <p>"Yes", "No", "Stop", "Go" sound recognition</p>
+                </div>
+                <div class="project-card">
+                    <h4>📱 Object Sorter</h4>
+                    <p>Phone, pencil, water bottle, backpack classifier</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Tips for Success -->
+        <div class="slide">
+            <h2>Pro Tips for Better Results</h2>
+
+            <h3>✅ DO These Things:</h3>
+            <ul>
+                <li><strong>Add lots of examples</strong> (30-50 per class minimum)</li>
+                <li><strong>Vary your examples</strong> - different angles, lighting, positions</li>
+                <li><strong>Use clear, distinct gestures</strong> - make rock VERY different from paper</li>
+                <li><strong>Keep your background consistent</strong> during training</li>
+                <li><strong>Test thoroughly</strong> - try to trick your AI and see what confuses it</li>
+                <li><strong>Re-train if needed</strong> - you can always add more examples and improve it</li>
+            </ul>
+
+            <h3 style="margin-top: 30px;">❌ AVOID These Mistakes:</h3>
+            <ul>
+                <li><strong>Too few examples</strong> - 5-10 images won't work well</li>
+                <li><strong>Identical examples</strong> - don't just hold still for 50 shots</li>
+                <li><strong>Similar gestures</strong> - make each class look different</li>
+                <li><strong>Changing lighting mid-project</strong> - confuses the AI</li>
+                <li><strong>Forgetting to test</strong> - always verify before saying you're done</li>
+            </ul>
+        </div>
+
+        <!-- Slide 14: Understanding AI Limitations -->
+        <div class="slide">
+            <h2>Important: AI Isn't Perfect!</h2>
+
+            <div class="warning-box">
+                <strong>⚠️ What You'll Notice:</strong>
+                <p>Your AI will make mistakes! That's normal and actually a great learning opportunity.</p>
+            </div>
+
+            <h3>Why AI Makes Mistakes:</h3>
+            <ul>
+                <li><strong>Limited training data</strong> - It only knows what you showed it</li>
+                <li><strong>Similar patterns</strong> - If two classes look alike, it gets confused</li>
+                <li><strong>New situations</strong> - Different lighting, background, or angle can trick it</li>
+                <li><strong>Bias in data</strong> - If you only train with your right hand, left hand might not work</li>
+            </ul>
+
+            <h3 style="margin-top: 30px;">What This Teaches Us:</h3>
+            <ul>
+                <li>Real AI (like facial recognition) can have similar problems</li>
+                <li>AI is only as good as its training data</li>
+                <li>We need to test AI thoroughly before trusting it</li>
+                <li>Understanding limitations is part of being a good AI developer</li>
+            </ul>
+        </div>
+
+        <!-- Slide 15: Work Time! -->
+        <div class="slide">
+            <h2>🎨 Let's Create!</h2>
+
+            <div class="activity-box">
+                <strong>Work Time Guidelines:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Go to <strong>teachablemachine.withgoogle.com</strong></li>
+                    <li>Start with Rock Paper Scissors project</li>
+                    <li>Take your time training it well</li>
+                    <li>If you finish early, try a different project!</li>
+                    <li>Help classmates if they're stuck</li>
+                    <li>We'll share results at the end of class</li>
+                </ul>
+            </div>
+
+            <h3 style="margin-top: 30px;">What to Submit (if needed):</h3>
+            <ol>
+                <li>Screenshot of your trained model</li>
+                <li>Screenshot of it successfully recognizing your gestures</li>
+                <li>Brief description: What worked well? What was tricky?</li>
+            </ol>
+
+            <div class="fun-fact" style="margin-top: 30px;">
+                <strong>💡 Experiment!</strong>
+                <p>Try to break your AI! Figure out what confuses it. Try weird angles, different lighting, or ambiguous gestures. Understanding how AI fails is just as important as making it work!</p>
+            </div>
+        </div>
+
+        <!-- Slide 16: Sharing & Wrap-up -->
+        <div class="slide">
+            <h2>Demo Time! 🎬</h2>
+
+            <h3>Let's See What You Created:</h3>
+            <ul>
+                <li>Volunteers can show their models to the class</li>
+                <li>Demonstrate your rock paper scissors AI</li>
+                <li>Share what you learned</li>
+                <li>Show any cool alternative projects you made</li>
+            </ul>
+
+            <h3 style="margin-top: 30px;">Discussion Questions:</h3>
+            <ul>
+                <li>What was the hardest part?</li>
+                <li>How many examples did you need before it worked well?</li>
+                <li>What made your AI confused?</li>
+                <li>How is this different from the AI image generators we used before?</li>
+                <li>Where else could you use this technology?</li>
+            </ul>
+        </div>
+
+        <!-- Slide 17: Summary -->
+        <div class="slide">
+            <h2>📋 Day 23 Summary</h2>
+
+            <h3>What We Learned Today:</h3>
+            <ul>
+                <li><span class="emoji">🧠</span> <strong>Machine Learning</strong> - Teaching computers through examples instead of rules</li>
+                <li><span class="emoji">📚</span> <strong>Training Data</strong> - The examples we use to teach AI models</li>
+                <li><span class="emoji">🎯</span> How TikTok, Spotify, and other apps use ML to personalize your experience</li>
+                <li><span class="emoji">🤖</span> The 3-step ML process: Training, Testing, Prediction</li>
+                <li><span class="emoji">🛠️</span> How to use <strong>Teachable Machine</strong> to build your own AI</li>
+                <li><span class="emoji">⚡</span> AI limitations and why they matter</li>
+            </ul>
+
+            <div class="fun-fact" style="margin-top: 30px;">
+                <strong>🚀 Next Steps:</strong>
+                <p>Now that you understand how to train AI, think about problems you could solve with machine learning. Accessibility tools? Games? Smart home devices? The possibilities are endless!</p>
+            </div>
+
+            <h3 style="margin-top: 30px; text-align: center;">Great work today! 🎉</h3>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button onclick="previousSlide()" id="prevBtn">← Previous</button>
+            <div class="slide-number">
+                Slide <span id="slideNum">1</span> of <span id="totalSlides">17</span>
+            </div>
+            <button onclick="nextSlide()" id="nextBtn">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+
+            document.getElementById('slideNum').textContent = currentSlide + 1;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Quiz functionality
+        function checkAnswer(button, isCorrect) {
+            const allOptions = button.parentElement.querySelectorAll('.quiz-option');
+            allOptions.forEach(option => {
+                option.classList.add('disabled');
+                option.style.cursor = 'not-allowed';
+            });
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.innerHTML += ' ✓';
+            } else {
+                button.classList.add('incorrect');
+                button.innerHTML += ' ✗';
+                // Show correct answer
+                allOptions.forEach(option => {
+                    if (option.onclick.toString().includes('true')) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+        }
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
