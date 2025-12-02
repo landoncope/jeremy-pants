@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 24: Game Showcase & Video Editing Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .slide-container {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            color: #764ba2;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            color: #333;
+            font-size: 1.3em;
+            line-height: 1.6;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+        }
+
+        .vocab-term {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .vocab-def {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+
+        .activity-box strong {
+            font-size: 1.3em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .fun-fact {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #f39c12;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .fun-fact strong {
+            color: #d68910;
+            font-size: 1.3em;
+        }
+
+        .quiz-container {
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            transform: translateX(10px);
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            color: #333;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            text-align: center;
+            color: #764ba2;
+            font-size: 1em;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.5em;
+            text-align: center;
+            margin-top: -10px;
+        }
+
+        .demo-steps {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #764ba2;
+        }
+
+        .demo-steps ol {
+            margin-left: 20px;
+        }
+
+        .demo-steps li {
+            margin: 15px 0;
+            font-size: 1.2em;
+        }
+
+        .example-box {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #2196F3;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #ffc107;
+            margin: 15px 0;
+            color: #856404;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .project-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .project-card h4 {
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .project-card p {
+            font-size: 1em;
+            color: #666;
+        }
+
+        .project-card a {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+            height: 100%;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            border-color: #764ba2;
+        }
+
+        .project-card .demo-badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        .student-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .student-item {
+            background: #f8f9fa;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .student-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .student-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 1em;
+        }
+
+        .student-item a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .student-item a:hover {
+            text-decoration: underline;
+        }
+
+        .student-item.incomplete {
+            border-left-color: #ffc107;
+            opacity: 0.8;
+        }
+
+        .tool-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .tool-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tool-card .tool-logo {
+            font-size: 2em;
+        }
+
+        .tool-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .tool-feature {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .tool-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .badge-free {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-windows {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .badge-beginner {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 1em;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            .slide-container {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            p, li {
+                font-size: 1.1em;
+            }
+
+            .tool-features {
+                grid-template-columns: 1fr;
+            }
+
+            .student-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 24</h1>
+            <h2 style="text-align: center;">Game Showcase & Video Editing Preview</h2>
+            <p class="subtitle">Let's see what you built!</p>
+            <div class="emoji" style="text-align: center; font-size: 5em;">🎮🎬</div>
+        </div>
+
+        <!-- Slide 2: Quick Review -->
+        <div class="slide">
+            <h2>Quick Review from Day 23!</h2>
+            <div class="quiz-container">
+                <p><strong>What is "Training Data" in Machine Learning?</strong></p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    A) The final product after the AI is done learning
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">
+                    B) Examples used to teach an AI what to recognize
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    C) The code that runs the AI program
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    D) A type of computer processor for AI
+                </div>
+            </div>
+            <div class="fun-fact" style="margin-top: 20px;">
+                <strong>Remember:</strong> More varied training data = smarter AI! That's why showing your Rock Paper Scissors model 50 different angles worked better than 50 identical shots.
+            </div>
+        </div>
+
+        <!-- Slide 3: Review Quiz 2 -->
+        <div class="slide">
+            <h2>One More Review Question!</h2>
+            <div class="quiz-container">
+                <p><strong>What are the 3 steps of Machine Learning?</strong></p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    A) Download, Install, Run
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    B) Write, Compile, Execute
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">
+                    C) Training, Testing, Prediction
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    D) Input, Process, Output
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Game Showcase Intro -->
+        <div class="slide">
+            <h2>Build Your Game with AI - Showcase Time!</h2>
+
+            <div class="activity-box">
+                <strong>It's time to see what everyone created!</strong>
+                <p>You've been working hard using GitHub Codespaces, Copilot, and AI tools to build browser-based games. Let's check them out!</p>
+            </div>
+
+            <h3>What We're Looking For:</h3>
+            <ul>
+                <li><strong>Creativity</strong> - Did you make it your own?</li>
+                <li><strong>Functionality</strong> - Does the game work?</li>
+                <li><strong>Polish</strong> - Any extra touches (sounds, graphics, animations)?</li>
+                <li><strong>AI Usage</strong> - How did you use AI tools to help build it?</li>
+            </ul>
+
+            <div class="fun-fact">
+                <strong>Pro Tip:</strong> When showing your game, be ready to share one thing that was challenging and how you solved it!
+            </div>
+        </div>
+
+        <!-- Slide 5: Student Submissions -->
+        <div class="slide">
+            <h2>Student Game Submissions</h2>
+            <p style="text-align: center; margin-bottom: 15px; color: #4caf50; font-weight: bold;">Click on any game to play it!</p>
+
+            <div class="student-list">
+                <div class="student-item">
+                    <span class="student-name">Andersen, Jenna</span>
+                    <a href="https://jennalenna.github.io/im-really-hungry/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Choi, Ujin</span>
+                    <a href="https://hotnakji.github.io/crispy-waffle/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Cope, Mona</span>
+                    <a href="https://bigguyismydad.github.io/verbose-parakeet/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Gao, Xiaobo</span>
+                    <a href="https://hydregenperoxide.github.io/114514/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item incomplete">
+                    <span class="student-name">Huff, Peter</span>
+                    <span style="color: #856404; font-size: 0.9em;">Incomplete submission</span>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Huling, Pryce</span>
+                    <a href="https://pjaguar12.github.io/Dragon_Dominion/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Johnson, Kurek</span>
+                    <a href="https://kurek-dev.github.io/kurek-dev-project/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Juber, Brogan</span>
+                    <a href="https://thebluebanana2.github.io/symmetrical-meme/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Nemrow, Garrett</span>
+                    <a href="https://44448-g.github.io/special-goggles/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Petersen, Lucian</span>
+                    <a href="https://lucianspider.github.io/Frogem/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Randall, Lily</span>
+                    <a href="https://fandomfaze0123.github.io/legendary-mine/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Rees, Ally</span>
+                    <a href="https://allyrees.github.io/oglesmogles-/" target="_blank">Play Game</a>
+                </div>
+                <div class="student-item">
+                    <span class="student-name">Trumble, Ryker</span>
+                    <a href="https://rlet405.github.io/big-cat-simulator/" target="_blank">Play Game</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Video Editing Preview Intro -->
+        <div class="slide">
+            <h2>Coming Up Next: Video Editing!</h2>
+
+            <div class="example-box">
+                <h3>Why Learn Video Editing?</h3>
+                <p>Video is EVERYWHERE - TikTok, YouTube, Instagram Reels, job applications, school projects. Knowing how to edit video is a seriously valuable skill!</p>
+            </div>
+
+            <h3>What You'll Learn:</h3>
+            <ul>
+                <li><strong>Cutting & Trimming</strong> - Remove the boring parts</li>
+                <li><strong>Transitions</strong> - Smooth cuts between clips</li>
+                <li><strong>Text & Titles</strong> - Add captions and graphics</li>
+                <li><strong>Audio</strong> - Background music and sound effects</li>
+                <li><strong>Effects & Filters</strong> - Make it look professional</li>
+                <li><strong>Exporting</strong> - Get it ready to share</li>
+            </ul>
+
+            <div class="fun-fact">
+                <strong>Did You Know?</strong> The average TikTok creator spends 30-60 minutes editing a single 60-second video. Those quick cuts and perfect timing don't happen by accident!
+            </div>
+        </div>
+
+        <!-- Slide 7: ClipChamp -->
+        <div class="slide">
+            <h2>Tool #1: ClipChamp</h2>
+
+            <div class="tool-card">
+                <h3><span class="tool-logo">🎬</span> Microsoft ClipChamp</h3>
+                <div>
+                    <span class="tool-badge badge-free">FREE</span>
+                    <span class="tool-badge badge-windows">Built into Windows 11</span>
+                    <span class="tool-badge badge-beginner">Beginner Friendly</span>
+                </div>
+
+                <p style="margin-top: 15px;">ClipChamp is Microsoft's free video editor that comes pre-installed on Windows 11. It's browser-based but works offline too!</p>
+
+                <div class="tool-features">
+                    <div class="tool-feature">Timeline-based editing</div>
+                    <div class="tool-feature">Stock videos & music library</div>
+                    <div class="tool-feature">Screen & webcam recording</div>
+                    <div class="tool-feature">Text-to-speech</div>
+                    <div class="tool-feature">Auto captions</div>
+                    <div class="tool-feature">Green screen effects</div>
+                    <div class="tool-feature">Export to 1080p (free)</div>
+                    <div class="tool-feature">Cloud sync with Microsoft</div>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <strong>How to Open:</strong> Search "ClipChamp" in the Windows Start menu, or go to <strong>clipchamp.com</strong> in your browser!
+            </div>
+        </div>
+
+        <!-- Slide 8: CapCut -->
+        <div class="slide">
+            <h2>Tool #2: CapCut</h2>
+
+            <div class="tool-card">
+                <h3><span class="tool-logo">✂️</span> CapCut by ByteDance</h3>
+                <div>
+                    <span class="tool-badge badge-free">FREE</span>
+                    <span class="tool-badge badge-windows">Windows App</span>
+                    <span class="tool-badge badge-beginner">TikTok Style</span>
+                </div>
+
+                <p style="margin-top: 15px;">CapCut is made by the same company as TikTok. It's packed with trendy effects, templates, and AI features that are perfect for social media content!</p>
+
+                <div class="tool-features">
+                    <div class="tool-feature">Trendy templates & effects</div>
+                    <div class="tool-feature">AI background remover</div>
+                    <div class="tool-feature">Auto-captions (very accurate!)</div>
+                    <div class="tool-feature">Speed ramping</div>
+                    <div class="tool-feature">Keyframe animations</div>
+                    <div class="tool-feature">Massive music library</div>
+                    <div class="tool-feature">Export up to 4K (free!)</div>
+                    <div class="tool-feature">Direct TikTok export</div>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                <strong>Why CapCut is Popular:</strong> It's what most TikTok creators actually use! Those smooth zooms, beat syncs, and auto-captions you see everywhere? Probably made in CapCut.
+            </div>
+        </div>
+
+        <!-- Slide 9: Other Video Tools -->
+        <div class="slide">
+            <h2>Other Video Editing Tools</h2>
+            <p style="margin-bottom: 15px;">Here's a comparison of popular options:</p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Tool</th>
+                        <th>Best For</th>
+                        <th>Cost</th>
+                        <th>Difficulty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: #e8f5e9;">
+                        <td><strong>ClipChamp</strong></td>
+                        <td>Quick edits, school projects</td>
+                        <td>Free (built-in)</td>
+                        <td>Easy</td>
+                    </tr>
+                    <tr style="background: #e8f5e9;">
+                        <td><strong>CapCut</strong></td>
+                        <td>Social media, TikToks</td>
+                        <td>Free</td>
+                        <td>Easy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DaVinci Resolve</strong></td>
+                        <td>Professional editing, color</td>
+                        <td>Free version available</td>
+                        <td>Advanced</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Shotcut</strong></td>
+                        <td>Open source option</td>
+                        <td>Free</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Adobe Premiere Pro</strong></td>
+                        <td>Industry standard</td>
+                        <td>$22/month</td>
+                        <td>Advanced</td>
+                    </tr>
+                    <tr>
+                        <td><strong>iMovie</strong></td>
+                        <td>Mac users</td>
+                        <td>Free (Mac only)</td>
+                        <td>Easy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Canva Video</strong></td>
+                        <td>Simple social videos</td>
+                        <td>Free tier available</td>
+                        <td>Very Easy</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <strong>Our Focus:</strong> We'll use <strong>ClipChamp</strong> and <strong>CapCut</strong> since they're free, powerful, and work great on your Windows computers!
+            </div>
+        </div>
+
+        <!-- Slide 10: What's Coming -->
+        <div class="slide">
+            <h2>Video Editing - Coming Next Class!</h2>
+
+            <h3>What We'll Actually Do:</h3>
+            <ul>
+                <li><strong>Create a short video</strong> (30-60 seconds)</li>
+                <li><strong>Learn the basics</strong> - importing, cutting, transitions</li>
+                <li><strong>Add text and music</strong></li>
+                <li><strong>Apply effects</strong> that make it pop</li>
+                <li><strong>Export and share</strong> your creation</li>
+            </ul>
+
+            <div class="activity-box">
+                <strong>Optional Prep Before Next Class:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Download CapCut from the Microsoft Store (or capcut.com)</li>
+                    <li>Find ClipChamp in your Start menu</li>
+                    <li>Think about a short video you'd like to make!</li>
+                    <li>Record a few clips on your phone (if you want)</li>
+                </ul>
+            </div>
+
+            <div class="fun-fact">
+                <strong>Video Ideas:</strong> Day in your life, a hobby tutorial, funny compilation, music edit, game highlights, or anything creative!
+            </div>
+        </div>
+
+        <!-- Slide 11: Summary -->
+        <div class="slide">
+            <h2>Day 24 Summary</h2>
+
+            <h3>What We Did Today:</h3>
+            <ul>
+                <li><span class="emoji">🧠</span> <strong>Reviewed Machine Learning</strong> - Training data and the 3-step process</li>
+                <li><span class="emoji">🎮</span> <strong>Showcased Your Games</strong> - Amazing work from everyone!</li>
+                <li><span class="emoji">🎬</span> <strong>Previewed Video Editing</strong> - ClipChamp and CapCut</li>
+            </ul>
+
+            <h3 style="margin-top: 25px;">Coming Up Next:</h3>
+            <ul>
+                <li><span class="emoji">✂️</span> Hands-on video editing with ClipChamp or CapCut</li>
+                <li><span class="emoji">🎵</span> Adding music, effects, and transitions</li>
+                <li><span class="emoji">📤</span> Creating and exporting your own video</li>
+            </ul>
+
+            <div class="fun-fact" style="margin-top: 25px;">
+                <strong>Great Work Today!</strong>
+                <p>Your games were awesome! Next time, we'll add another creative skill to your toolkit - video editing!</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button onclick="previousSlide()" id="prevBtn">← Previous</button>
+            <div class="slide-number">
+                Slide <span id="slideNum">1</span> of <span id="totalSlides">11</span>
+            </div>
+            <button onclick="nextSlide()" id="nextBtn">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+
+            document.getElementById('slideNum').textContent = currentSlide + 1;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Quiz functionality
+        function checkAnswer(button, isCorrect) {
+            const allOptions = button.parentElement.querySelectorAll('.quiz-option');
+            allOptions.forEach(option => {
+                option.classList.add('disabled');
+                option.style.cursor = 'not-allowed';
+            });
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.innerHTML += ' ✓';
+            } else {
+                button.classList.add('incorrect');
+                button.innerHTML += ' ✗';
+                // Show correct answer
+                allOptions.forEach(option => {
+                    if (option.onclick.toString().includes('true')) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+        }
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>

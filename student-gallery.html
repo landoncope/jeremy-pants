@@ -156,6 +156,114 @@
             margin-right: 5px;
         }
 
+        /* Game Gallery Styles */
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px 15px 0 0;
+            margin-top: 40px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .section-header p {
+            margin: 10px 0 0;
+            opacity: 0.9;
+        }
+
+        .section-content {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .game-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .game-card .game-emoji {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .game-card .game-student {
+            color: #764ba2;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .game-card .game-title {
+            color: #333;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .game-card .play-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .game-card .play-button:hover {
+            transform: scale(1.05);
+        }
+
+        .game-card .repo-name {
+            color: #999;
+            font-size: 0.85em;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+
+        .game-card.incomplete {
+            opacity: 0.7;
+            border-color: #ffc107;
+        }
+
+        .game-card.incomplete::before {
+            content: "Incomplete";
+            position: absolute;
+            top: 12px;
+            right: -28px;
+            background: #ffc107;
+            color: #333;
+            padding: 4px 35px;
+            font-size: 0.75em;
+            font-weight: bold;
+            transform: rotate(45deg);
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2em;
@@ -391,6 +499,119 @@
                 </h3>
                 <div class="student-files">
                     <a href="students/wyatt-blankinship/!doctype%20html.html" class="file-link" target="_blank">View Website</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Build Your Game with AI Section -->
+        <div class="section-header">
+            <h2>Build Your Game with AI</h2>
+            <p>Students used GitHub Codespaces, Copilot, and AI tools to create browser-based games hosted on GitHub Pages.</p>
+        </div>
+        <div class="section-content">
+            <div class="games-grid">
+                <div class="game-card">
+                    <div class="game-emoji">🍔</div>
+                    <div class="game-student">Andersen, Jenna</div>
+                    <div class="game-title">I'm Really Hungry</div>
+                    <a href="https://jennalenna.github.io/im-really-hungry/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">im-really-hungry</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">🧇</div>
+                    <div class="game-student">Choi, Ujin</div>
+                    <div class="game-title">Crispy Waffle</div>
+                    <a href="https://hotnakji.github.io/crispy-waffle/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">crispy-waffle</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">🦜</div>
+                    <div class="game-student">Cope, Mona</div>
+                    <div class="game-title">Verbose Parakeet</div>
+                    <a href="https://bigguyismydad.github.io/verbose-parakeet/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">verbose-parakeet</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">🎮</div>
+                    <div class="game-student">Gao, Xiaobo</div>
+                    <div class="game-title">114514</div>
+                    <a href="https://hydregenperoxide.github.io/114514/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">114514</div>
+                </div>
+
+                <div class="game-card incomplete">
+                    <div class="game-emoji">💎</div>
+                    <div class="game-student">Huff, Peter</div>
+                    <div class="game-title">Turbo Diamond</div>
+                    <p style="color: #856404; margin-top: 10px; font-size: 0.9em;">Submission incomplete</p>
+                    <div class="repo-name">turbodiamond3.github.io</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">🐉</div>
+                    <div class="game-student">Huling, Pryce</div>
+                    <div class="game-title">Dragon Dominion</div>
+                    <a href="https://pjaguar12.github.io/Dragon_Dominion/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">Dragon_Dominion</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">🚀</div>
+                    <div class="game-student">Johnson, Kurek</div>
+                    <div class="game-title">Kurek Dev Project</div>
+                    <a href="https://kurek-dev.github.io/kurek-dev-project/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">kurek-dev-project</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">🍌</div>
+                    <div class="game-student">Juber, Brogan</div>
+                    <div class="game-title">Symmetrical Meme</div>
+                    <a href="https://thebluebanana2.github.io/symmetrical-meme/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">symmetrical-meme</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">🥽</div>
+                    <div class="game-student">Nemrow, Garrett</div>
+                    <div class="game-title">Special Goggles</div>
+                    <a href="https://44448-g.github.io/special-goggles/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">special-goggles</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">🐸</div>
+                    <div class="game-student">Petersen, Lucian</div>
+                    <div class="game-title">Frogem</div>
+                    <a href="https://lucianspider.github.io/Frogem/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">Frogem</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">⛏️</div>
+                    <div class="game-student">Randall, Lily</div>
+                    <div class="game-title">Legendary Mine</div>
+                    <a href="https://fandomfaze0123.github.io/legendary-mine/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">legendary-mine</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">👀</div>
+                    <div class="game-student">Rees, Ally</div>
+                    <div class="game-title">Ogle Smogles</div>
+                    <a href="https://allyrees.github.io/oglesmogles-/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">oglesmogles-</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-emoji">🐱</div>
+                    <div class="game-student">Trumble, Ryker</div>
+                    <div class="game-title">Big Cat Simulator</div>
+                    <a href="https://rlet405.github.io/big-cat-simulator/" target="_blank" class="play-button">Play Game</a>
+                    <div class="repo-name">big-cat-simulator</div>
                 </div>
             </div>
         </div>
