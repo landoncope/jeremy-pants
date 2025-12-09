@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 25: Cybersecurity Deep Dive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .slide-container {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        h1 {
+            color: #0f3460;
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #16213e;
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            color: #0f3460;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            color: #16213e;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            color: #333;
+            font-size: 1.3em;
+            line-height: 1.6;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+        }
+
+        .vocab-term {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .vocab-def {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #0f3460;
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .activity-box {
+            background: linear-gradient(135deg, #e94560 0%, #c23a51 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+
+        .activity-box strong {
+            font-size: 1.3em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .fun-fact {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #f39c12;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .fun-fact strong {
+            color: #d68910;
+            font-size: 1.3em;
+        }
+
+        .danger-box {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .danger-box strong {
+            font-size: 1.3em;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .quiz-container {
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 2px solid #0f3460;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            transform: translateX(10px);
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            color: #333;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        button {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            text-align: center;
+            color: #16213e;
+            font-size: 1em;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.5em;
+            text-align: center;
+            margin-top: -10px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        .hacker-card {
+            background: #f8f9fa;
+            border: 2px solid #0f3460;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .hacker-card h4 {
+            color: #e94560;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+
+        .hacker-type {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .type-black {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .type-white {
+            background: white;
+            color: #333;
+            border: 2px solid #333;
+        }
+
+        .type-grey {
+            background: #6c757d;
+            color: white;
+        }
+
+        .type-group {
+            background: #e94560;
+            color: white;
+        }
+
+        .hat-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            border-left: 5px solid;
+        }
+
+        .hat-card.black-hat {
+            border-color: #1a1a2e;
+        }
+
+        .hat-card.white-hat {
+            border-color: #4caf50;
+        }
+
+        .hat-card.grey-hat {
+            border-color: #6c757d;
+        }
+
+        .vuln-card {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .vuln-card h4 {
+            color: #856404;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .challenge-card {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .challenge-card .difficulty {
+            font-size: 0.9em;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .easy { background: #4caf50; }
+        .medium { background: #ff9800; }
+        .hard { background: #e94560; }
+
+        .career-card {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        .salary {
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .timeline-item {
+            background: #f8f9fa;
+            border-left: 4px solid #e94560;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .timeline-year {
+            color: #e94560;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .slide-container {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            p, li {
+                font-size: 1.1em;
+            }
+
+            .stat-grid, .challenge-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Day 25: Cybersecurity Deep Dive</h1>
+            <p class="subtitle">Hacking, Hackers, and How to Protect Yourself</p>
+            <div class="emoji" style="text-align: center; font-size: 5em;">🔐🕵️💻</div>
+            <div class="fun-fact">
+                <strong>Today's Mission:</strong> Learn about real-world cybersecurity, famous hackers, and then put your skills to the test with security challenges!
+            </div>
+        </div>
+
+        <!-- Slide 2: Quick Review -->
+        <div class="slide">
+            <h2>Quick Review: What Did We Learn Last Time?</h2>
+            <div class="quiz-container">
+                <p><strong>What is "client-side storage" that hackers can manipulate?</strong></p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    A) The server's database
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">
+                    B) LocalStorage, cookies, and session data in your browser
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    C) Your computer's hard drive
+                </div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">
+                    D) The website's source code
+                </div>
+            </div>
+            <div class="fun-fact" style="margin-top: 20px;">
+                <strong>Remember:</strong> Data stored in your browser can be viewed and modified using DevTools (F12). That's why important data should always be validated on the SERVER, not just the browser!
+            </div>
+        </div>
+
+        <!-- Slide 3: Cybercrime Statistics -->
+        <div class="slide">
+            <h2>Cybercrime: The Numbers Are INSANE</h2>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-number">$9.5 TRILLION</div>
+                    <div class="stat-label">Global cybercrime damages in 2024</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$302,000</div>
+                    <div class="stat-label">Lost to cybercrime EVERY SECOND</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3rd Largest</div>
+                    <div class="stat-label">If cybercrime were a country, it would be the 3rd largest economy (after US & China)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">60%</div>
+                    <div class="stat-label">Of K-12 schools had a cyber incident in 2023-2024</div>
+                </div>
+            </div>
+            <div class="danger-box">
+                <strong>Real Talk:</strong> In December 2024, PowerSchool (which many schools use!) was hacked, exposing data of 62.4 MILLION students and 9.5 MILLION teachers.
+            </div>
+        </div>
+
+        <!-- Slide 4: Famous Hackers - Kevin Mitnick -->
+        <div class="slide">
+            <h2>Famous Hackers: The Legends</h2>
+            <div class="hacker-card">
+                <span class="hacker-type type-black">Black Hat → White Hat</span>
+                <h4>Kevin Mitnick - "The World's Most Wanted Hacker"</h4>
+                <p>Started hacking as a teenager in 1981. His most famous trick? <strong>Social Engineering</strong> - he called Motorola, asked for the security manager's username and password... and they just gave it to him!</p>
+                <p style="margin-top: 10px;">He was once on the FBI's Most Wanted list and spent 5 years in prison. After his release, he became a security consultant helping companies protect themselves - proof that hacking skills can lead to a legit career!</p>
+            </div>
+            <div class="fun-fact">
+                <strong>Lesson Learned:</strong> The biggest security weakness isn't technology - it's PEOPLE. Never give out passwords, even if someone sounds official!
+            </div>
+        </div>
+
+        <!-- Slide 5: More Famous Hackers -->
+        <div class="slide">
+            <h2>More Hacker Stories</h2>
+            <div class="hacker-card">
+                <span class="hacker-type type-grey">Grey Hat</span>
+                <h4>Gary McKinnon - "The Biggest Military Hack Ever"</h4>
+                <p>Between 2001-2002, McKinnon hacked into NASA and US military systems from his bedroom in the UK. He left messages like "Your security is crap." His reason? He was looking for evidence of UFOs! Caused $700,000 in damage.</p>
+            </div>
+            <div class="hacker-card">
+                <span class="hacker-type type-black">Black Hat (15 years old!)</span>
+                <h4>Michael Calce "MafiaBoy"</h4>
+                <p>In February 2000, this 15-year-old Canadian took down Yahoo!, Amazon, CNN, eBay, and Dell - the biggest websites at the time. He did it just to impress his online friends. Cost companies about $1.7 billion.</p>
+            </div>
+            <div class="fun-fact">
+                <strong>Wild Fact:</strong> In Las Vegas, hackers broke into a casino's network through a FISH TANK! The smart thermometer in the tank was connected to the internet, giving hackers a way in.
+            </div>
+        </div>
+
+        <!-- Slide 6: Anonymous -->
+        <div class="slide">
+            <h2>Anonymous: The Hacktivists</h2>
+            <div class="hacker-card">
+                <span class="hacker-type type-group">Hacktivist Group</span>
+                <h4>Anonymous - "We Are Legion"</h4>
+                <div style="text-align: center; font-size: 4em; margin: 20px 0;">🎭</div>
+                <p>Anonymous isn't one person - it's a decentralized group of hackers who target organizations they see as corrupt or unjust. They've hacked:</p>
+                <ul>
+                    <li>The Church of Scientology</li>
+                    <li>Various government websites</li>
+                    <li>Companies they felt acted unethically</li>
+                    <li>Declared "cyber war" on Russia during the Ukraine invasion</li>
+                </ul>
+                <p style="margin-top: 10px;">Since there's no leader, arresting members doesn't stop the group. Their motto: "We are Anonymous. We are Legion. We do not forgive. We do not forget. Expect us."</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Types of Hackers -->
+        <div class="slide">
+            <h2>The Three Types of Hackers</h2>
+            <div class="hat-card black-hat">
+                <h4>🎩 Black Hat Hackers</h4>
+                <p><strong>The Bad Guys.</strong> They hack illegally for personal gain, to steal data, or cause damage. They're the criminals you hear about in the news.</p>
+            </div>
+            <div class="hat-card white-hat">
+                <h4>🤍 White Hat Hackers</h4>
+                <p><strong>The Good Guys.</strong> Also called "Ethical Hackers" - companies PAY them to hack their systems and find vulnerabilities before the bad guys do. This is a real career!</p>
+            </div>
+            <div class="hat-card grey-hat">
+                <h4>🩶 Grey Hat Hackers</h4>
+                <p><strong>The In-Between.</strong> They hack without permission but don't steal or cause damage. They might find a vulnerability and tell the company about it - sometimes even asking for a reward (or sending a "bill").</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Common Vulnerabilities -->
+        <div class="slide">
+            <h2>Top Web Vulnerabilities (OWASP Top 10)</h2>
+            <p>These are the most common security problems in websites and apps:</p>
+            <div class="vuln-card">
+                <h4>#1 - Broken Access Control</h4>
+                <p>When you can access stuff you shouldn't by just changing the URL. Example: changing <code>?user=123</code> to <code>?user=456</code> to see someone else's account.</p>
+            </div>
+            <div class="vuln-card">
+                <h4>#3 - Injection Attacks</h4>
+                <p>When hackers type code into input fields (like login forms) and the website accidentally runs it. The most famous is SQL Injection - typing database commands into a username field!</p>
+            </div>
+            <div class="vuln-card">
+                <h4>#7 - Authentication Failures</h4>
+                <p>Weak passwords, no two-factor authentication, session tokens that don't expire. The Colonial Pipeline hack in 2021 happened because of ONE compromised password with no 2FA!</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: The Colonial Pipeline Attack -->
+        <div class="slide">
+            <h2>Case Study: Colonial Pipeline (2021)</h2>
+            <div class="timeline-item">
+                <span class="timeline-year">What Happened:</span>
+                <p>Hackers from the DarkSide group used a SINGLE stolen password to get into Colonial Pipeline's network. No two-factor authentication was required.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">The Impact:</span>
+                <p>Colonial Pipeline supplies 45% of the East Coast's fuel. They had to shut down for 5 days, causing gas shortages and panic buying across multiple states.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">The Ransom:</span>
+                <p>The company paid $4.4 MILLION in Bitcoin to the hackers. (The FBI later recovered about half of it.)</p>
+            </div>
+            <div class="danger-box">
+                <strong>The Scary Part:</strong> All of this happened because of ONE weak password and no two-factor authentication. That's why your school makes you use complex passwords and 2FA!
+            </div>
+        </div>
+
+        <!-- Slide 10: Biggest Data Breaches -->
+        <div class="slide">
+            <h2>The Biggest Data Breaches Ever</h2>
+            <div class="timeline-item">
+                <span class="timeline-year">Yahoo (2013-2014)</span>
+                <p><strong>3 BILLION accounts</strong> - Every single Yahoo account was compromised. Names, emails, passwords, security questions - all stolen. The largest breach in history.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">Equifax (2017)</span>
+                <p><strong>147 million people</strong> - Social Security numbers, birth dates, addresses stolen. The hackers got in through an unpatched vulnerability the company KNEW about but didn't fix. Cost: at least $575 million in settlements.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">First Major Bank Heist (1994)</span>
+                <p>Vladimir Levin hacked Citibank and stole <strong>$10 million</strong> - the first major online bank robbery. He got caught and received only 3 years in prison.</p>
+            </div>
+            <div class="fun-fact">
+                <strong>Check Yourself:</strong> Go to <strong>haveibeenpwned.com</strong> and enter your email to see if YOUR data has been exposed in any breaches!
+            </div>
+        </div>
+
+        <!-- Slide 11: Cybersecurity Careers -->
+        <div class="slide">
+            <h2>Cybersecurity Careers: Get Paid to Hack!</h2>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-number">3.5 Million</div>
+                    <div class="stat-label">Unfilled cybersecurity jobs worldwide in 2024</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0%</div>
+                    <div class="stat-label">Unemployment rate for experienced cybersecurity workers (since 2011!)</div>
+                </div>
+            </div>
+            <div class="career-card">
+                <h4>Penetration Tester ("Pen Tester")</h4>
+                <p>Companies hire you to hack their systems and find vulnerabilities before criminals do.</p>
+                <p class="salary">Salary: $80,000 - $150,000+</p>
+            </div>
+            <div class="career-card">
+                <h4>Security Analyst</h4>
+                <p>Monitor systems for threats, investigate breaches, and protect company data.</p>
+                <p class="salary">Salary: $70,000 - $120,000</p>
+            </div>
+            <div class="success-box">
+                <strong>No Degree Required!</strong> Google offers a free Cybersecurity Certificate program. Some jobs only need a high school diploma plus certifications!
+            </div>
+        </div>
+
+        <!-- Slide 12: Bug Bounties -->
+        <div class="slide">
+            <h2>Bug Bounties: Get Paid to Find Vulnerabilities!</h2>
+            <p>Major companies will PAY YOU if you find security bugs in their systems:</p>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-number">$250K+</div>
+                    <div class="stat-label">Apple's max bounty for a single bug</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$31,337</div>
+                    <div class="stat-label">Google's bounty for critical Chrome bugs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$20,000</div>
+                    <div class="stat-label">Microsoft's starting bounty for serious bugs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$100K+</div>
+                    <div class="stat-label">Some hackers earn this PER MONTH from bug bounties</div>
+                </div>
+            </div>
+            <div class="fun-fact">
+                <strong>Start Learning:</strong> Platforms like <strong>HackerOne</strong> and <strong>Bugcrowd</strong> let you practice finding bugs legally. Some teens have earned thousands!
+            </div>
+        </div>
+
+        <!-- Slide 13: Protecting Yourself -->
+        <div class="slide">
+            <h2>Protect Yourself: The Basics</h2>
+            <div class="success-box">
+                <strong>1. Use Strong, Unique Passwords</strong>
+                <p>Use a password manager. Never reuse passwords. If one site gets hacked, hackers try that password on every other site!</p>
+            </div>
+            <div class="success-box">
+                <strong>2. Enable Two-Factor Authentication (2FA)</strong>
+                <p>Even if someone steals your password, they can't get in without the second factor. Use an authenticator app, not just SMS.</p>
+            </div>
+            <div class="success-box">
+                <strong>3. Be Suspicious of Emails & Links</strong>
+                <p>Phishing is the #1 attack method. Check the sender's actual email address. When in doubt, go to the website directly instead of clicking links.</p>
+            </div>
+            <div class="success-box">
+                <strong>4. Keep Software Updated</strong>
+                <p>Those annoying update notifications? They often fix security holes. The Equifax breach happened because they didn't update!</p>
+            </div>
+        </div>
+
+        <!-- Slide 14: Phishing Examples -->
+        <div class="slide">
+            <h2>Spot the Phishing Attack!</h2>
+            <p>Phishing is the #1 cybercrime according to the FBI. Can you spot the red flags?</p>
+            <div class="vuln-card">
+                <h4>Example Email:</h4>
+                <p style="font-family: monospace; background: white; padding: 15px; border-radius: 5px;">
+                    <strong>From:</strong> security@amaz0n-support.com<br>
+                    <strong>Subject:</strong> URGENT: Your account will be suspended!!!<br><br>
+                    Dear Valued Costumer,<br><br>
+                    We have detected suspiscious activity on your acount. Click here immediatly to verify your information or your account will be permanantly locked!<br><br>
+                    <a href="#" style="color: blue;">Click Here to Verify NOW</a>
+                </p>
+            </div>
+            <div class="danger-box">
+                <strong>Red Flags:</strong>
+                <ul style="color: white;">
+                    <li>Fake domain (amaz0n with a zero, not amazon)</li>
+                    <li>URGENT/threatening language</li>
+                    <li>Spelling errors ("Costumer", "suspiscious", "immediatly")</li>
+                    <li>Generic greeting ("Valued Customer")</li>
+                    <li>Pressure to click immediately</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 15: Activity Time -->
+        <div class="slide">
+            <h2>Security Challenge Time!</h2>
+            <p>Time to put your hacking skills to the test! Remember: These are EDUCATIONAL challenges on OUR systems. Never try these techniques on real websites!</p>
+            <div class="challenge-grid">
+                <div class="challenge-card" onclick="alert('Easy challenge coming soon! Try Medium or Hard for now.')">
+                    <div style="font-size: 3em;">🔓</div>
+                    <h4>Easy</h4>
+                    <p>Basic DevTools & Inspection</p>
+                    <span class="difficulty easy">Coming Soon</span>
+                </div>
+                <div class="challenge-card" onclick="window.open('../security-medium/', '_blank')">
+                    <div style="font-size: 3em;">🔐</div>
+                    <h4>Medium: Pixel Pets</h4>
+                    <p>LocalStorage & URL Manipulation</p>
+                    <span class="difficulty medium">Some Experience</span>
+                </div>
+                <div class="challenge-card" onclick="window.open('../security-medium-2/', '_blank')">
+                    <div style="font-size: 3em;">🎓</div>
+                    <h4>Medium: Grade Portal</h4>
+                    <p>Cookies & Access Control</p>
+                    <span class="difficulty medium">NEW!</span>
+                </div>
+            </div>
+            <div class="challenge-grid" style="grid-template-columns: 1fr; max-width: 350px; margin: 20px auto;">
+                <div class="challenge-card" onclick="window.open('../security-hard/', '_blank')">
+                    <div style="font-size: 3em;">🏦</div>
+                    <h4>Hard: CryptoVault</h4>
+                    <p>Cookies, IDOR, Hidden Pages</p>
+                    <span class="difficulty hard">Advanced</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Challenge Tips -->
+        <div class="slide">
+            <h2>Challenge Tips & Hints</h2>
+            <div class="activity-box">
+                <strong>Your Hacking Toolkit:</strong>
+                <ul style="color: white; margin-top: 10px;">
+                    <li><strong>F12 / DevTools</strong> - Open the browser's developer tools</li>
+                    <li><strong>Application Tab</strong> - View LocalStorage, Cookies, Session Storage</li>
+                    <li><strong>Console Tab</strong> - Run JavaScript and see hints</li>
+                    <li><strong>Sources Tab</strong> - View the actual JavaScript code</li>
+                    <li><strong>Network Tab</strong> - See what data is being sent</li>
+                </ul>
+            </div>
+            <div class="fun-fact">
+                <strong>Things to Try:</strong>
+                <ul>
+                    <li>Look at the page source (right-click → View Source)</li>
+                    <li>Check for hidden links in the footer</li>
+                    <li>Try adding <code>?debug=true</code> to URLs</li>
+                    <li>Modify cookie values like <code>user_role</code></li>
+                    <li>Change account IDs in URLs</li>
+                    <li>Look for common passwords (admin, 1234, password)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 17: Summary -->
+        <div class="slide">
+            <h2>Day 25 Summary</h2>
+            <h3>What We Learned Today:</h3>
+            <ul>
+                <li><span class="emoji">💰</span> <strong>Cybercrime costs $9.5 trillion per year</strong> - bigger than most countries!</li>
+                <li><span class="emoji">🎭</span> <strong>Famous hackers</strong> - Kevin Mitnick, MafiaBoy, Anonymous</li>
+                <li><span class="emoji">🎩</span> <strong>Three types of hackers</strong> - Black hat, white hat, grey hat</li>
+                <li><span class="emoji">🔓</span> <strong>Common vulnerabilities</strong> - Broken access control, injection, weak authentication</li>
+                <li><span class="emoji">💼</span> <strong>Cybersecurity careers</strong> - 3.5 million jobs available, 0% unemployment!</li>
+                <li><span class="emoji">🛡️</span> <strong>Protection basics</strong> - Strong passwords, 2FA, spot phishing</li>
+            </ul>
+            <div class="fun-fact" style="margin-top: 25px;">
+                <strong>Keep Practicing!</strong> The security challenges are still available. See how many flags you can capture! Remember: use these skills for good, not evil!
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button onclick="previousSlide()" id="prevBtn">← Previous</button>
+            <div class="slide-number">
+                Slide <span id="slideNum">1</span> of <span id="totalSlides">17</span>
+            </div>
+            <button onclick="nextSlide()" id="nextBtn">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+
+            document.getElementById('slideNum').textContent = currentSlide + 1;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Quiz functionality
+        function checkAnswer(button, isCorrect) {
+            const allOptions = button.parentElement.querySelectorAll('.quiz-option');
+            allOptions.forEach(option => {
+                option.classList.add('disabled');
+                option.style.cursor = 'not-allowed';
+            });
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                button.innerHTML += ' ✓';
+            } else {
+                button.classList.add('incorrect');
+                button.innerHTML += ' ✗';
+                // Show correct answer
+                allOptions.forEach(option => {
+                    if (option.onclick.toString().includes('true')) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+        }
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
