@@ -479,42 +479,7 @@
             </div>
         </div>
 
-        <!-- Slide 2: Day 25 Review - Access Control -->
-        <div class="slide">
-            <h2>Review: What is Access Control?</h2>
-            <div class="vocab-term">Access Control / IDOR Vulnerability</div>
-            <div class="vocab-def">
-                <strong>Access Control</strong> means making sure users can only see and do things they're AUTHORIZED to do.<br><br>
-                <strong>IDOR</strong> (Insecure Direct Object Reference) is when you can access someone else's data by simply changing a value in the URL or form.<br><br>
-                <strong>Real-World Example:</strong><br>
-                Your bank account page: <code>bank.com/account?user=1001</code><br>
-                What if you change it to: <code>bank.com/account?user=1002</code>?<br>
-                If you can suddenly see someone ELSE's bank account... that's an IDOR vulnerability!
-            </div>
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="access-control-demo.html" class="demo-btn" target="_blank">Try the Live Demo</a>
-            </div>
-        </div>
-
-        <!-- Slide 3: Day 25 Review - Injection Attacks -->
-        <div class="slide">
-            <h2>Review: What are Injection Attacks?</h2>
-            <div class="vocab-term">Injection Attack</div>
-            <div class="vocab-def">
-                <strong>Injection attacks</strong> happen when an attacker types CODE into an input field (like a login form), and the website accidentally RUNS that code.<br><br>
-                <strong>SQL Injection Example:</strong><br>
-                Normal login: Username = <code>admin</code>, Password = <code>mypassword</code><br>
-                The website checks: <code>SELECT * FROM users WHERE user='admin' AND pass='mypassword'</code><br><br>
-                <strong>Attack:</strong> Username = <code>admin' --</code><br>
-                The query becomes: <code>SELECT * FROM users WHERE user='admin' --' AND pass='...'</code><br>
-                The <code>--</code> is a SQL comment - it ignores the password check entirely!
-            </div>
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="injection-demo.html" class="demo-btn" target="_blank">Try the Live Demo</a>
-            </div>
-        </div>
-
-        <!-- Slide 4: Review Quiz -->
+        <!-- Slide 2: Review Quiz -->
         <div class="slide">
             <h2>Quick Security Review Quiz</h2>
             <div class="quiz-container">
@@ -534,6 +499,41 @@
             </div>
             <div class="fun-fact" style="margin-top: 15px;">
                 <strong>Remember:</strong> IDOR = changing IDs in URLs to see other people's stuff. Injection = putting code in input fields that gets executed.
+            </div>
+        </div>
+
+        <!-- Slide 3: Day 25 Review - Access Control -->
+        <div class="slide">
+            <h2>Review: What is Access Control?</h2>
+            <div class="vocab-term">Access Control / IDOR Vulnerability</div>
+            <div class="vocab-def">
+                <strong>Access Control</strong> means making sure users can only see and do things they're AUTHORIZED to do.<br><br>
+                <strong>IDOR</strong> (Insecure Direct Object Reference) is when you can access someone else's data by simply changing a value in the URL or form.<br><br>
+                <strong>Real-World Example:</strong><br>
+                Your bank account page: <code>bank.com/account?user=1001</code><br>
+                What if you change it to: <code>bank.com/account?user=1002</code>?<br>
+                If you can suddenly see someone ELSE's bank account... that's an IDOR vulnerability!
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="access-control-demo.html" class="demo-btn" target="_blank">Try the Live Demo</a>
+            </div>
+        </div>
+
+        <!-- Slide 4: Day 25 Review - Injection Attacks -->
+        <div class="slide">
+            <h2>Review: What are Injection Attacks?</h2>
+            <div class="vocab-term">Injection Attack</div>
+            <div class="vocab-def">
+                <strong>Injection attacks</strong> happen when an attacker types CODE into an input field (like a login form), and the website accidentally RUNS that code.<br><br>
+                <strong>SQL Injection Example:</strong><br>
+                Normal login: Username = <code>admin</code>, Password = <code>mypassword</code><br>
+                The website checks: <code>SELECT * FROM users WHERE user='admin' AND pass='mypassword'</code><br><br>
+                <strong>Attack:</strong> Username = <code>admin' --</code><br>
+                The query becomes: <code>SELECT * FROM users WHERE user='admin' --' AND pass='...'</code><br>
+                The <code>--</code> is a SQL comment - it ignores the password check entirely!
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="injection-demo.html" class="demo-btn" target="_blank">Try the Live Demo</a>
             </div>
         </div>
 
@@ -745,7 +745,7 @@
 
             <div class="idea-card">
                 <h4>Freelance Web Design</h4>
-                <p>You can build websites now! Local businesses, churches, clubs - they all need websites. Charge $200-500 for a simple site.</p>
+                <p>You can build websites now! Local businesses, nonprofits, clubs - they all need websites. Charge $200-500 for a simple site, plus ongoing fees.</p>
             </div>
             <div class="idea-card">
                 <h4>Tech Tutoring</h4>
@@ -753,7 +753,7 @@
             </div>
             <div class="idea-card">
                 <h4>Content Creation</h4>
-                <p>Start a YouTube channel, TikTok, or blog about something you're passionate about. It's free to start!</p>
+                <p>Start a YouTube channel, website, or blog about something you're passionate about. It's free to start!</p>
             </div>
         </div>
 
