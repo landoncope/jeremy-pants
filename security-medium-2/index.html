@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EagleGrade - Student Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            max-width: 1000px;
+            margin: 0 auto 30px auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .logo span {
+            font-size: 2em;
+        }
+
+        .logo h1 {
+            font-size: 1.5em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-card h2 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+
+        .login-card .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #1e3c72;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(30, 60, 114, 0.4);
+        }
+
+        .student-list {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .student-list h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .student-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .student-id {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .hidden-student {
+            opacity: 0.4;
+            font-style: italic;
+        }
+
+        .error-msg {
+            background: #ffe6e6;
+            border: 1px solid #ff6b6b;
+            color: #c0392b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .hint-box {
+            background: #fff8e1;
+            border: 2px dashed #ffc107;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hint-box h3 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .hint-box ul {
+            margin-left: 20px;
+            color: #666;
+        }
+
+        .hint-box li {
+            margin-bottom: 10px;
+        }
+
+        .progress-tracker {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-tracker h3 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+
+        .flags-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .flag-slot {
+            width: 60px;
+            height: 60px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            border: 3px dashed #ccc;
+            transition: all 0.3s;
+        }
+
+        .flag-slot.found {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            border: 3px solid #4caf50;
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8em;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <span>🦅</span>
+            <h1>EagleGrade</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Login</a>
+            <a href="grades.html">My Grades</a>
+            <a href="#" onclick="showHelp()">Help</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="login-card">
+            <h2>Student Portal Login</h2>
+            <p class="subtitle">Access your grades and academic records</p>
+
+            <form onsubmit="attemptLogin(event)">
+                <div class="form-group">
+                    <label>Select Your Account:</label>
+                    <select id="studentSelect">
+                        <option value="">-- Choose your name --</option>
+                        <option value="1001">Alex Johnson (ID: 1001)</option>
+                        <option value="1002">Maria Garcia (ID: 1002)</option>
+                        <option value="1003">James Wilson (ID: 1003)</option>
+                        <option value="1004">Emma Davis (ID: 1004)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
+
+                <button type="submit" class="btn">Sign In</button>
+
+                <div id="errorMsg" class="error-msg"></div>
+            </form>
+
+            <div class="student-list">
+                <h3>Registered Students:</h3>
+                <div class="student-item" onclick="selectStudent(1001)">
+                    <span>Alex Johnson</span>
+                    <span class="student-id">ID: 1001</span>
+                </div>
+                <div class="student-item" onclick="selectStudent(1002)">
+                    <span>Maria Garcia</span>
+                    <span class="student-id">ID: 1002</span>
+                </div>
+                <div class="student-item" onclick="selectStudent(1003)">
+                    <span>James Wilson</span>
+                    <span class="student-id">ID: 1003</span>
+                </div>
+                <div class="student-item" onclick="selectStudent(1004)">
+                    <span>Emma Davis</span>
+                    <span class="student-id">ID: 1004</span>
+                </div>
+                <div class="student-item hidden-student" onclick="enableTeacher()">
+                    <span>Mr. Thompson (Teacher)</span>
+                    <span class="student-id">ID: 9999</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-tracker">
+            <h3>Security Challenge: <span id="flagCount">0</span>/4 Flags Found</h3>
+            <div class="flags-container">
+                <div class="flag-slot" id="flag1">1</div>
+                <div class="flag-slot" id="flag2">2</div>
+                <div class="flag-slot" id="flag3">3</div>
+                <div class="flag-slot" id="flag4">4</div>
+            </div>
+        </div>
+
+        <div class="hint-box">
+            <h3>Hacker Training Hints:</h3>
+            <ul>
+                <li><strong>Cookies:</strong> Your browser stores session data. What happens if you change the <code>student_id</code> or <code>role</code> cookie?</li>
+                <li><strong>URL Parameters:</strong> The grades page might accept a student ID in the URL...</li>
+                <li><strong>Hidden Pages:</strong> Teachers need their own dashboard. Can you find it?</li>
+                <li><strong>Weak Passwords:</strong> Students often use simple passwords like their ID number...</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="index.html">Home</a> |
+        <a href="grades.html">Grades</a> |
+        <a href="teacher.html">Teacher Portal</a> |
+        <a href="debug.html">Debug</a>
+    </div>
+
+    <script>
+        // "Secure" student database (VULNERABILITY: Client-side storage!)
+        const students = {
+            1001: { name: "Alex Johnson", password: "1001", role: "student", grade: "A-" },
+            1002: { name: "Maria Garcia", password: "maria123", role: "student", grade: "B+" },
+            1003: { name: "James Wilson", password: "password", role: "student", grade: "C" },
+            1004: { name: "Emma Davis", password: "emma2024", role: "student", grade: "A" },
+            9999: { name: "Mr. Thompson", password: "teacher", role: "teacher", grade: "N/A" }
+        };
+
+        // Game state
+        let gameState = {
+            flagsFound: [],
+            loggedIn: false,
+            currentUser: null
+        };
+
+        // Cookie functions
+        function setCookie(name, value, days) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+        }
+
+        function getCookie(name) {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const parts = v.split('=');
+                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+            }, '');
+        }
+
+        // Load game state
+        function loadState() {
+            const saved = localStorage.getItem('eagleGradeGame');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+
+            // Initialize cookies if not present
+            if (!getCookie('student_id')) {
+                setCookie('student_id', '0', 1);
+            }
+            if (!getCookie('role')) {
+                setCookie('role', 'guest', 1);
+            }
+            if (!getCookie('session')) {
+                setCookie('session', 'not_logged_in', 1);
+            }
+
+            updateFlagDisplay();
+            checkCookieFlags();
+        }
+
+        function saveState() {
+            localStorage.setItem('eagleGradeGame', JSON.stringify(gameState));
+            updateFlagDisplay();
+        }
+
+        function selectStudent(id) {
+            document.getElementById('studentSelect').value = id;
+        }
+
+        function enableTeacher() {
+            const select = document.getElementById('studentSelect');
+            // Check if teacher option already exists
+            if (!select.querySelector('option[value="9999"]')) {
+                const option = document.createElement('option');
+                option.value = "9999";
+                option.textContent = "Mr. Thompson - Teacher (ID: 9999)";
+                select.appendChild(option);
+                console.log("🔓 Teacher account unlocked in dropdown!");
+            }
+            select.value = "9999";
+        }
+
+        function attemptLogin(e) {
+            e.preventDefault();
+
+            const studentId = document.getElementById('studentSelect').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            if (!studentId) {
+                showError("Please select a student account!");
+                return;
+            }
+
+            const student = students[studentId];
+            if (!student) {
+                showError("Student not found!");
+                return;
+            }
+
+            if (password !== student.password) {
+                showError("Wrong password! Hint: Some students use simple passwords like their ID...");
+                return;
+            }
+
+            // Set cookies (VULNERABILITY: Client can modify these!)
+            setCookie('student_id', studentId, 1);
+            setCookie('role', student.role, 1);
+            setCookie('session', 'logged_in_' + studentId, 1);
+            setCookie('student_name', student.name, 1);
+
+            gameState.loggedIn = true;
+            gameState.currentUser = studentId;
+            saveState();
+
+            // Check if logging in as teacher
+            if (student.role === 'teacher' && !gameState.flagsFound.includes(2)) {
+                captureFlag(2, "Teacher's Pet! You logged in as Mr. Thompson!");
+            }
+
+            // Redirect to grades page
+            window.location.href = 'grades.html?id=' + studentId;
+        }
+
+        function showError(msg) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = msg;
+            errorMsg.style.display = 'block';
+            setTimeout(() => errorMsg.style.display = 'none', 4000);
+        }
+
+        function showHelp() {
+            alert("EagleGrade Student Portal v1.0\n\nNeed help? Contact your teacher!\n\nHint: Teachers have their own portal at teacher.html");
+        }
+
+        // Check for cookie manipulation
+        function checkCookieFlags() {
+            const role = getCookie('role');
+            if (role === 'teacher' && !gameState.flagsFound.includes(1)) {
+                captureFlag(1, "Cookie Monster! You changed your role to teacher!");
+            }
+
+            const studentId = getCookie('student_id');
+            if (studentId === '9999' && !gameState.flagsFound.includes(1)) {
+                captureFlag(1, "Cookie Monster! You changed your student_id to teacher!");
+            }
+        }
+
+        function captureFlag(num, message) {
+            if (!gameState.flagsFound.includes(num)) {
+                gameState.flagsFound.push(num);
+                saveState();
+                console.log(`🏁 FLAG #${num} CAPTURED: ${message}`);
+                alert(`🏁 FLAG #${num} CAPTURED!\n\n${message}`);
+            }
+        }
+
+        function updateFlagDisplay() {
+            document.getElementById('flagCount').textContent = gameState.flagsFound.length;
+            gameState.flagsFound.forEach(num => {
+                const slot = document.getElementById('flag' + num);
+                if (slot) {
+                    slot.textContent = '🏁';
+                    slot.classList.add('found');
+                }
+            });
+        }
+
+        // Console hints
+        console.log("===========================================");
+        console.log("🦅 EagleGrade Student Portal");
+        console.log("===========================================");
+        console.log("");
+        console.log("FLAGS TO FIND:");
+        console.log("1. Cookie Manipulation - Change your role or ID");
+        console.log("2. Login as Teacher - Find the teacher's password");
+        console.log("3. IDOR Attack - View another student's grades");
+        console.log("4. Find the Hidden Debug Page");
+        console.log("");
+        console.log("HINTS:");
+        console.log("- Check document.cookie in the console");
+        console.log("- Try changing the 'role' cookie to 'teacher'");
+        console.log("- Look at URL parameters on the grades page");
+        console.log("- Students often use weak passwords (like their ID)");
+        console.log("- There might be hidden pages...");
+        console.log("===========================================");
+
+        // Check cookies periodically
+        setInterval(checkCookieFlags, 2000);
+
+        // Initialize
+        loadState();
+    </script>
+</body>
+</html>

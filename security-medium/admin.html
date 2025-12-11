@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Pets - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .admin-panel {
+            display: none;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .lock-icon {
+            text-align: center;
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #a29bfe;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #a29bfe, #667eea);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(162, 155, 254, 0.4);
+        }
+
+        .error-msg {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .hint-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px dashed #ffd700;
+            border-radius: 10px;
+        }
+
+        .hint-section h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .hint-section p {
+            color: #ccc;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        /* Admin Panel Styles */
+        .admin-content {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .flag-celebration {
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            animation: rainbow 3s linear infinite;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .flag-celebration h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+        }
+
+        .cheat-codes {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .cheat-codes h3 {
+            color: #00ff00;
+            margin-bottom: 15px;
+        }
+
+        .cheat-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            color: #00ff00;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cheat-btn:hover {
+            background: rgba(0, 255, 0, 0.3);
+        }
+
+        .lesson-box {
+            background: rgba(162, 155, 254, 0.1);
+            border: 1px solid #a29bfe;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .lesson-box h3 {
+            color: #a29bfe;
+            margin-bottom: 15px;
+        }
+
+        .lesson-box ul {
+            margin-left: 20px;
+            color: #aaa;
+        }
+
+        .lesson-box li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Login Form -->
+        <div id="loginForm">
+            <div class="lock-icon">🔒</div>
+            <h1>Admin Panel</h1>
+
+            <div class="form-group">
+                <label>Admin Password:</label>
+                <input type="password" id="password" placeholder="Enter password..." onkeypress="if(event.key==='Enter')attemptLogin()">
+            </div>
+
+            <button onclick="attemptLogin()">Login</button>
+
+            <div id="errorMsg" class="error-msg">
+                Incorrect password! Try again...
+            </div>
+
+            <div class="hint-section">
+                <h3>💡 Hacker Hints:</h3>
+                <p>Admin passwords are often weak or default values.</p>
+                <p>Common passwords: admin, password, 123456, admin123...</p>
+                <p>What's the name of the game? That might be a clue!</p>
+                <p>Or check the JavaScript code on this page...</p>
+            </div>
+        </div>
+
+        <!-- Admin Panel (shown after login) -->
+        <div id="adminPanel" class="admin-panel">
+            <div class="flag-celebration">
+                <h2>🏁 FLAG #4 CAPTURED!</h2>
+                <p>You cracked the admin password!</p>
+            </div>
+
+            <h1>Admin Control Panel</h1>
+
+            <div class="admin-content">
+                <div class="cheat-codes">
+                    <h3>Cheat Codes</h3>
+                    <button class="cheat-btn" onclick="addCoins()">💰 Add 10,000 Coins</button>
+                    <button class="cheat-btn" onclick="maxStats()">📊 Max All Stats</button>
+                    <button class="cheat-btn" onclick="unlockAll()">🎁 Unlock All Items</button>
+                    <button class="cheat-btn" onclick="resetGame()">🔄 Reset Game</button>
+                </div>
+
+                <div class="lesson-box">
+                    <h3>Security Lessons Learned:</h3>
+                    <ul>
+                        <li><strong>Weak Passwords</strong> - "pixelpets" is too easy to guess!</li>
+                        <li><strong>Hidden Pages</strong> - Just because a link is small doesn't mean it's secret</li>
+                        <li><strong>Client-Side Auth</strong> - Password checking in JavaScript can be bypassed</li>
+                        <li><strong>Admin Access</strong> - Admin panels should have strong authentication</li>
+                    </ul>
+                </div>
+            </div>
+
+            <a href="index.html" style="display: block; text-align: center; margin-top: 20px; color: #a29bfe;">← Back to Game</a>
+        </div>
+    </div>
+
+    <script>
+        // Super "secure" admin password (VULNERABILITY: Password in JavaScript!)
+        const ADMIN_PASSWORD = "pixelpets";
+
+        // Alternative passwords that also work (for easier discovery)
+        const BACKUP_PASSWORDS = ["admin", "admin123", "password"];
+
+        function attemptLogin() {
+            const entered = document.getElementById('password').value.toLowerCase();
+
+            if (entered === ADMIN_PASSWORD || BACKUP_PASSWORDS.includes(entered)) {
+                // Successful login
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+
+                // Mark flag 4 as found
+                const saved = localStorage.getItem('pixelPetsGame');
+                if (saved) {
+                    const gameState = JSON.parse(saved);
+                    if (!gameState.flagsFound.includes(4)) {
+                        gameState.flagsFound.push(4);
+                        localStorage.setItem('pixelPetsGame', JSON.stringify(gameState));
+                    }
+                }
+
+                console.log("🏁 FLAG #4: Admin Access Granted!");
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('errorMsg').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Cheat functions
+        function addCoins() {
+            const saved = localStorage.getItem('pixelPetsGame');
+            if (saved) {
+                const gameState = JSON.parse(saved);
+                gameState.coins += 10000;
+                localStorage.setItem('pixelPetsGame', JSON.stringify(gameState));
+                alert('Added 10,000 coins! 💰');
+            }
+        }
+
+        function maxStats() {
+            const saved = localStorage.getItem('pixelPetsGame');
+            if (saved) {
+                const gameState = JSON.parse(saved);
+                gameState.happiness = 100;
+                gameState.hunger = 0;
+                gameState.energy = 100;
+                localStorage.setItem('pixelPetsGame', JSON.stringify(gameState));
+                alert('All stats maxed! 📊');
+            }
+        }
+
+        function unlockAll() {
+            const saved = localStorage.getItem('pixelPetsGame');
+            if (saved) {
+                const gameState = JSON.parse(saved);
+                gameState.items = ['hat', 'bow', 'glasses', 'crown', 'wings', 'dragon'];
+                localStorage.setItem('pixelPetsGame', JSON.stringify(gameState));
+                alert('All items unlocked! 🎁');
+            }
+        }
+
+        function resetGame() {
+            if (confirm('Are you sure you want to reset the game?')) {
+                localStorage.removeItem('pixelPetsGame');
+                alert('Game reset! Refresh the main page.');
+            }
+        }
+
+        // Console hint
+        console.log("===========================================");
+        console.log("Admin Panel Loaded");
+        console.log("Hint: The password is stored in this JavaScript...");
+        console.log("Try searching for 'PASSWORD' in the code!");
+        console.log("===========================================");
+    </script>
+</body>
+</html>

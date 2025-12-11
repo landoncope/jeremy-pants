@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EagleGrade - Teacher Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            max-width: 1000px;
+            margin: 0 auto 30px auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .logo span {
+            font-size: 2em;
+        }
+
+        .logo h1 {
+            font-size: 1.5em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .login-required {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-required h2 {
+            color: #e94560;
+            margin-bottom: 20px;
+        }
+
+        .login-required p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .login-required .icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .dashboard-header h2 {
+            color: #1e3c72;
+        }
+
+        .teacher-badge {
+            background: linear-gradient(135deg, #e94560 0%, #c23a51 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .stat-card .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .students-table th {
+            background: #1e3c72;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .students-table th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        .students-table th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .students-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .students-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .gpa-badge {
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .gpa-high { background: #d4edda; color: #155724; }
+        .gpa-mid { background: #fff3cd; color: #856404; }
+        .gpa-low { background: #f8d7da; color: #721c24; }
+
+        .view-btn {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn:hover {
+            background: #2a5298;
+        }
+
+        .flag-display {
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            animation: rainbow 3s linear infinite;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .flag-display h2 {
+            color: white;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-tracker {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-tracker h3 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+
+        .flags-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .flag-slot {
+            width: 60px;
+            height: 60px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            border: 3px dashed #ccc;
+            transition: all 0.3s;
+        }
+
+        .flag-slot.found {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            border: 3px solid #4caf50;
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8em;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <span>🦅</span>
+            <h1>EagleGrade</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="grades.html">Grades</a>
+            <a href="teacher.html">Teacher Portal</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Login Required View -->
+        <div id="loginRequired" class="login-required">
+            <div class="icon">🔒</div>
+            <h2>Teacher Access Required</h2>
+            <p>This page is restricted to teachers only.<br>Please log in with a teacher account to access the dashboard.</p>
+            <a href="index.html" class="btn">Go to Login</a>
+            <p style="margin-top: 20px; font-size: 0.9em; color: #888;">
+                Hint: What if you could change your role cookie to "teacher"?
+            </p>
+        </div>
+
+        <!-- Teacher Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <div class="dashboard-card">
+                <div class="dashboard-header">
+                    <h2>Teacher Dashboard</h2>
+                    <div class="teacher-badge">👨‍🏫 Teacher Access</div>
+                </div>
+
+                <div id="flagDisplay" class="flag-display">
+                    <h2 id="flagMessage">FLAG FOUND!</h2>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="number">4</div>
+                        <div class="label">Total Students</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">3.4</div>
+                        <div class="label">Average GPA</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">1</div>
+                        <div class="label">Honor Roll</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">0</div>
+                        <div class="label">At Risk</div>
+                    </div>
+                </div>
+
+                <h3 style="color: #1e3c72; margin-bottom: 15px;">All Students</h3>
+                <table class="students-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>GPA</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1001</td>
+                            <td>Alex Johnson</td>
+                            <td><span class="gpa-badge gpa-high">3.7</span></td>
+                            <td>Good Standing</td>
+                            <td><button class="view-btn" onclick="viewStudent(1001)">View Grades</button></td>
+                        </tr>
+                        <tr>
+                            <td>1002</td>
+                            <td>Maria Garcia</td>
+                            <td><span class="gpa-badge gpa-high">3.4</span></td>
+                            <td>Good Standing</td>
+                            <td><button class="view-btn" onclick="viewStudent(1002)">View Grades</button></td>
+                        </tr>
+                        <tr>
+                            <td>1003</td>
+                            <td>James Wilson</td>
+                            <td><span class="gpa-badge gpa-mid">2.5</span></td>
+                            <td>Needs Support</td>
+                            <td><button class="view-btn" onclick="viewStudent(1003)">View Grades</button></td>
+                        </tr>
+                        <tr>
+                            <td>1004</td>
+                            <td>Emma Davis</td>
+                            <td><span class="gpa-badge gpa-high">4.0</span></td>
+                            <td>Honor Roll ⭐</td>
+                            <td><button class="view-btn" onclick="viewStudent(1004)">View Grades</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4 style="color: #1e3c72; margin-bottom: 10px;">Teacher Notes:</h4>
+                    <p style="color: #666;">Welcome to the teacher dashboard! You can view all student grades and track their progress here.</p>
+                    <p style="color: #888; font-size: 0.9em; margin-top: 10px;">System Password: teacher (for Mr. Thompson's account)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-tracker">
+            <h3>Security Challenge: <span id="flagCount">0</span>/4 Flags Found</h3>
+            <div class="flags-container">
+                <div class="flag-slot" id="flag1">1</div>
+                <div class="flag-slot" id="flag2">2</div>
+                <div class="flag-slot" id="flag3">3</div>
+                <div class="flag-slot" id="flag4">4</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="index.html">Home</a> |
+        <a href="grades.html">Grades</a> |
+        <a href="teacher.html">Teacher Portal</a> |
+        <a href="debug.html">Debug</a>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            flagsFound: [],
+            loggedIn: false,
+            currentUser: null
+        };
+
+        // Cookie functions
+        function getCookie(name) {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const parts = v.split('=');
+                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+            }, '');
+        }
+
+        // Load game state
+        function loadState() {
+            const saved = localStorage.getItem('eagleGradeGame');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+            updateFlagDisplay();
+        }
+
+        function saveState() {
+            localStorage.setItem('eagleGradeGame', JSON.stringify(gameState));
+            updateFlagDisplay();
+        }
+
+        function checkAccess() {
+            const role = getCookie('role');
+            const studentId = getCookie('student_id');
+
+            // Check if user has teacher role (through cookie manipulation or legitimate login)
+            if (role === 'teacher' || studentId === '9999') {
+                document.getElementById('loginRequired').style.display = 'none';
+                document.getElementById('dashboard').classList.add('active');
+
+                // Flag for cookie manipulation
+                if (role === 'teacher' && studentId !== '9999' && !gameState.flagsFound.includes(1)) {
+                    captureFlag(1, "Cookie Monster! You changed your role to teacher!");
+                }
+            }
+        }
+
+        function viewStudent(id) {
+            window.location.href = 'grades.html?id=' + id;
+        }
+
+        function captureFlag(num, message) {
+            if (!gameState.flagsFound.includes(num)) {
+                gameState.flagsFound.push(num);
+                saveState();
+
+                const flagDisplay = document.getElementById('flagDisplay');
+                const flagMessage = document.getElementById('flagMessage');
+                flagMessage.textContent = `FLAG #${num}: ${message}`;
+                flagDisplay.style.display = 'block';
+
+                console.log(`🏁 FLAG #${num} CAPTURED: ${message}`);
+
+                setTimeout(() => {
+                    flagDisplay.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function updateFlagDisplay() {
+            document.getElementById('flagCount').textContent = gameState.flagsFound.length;
+            gameState.flagsFound.forEach(num => {
+                const slot = document.getElementById('flag' + num);
+                if (slot) {
+                    slot.textContent = '🏁';
+                    slot.classList.add('found');
+                }
+            });
+        }
+
+        // Console hints
+        console.log("===========================================");
+        console.log("🦅 EagleGrade - Teacher Portal");
+        console.log("===========================================");
+        console.log("");
+        console.log("ACCESS HINT:");
+        console.log("To access this page, you need role=teacher");
+        console.log("");
+        console.log("Try in console:");
+        console.log("document.cookie = 'role=teacher'");
+        console.log("");
+        console.log("Or log in as the teacher (ID: 9999, Password: teacher)");
+        console.log("===========================================");
+
+        // Initialize
+        loadState();
+        checkAccess();
+
+        // Check access periodically (in case cookies change)
+        setInterval(checkAccess, 1000);
+    </script>
+</body>
+</html>

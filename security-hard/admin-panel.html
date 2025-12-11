@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoVault - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c0a0a 0%, #1a0505 100%);
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .access-denied {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff0000;
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .access-denied h1 {
+            color: #ff0000;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .access-denied .icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .admin-panel {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff4444;
+            border-radius: 20px;
+            padding: 40px;
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .admin-header h1 {
+            color: #ff4444;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .flag-banner {
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            animation: rainbow 3s linear infinite;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .flag-banner h2 {
+            color: #000;
+            text-shadow: 1px 1px 0 white;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .admin-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+
+        .admin-card h3 {
+            color: #ff4444;
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .action-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            border-radius: 10px;
+            color: #ff4444;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 68, 68, 0.4);
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .user-table th, .user-table td {
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .user-table th {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        .lesson-box {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid #4caf50;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .lesson-box h3 {
+            color: #4caf50;
+            margin-bottom: 15px;
+        }
+
+        .lesson-box ul {
+            margin-left: 20px;
+            color: #aaa;
+        }
+
+        .lesson-box li {
+            margin-bottom: 10px;
+        }
+
+        .hint-section {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px dashed #ffd700;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .hint-section h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .hint-section p {
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        .hint-section code {
+            background: #222;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #00ff00;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #ff4444;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .progress-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #ffd700;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .progress-section h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .flags-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .flag-box {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flag-box.found {
+            background: #ffd700;
+            border: 2px solid #ffd700;
+            color: #000;
+        }
+
+        .all-complete {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .all-complete.visible {
+            display: block;
+        }
+
+        .all-complete h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .trophy {
+            font-size: 6rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Access Denied (shown when not admin) -->
+        <div id="accessDenied" class="access-denied">
+            <div class="icon">🚫</div>
+            <h1>ACCESS DENIED</h1>
+            <p style="margin-bottom: 20px; color: #888;">You need admin privileges to access this panel.</p>
+            <p style="color: #ff6b6b;">Your current role: <span id="currentRole">user</span></p>
+
+            <div class="hint-section">
+                <h3>💡 How to gain admin access:</h3>
+                <p>Cookies control your role. Try modifying your cookies!</p>
+                <p>In DevTools console, type:</p>
+                <p><code>document.cookie = "user_role=admin"</code></p>
+                <p>Then refresh the page!</p>
+            </div>
+
+            <a href="index.html" class="back-link">← Back to Login</a>
+        </div>
+
+        <!-- Admin Panel (shown when admin) -->
+        <div id="adminPanel" class="admin-panel">
+            <div class="admin-header">
+                <h1>⚠️ Admin Control Panel</h1>
+                <p style="color: #888;">Full system access granted</p>
+            </div>
+
+            <div class="flag-banner" id="flagBanner" style="display: none;">
+                <h2>🏁 FLAG #1 CAPTURED!</h2>
+                <p style="color: #333;">Cookie Manipulation Success!</p>
+            </div>
+
+            <div class="admin-grid">
+                <div class="admin-card">
+                    <h3>💰 Total Deposits</h3>
+                    <div class="stat-value">$1,018,250.74</div>
+                </div>
+                <div class="admin-card">
+                    <h3>👥 Total Users</h3>
+                    <div class="stat-value">4</div>
+                </div>
+                <div class="admin-card">
+                    <h3>📊 Today's Transactions</h3>
+                    <div class="stat-value">47</div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <h3>🔧 Admin Actions</h3>
+                <button class="action-btn" onclick="resetAllPins()">Reset All PINs</button>
+                <button class="action-btn" onclick="viewLogs()">View Security Logs</button>
+                <button class="action-btn" onclick="exportData()">Export User Data</button>
+            </div>
+
+            <div class="admin-card">
+                <h3>👥 User Management</h3>
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Balance</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1001</td>
+                            <td>John Doe</td>
+                            <td>$5,000.00</td>
+                            <td>user</td>
+                        </tr>
+                        <tr>
+                            <td>1002</td>
+                            <td>Jane Smith</td>
+                            <td>$12,500.50</td>
+                            <td>user</td>
+                        </tr>
+                        <tr>
+                            <td>1003</td>
+                            <td>Bob Wilson</td>
+                            <td>$750.25</td>
+                            <td>user</td>
+                        </tr>
+                        <tr style="background: rgba(255, 68, 68, 0.2);">
+                            <td>9999</td>
+                            <td>System Admin</td>
+                            <td>$999,999.99</td>
+                            <td>admin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="lesson-box">
+                <h3>✅ Security Lessons Learned:</h3>
+                <ul>
+                    <li><strong>Cookie-Based Auth</strong> - Never trust client-side cookies for authorization!</li>
+                    <li><strong>Role Manipulation</strong> - Roles should be verified server-side, not in cookies</li>
+                    <li><strong>Privilege Escalation</strong> - You went from user to admin just by changing a cookie</li>
+                    <li><strong>Admin Panels</strong> - Should always have additional authentication layers</li>
+                </ul>
+            </div>
+
+            <div class="progress-section">
+                <h3>Flags Found: <span id="flagCount">0</span>/5</h3>
+                <div class="flags-row">
+                    <div class="flag-box" id="flag1">1</div>
+                    <div class="flag-box" id="flag2">2</div>
+                    <div class="flag-box" id="flag3">3</div>
+                    <div class="flag-box" id="flag4">4</div>
+                    <div class="flag-box" id="flag5">5</div>
+                </div>
+            </div>
+
+            <div id="allComplete" class="all-complete">
+                <div class="trophy">🏆</div>
+                <h2>ALL FLAGS CAPTURED!</h2>
+                <p>You've completed the HARD security challenge!</p>
+                <p style="margin-top: 20px;">You are now a certified CryptoVault Security Expert!</p>
+            </div>
+
+            <a href="index.html" class="back-link">← Back to Login</a>
+        </div>
+    </div>
+
+    <script>
+        // Cookie functions
+        function getCookie(name) {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const parts = v.split('=');
+                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+            }, '');
+        }
+
+        // Load game state
+        let gameState = {
+            flagsFound: []
+        };
+
+        function loadState() {
+            const saved = localStorage.getItem('cryptoVaultGame');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('cryptoVaultGame', JSON.stringify(gameState));
+        }
+
+        function captureFlag(num, message) {
+            if (!gameState.flagsFound.includes(num)) {
+                gameState.flagsFound.push(num);
+                saveState();
+                console.log(`🏁 FLAG #${num}: ${message}`);
+            }
+        }
+
+        function updateFlagDisplay() {
+            document.getElementById('flagCount').textContent = gameState.flagsFound.length;
+            gameState.flagsFound.forEach(num => {
+                const box = document.getElementById('flag' + num);
+                if (box) {
+                    box.textContent = '🏁';
+                    box.classList.add('found');
+                }
+            });
+
+            // Check if all flags found
+            if (gameState.flagsFound.length >= 5) {
+                document.getElementById('allComplete').classList.add('visible');
+            }
+        }
+
+        // Admin actions (just for show)
+        function resetAllPins() {
+            alert('All PINs have been reset to 0000!\n\n(Just kidding, this is a simulation)');
+        }
+
+        function viewLogs() {
+            alert('Security Log:\n\n[ALERT] Multiple failed login attempts detected\n[ALERT] Cookie manipulation detected\n[ALERT] IDOR attack detected\n\n...but no one is watching!');
+        }
+
+        function exportData() {
+            alert('Exporting all user data...\n\nData exported! (Not really, but in a real system this would be catastrophic)');
+        }
+
+        // Check admin access
+        function checkAccess() {
+            loadState();
+
+            const userRole = getCookie('user_role');
+            document.getElementById('currentRole').textContent = userRole || 'guest';
+
+            if (userRole === 'admin') {
+                document.getElementById('accessDenied').style.display = 'none';
+                document.getElementById('adminPanel').classList.add('active');
+
+                // Capture flag 1 for cookie manipulation
+                if (!gameState.flagsFound.includes(1)) {
+                    captureFlag(1, "Cookie Monster! You became admin!");
+                    document.getElementById('flagBanner').style.display = 'block';
+                }
+
+                updateFlagDisplay();
+            } else {
+                document.getElementById('accessDenied').style.display = 'block';
+                document.getElementById('adminPanel').classList.remove('active');
+            }
+        }
+
+        // Console hints
+        console.log("===========================================");
+        console.log("CryptoVault Admin Panel");
+        console.log("===========================================");
+        console.log("Access Denied? Try this in the console:");
+        console.log("");
+        console.log('document.cookie = "user_role=admin"');
+        console.log("");
+        console.log("Then refresh the page!");
+        console.log("===========================================");
+
+        checkAccess();
+    </script>
+</body>
+</html>

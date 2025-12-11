@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EagleGrade - Debug Console</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: #0a0a0a;
+            min-height: 100vh;
+            padding: 20px;
+            color: #00ff00;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27ca40; }
+
+        .terminal-title {
+            margin-left: 15px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .terminal-body {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+            min-height: 500px;
+        }
+
+        .terminal-line {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .prompt {
+            color: #00ff00;
+        }
+
+        .command {
+            color: #ffffff;
+        }
+
+        .output {
+            color: #888;
+        }
+
+        .warning {
+            color: #ffbd2e;
+        }
+
+        .error {
+            color: #ff5f56;
+        }
+
+        .success {
+            color: #27ca40;
+        }
+
+        .highlight {
+            background: #333;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+
+        .flag-banner {
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            animation: rainbow 3s linear infinite;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .flag-banner h2 {
+            color: #000;
+            text-shadow: none;
+        }
+
+        .secret-data {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .secret-data h3 {
+            color: #ff5f56;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dotted #333;
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+        }
+
+        .data-label {
+            color: #888;
+        }
+
+        .data-value {
+            color: #00ff00;
+        }
+
+        .data-value.sensitive {
+            color: #ff5f56;
+        }
+
+        .progress-tracker {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid #333;
+        }
+
+        .progress-tracker h3 {
+            text-align: center;
+            color: #00ff00;
+            margin-bottom: 20px;
+        }
+
+        .flags-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .flag-slot {
+            width: 60px;
+            height: 60px;
+            background: #0f0f0f;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            border: 2px dashed #333;
+            transition: all 0.3s;
+        }
+
+        .flag-slot.found {
+            background: #27ca40;
+            border: 2px solid #27ca40;
+            color: #000;
+        }
+
+        .nav-links {
+            margin-bottom: 20px;
+        }
+
+        .nav-links a {
+            color: #00ff00;
+            text-decoration: none;
+            margin-right: 20px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-links">
+            <a href="index.html">[Home]</a>
+            <a href="grades.html">[Grades]</a>
+            <a href="teacher.html">[Teacher]</a>
+            <a href="debug.html">[Debug]</a>
+        </div>
+
+        <div class="terminal-header">
+            <div class="terminal-dot dot-red"></div>
+            <div class="terminal-dot dot-yellow"></div>
+            <div class="terminal-dot dot-green"></div>
+            <span class="terminal-title">EagleGrade Debug Console v1.0</span>
+        </div>
+
+        <div class="terminal-body">
+            <div class="terminal-line">
+                <span class="prompt">root@eaglegrade:~$</span>
+                <span class="command"> ./debug_console</span>
+            </div>
+            <div class="terminal-line output">
+                Initializing debug console...
+            </div>
+            <div class="terminal-line warning">
+                ⚠️  WARNING: This page contains sensitive system information!
+            </div>
+            <div class="terminal-line warning">
+                ⚠️  This page should NOT be accessible in production!
+            </div>
+            <div class="terminal-line output">
+                -------------------------------------------
+            </div>
+
+            <div id="flagBanner" class="flag-banner">
+                <h2 id="flagMessage">FLAG FOUND!</h2>
+            </div>
+
+            <div class="secret-data">
+                <h3>🔒 Database Credentials (EXPOSED!)</h3>
+                <div class="data-row">
+                    <span class="data-label">DB_HOST:</span>
+                    <span class="data-value">localhost</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">DB_NAME:</span>
+                    <span class="data-value">eaglegrade_prod</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">DB_USER:</span>
+                    <span class="data-value sensitive">admin</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">DB_PASS:</span>
+                    <span class="data-value sensitive">SuperSecret123!</span>
+                </div>
+            </div>
+
+            <div class="secret-data">
+                <h3>👤 User Passwords (NEVER DO THIS!)</h3>
+                <div class="data-row">
+                    <span class="data-label">Alex Johnson (1001):</span>
+                    <span class="data-value sensitive">1001</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Maria Garcia (1002):</span>
+                    <span class="data-value sensitive">maria123</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">James Wilson (1003):</span>
+                    <span class="data-value sensitive">password</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Emma Davis (1004):</span>
+                    <span class="data-value sensitive">emma2024</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Mr. Thompson (9999):</span>
+                    <span class="data-value sensitive">teacher</span>
+                </div>
+            </div>
+
+            <div class="secret-data">
+                <h3>🍪 Current Session Cookies</h3>
+                <div class="data-row">
+                    <span class="data-label">student_id:</span>
+                    <span class="data-value" id="cookieStudentId">loading...</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">role:</span>
+                    <span class="data-value" id="cookieRole">loading...</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">session:</span>
+                    <span class="data-value" id="cookieSession">loading...</span>
+                </div>
+            </div>
+
+            <div class="terminal-line" style="margin-top: 20px;">
+                <span class="prompt">root@eaglegrade:~$</span>
+                <span class="command"> echo "Security Lesson"</span>
+            </div>
+            <div class="terminal-line error">
+                🚨 NEVER leave debug pages accessible in production!
+            </div>
+            <div class="terminal-line error">
+                🚨 NEVER expose database credentials!
+            </div>
+            <div class="terminal-line error">
+                🚨 NEVER store passwords in plain text!
+            </div>
+            <div class="terminal-line success">
+                ✓ You found the hidden debug page!
+            </div>
+            <div class="terminal-line">
+                <span class="prompt">root@eaglegrade:~$</span>
+                <span class="blink">_</span>
+            </div>
+        </div>
+
+        <div class="progress-tracker">
+            <h3>Security Challenge: <span id="flagCount">0</span>/4 Flags Found</h3>
+            <div class="flags-container">
+                <div class="flag-slot" id="flag1">1</div>
+                <div class="flag-slot" id="flag2">2</div>
+                <div class="flag-slot" id="flag3">3</div>
+                <div class="flag-slot" id="flag4">4</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            flagsFound: [],
+            loggedIn: false,
+            currentUser: null
+        };
+
+        // Cookie functions
+        function getCookie(name) {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const parts = v.split('=');
+                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+            }, '');
+        }
+
+        // Load game state
+        function loadState() {
+            const saved = localStorage.getItem('eagleGradeGame');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+            updateFlagDisplay();
+        }
+
+        function saveState() {
+            localStorage.setItem('eagleGradeGame', JSON.stringify(gameState));
+            updateFlagDisplay();
+        }
+
+        function updateCookieDisplay() {
+            document.getElementById('cookieStudentId').textContent = getCookie('student_id') || 'not set';
+            document.getElementById('cookieRole').textContent = getCookie('role') || 'not set';
+            document.getElementById('cookieSession').textContent = getCookie('session') || 'not set';
+        }
+
+        function captureFlag(num, message) {
+            if (!gameState.flagsFound.includes(num)) {
+                gameState.flagsFound.push(num);
+                saveState();
+
+                const flagBanner = document.getElementById('flagBanner');
+                const flagMessage = document.getElementById('flagMessage');
+                flagMessage.textContent = `FLAG #${num}: ${message}`;
+                flagBanner.style.display = 'block';
+
+                console.log(`🏁 FLAG #${num} CAPTURED: ${message}`);
+            }
+        }
+
+        function updateFlagDisplay() {
+            document.getElementById('flagCount').textContent = gameState.flagsFound.length;
+            gameState.flagsFound.forEach(num => {
+                const slot = document.getElementById('flag' + num);
+                if (slot) {
+                    slot.textContent = '🏁';
+                    slot.classList.add('found');
+                }
+            });
+        }
+
+        // Capture flag 4 for finding this page!
+        function init() {
+            loadState();
+            updateCookieDisplay();
+
+            // Flag 4: Finding the debug page
+            if (!gameState.flagsFound.includes(4)) {
+                captureFlag(4, "Debug Detective! You found the hidden debug page!");
+            }
+        }
+
+        // Console message
+        console.log("===========================================");
+        console.log("🦅 EagleGrade - Debug Console");
+        console.log("===========================================");
+        console.log("");
+        console.log("🏁 FLAG #4 CAPTURED!");
+        console.log("You found the hidden debug page!");
+        console.log("");
+        console.log("SECURITY LESSONS:");
+        console.log("1. Debug pages should NEVER be accessible in production");
+        console.log("2. Never expose database credentials");
+        console.log("3. Never store passwords in plain text");
+        console.log("4. Always check for hidden endpoints");
+        console.log("===========================================");
+
+        // Initialize
+        init();
+
+        // Update cookie display periodically
+        setInterval(updateCookieDisplay, 1000);
+    </script>
+</body>
+</html>

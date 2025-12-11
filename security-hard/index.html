@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoVault Bank - Secure Digital Banking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #ffd700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ffd700;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 500px;
+            margin: 50px auto;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .login-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffd700;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffd700, #ffb700);
+            border: none;
+            border-radius: 10px;
+            color: #1a1a2e;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .users-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .users-section h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .user-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .user-id {
+            color: #888;
+        }
+
+        .hint-box {
+            background: rgba(255, 200, 0, 0.1);
+            border: 1px dashed #ffd700;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+        }
+
+        .hint-box h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .hint-box ul {
+            margin-left: 20px;
+            color: #ccc;
+        }
+
+        .hint-box li {
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .progress-bar h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .flags-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .flag-slot {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .flag-slot.found {
+            background: linear-gradient(135deg, #ffd700, #ffb700);
+            border: 2px solid #ffd700;
+        }
+
+        .error-msg {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .security-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid #4caf50;
+            color: #4caf50;
+            font-size: 0.9rem;
+        }
+
+        /* Hidden debug link */
+        .footer-links {
+            margin-top: 50px;
+            text-align: center;
+            color: #444;
+            font-size: 0.75rem;
+        }
+
+        .footer-links a {
+            color: #444;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-links a:hover {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon">🏦</span>
+            <h1>CryptoVault</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="#" onclick="showSupport()">Support</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="login-card">
+            <h2>🔐 Secure Login</h2>
+
+            <div class="form-group">
+                <label>Select Account:</label>
+                <select id="accountSelect">
+                    <option value="">-- Select your account --</option>
+                    <option value="1001">Account #1001 - John Doe</option>
+                    <option value="1002">Account #1002 - Jane Smith</option>
+                    <option value="1003">Account #1003 - Bob Wilson</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>PIN Code:</label>
+                <input type="password" id="pinCode" placeholder="Enter 4-digit PIN" maxlength="4">
+            </div>
+
+            <button class="btn" onclick="attemptLogin()">Access Account</button>
+
+            <div id="errorMsg" class="error-msg"></div>
+
+            <div class="users-section">
+                <h3>📋 Registered Accounts</h3>
+                <div class="user-list">
+                    <div class="user-item" onclick="selectUser(1001)">
+                        <span>John Doe</span>
+                        <span class="user-id">ID: 1001</span>
+                    </div>
+                    <div class="user-item" onclick="selectUser(1002)">
+                        <span>Jane Smith</span>
+                        <span class="user-id">ID: 1002</span>
+                    </div>
+                    <div class="user-item" onclick="selectUser(1003)">
+                        <span>Bob Wilson</span>
+                        <span class="user-id">ID: 1003</span>
+                    </div>
+                    <div class="user-item" style="opacity: 0.5;" onclick="enableAdmin()">
+                        <span>Admin Account</span>
+                        <span class="user-id">ID: 9999 (Hidden)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <h3>Security Challenge: <span id="flagCount">0</span>/5 Flags</h3>
+            <div class="flags-container">
+                <div class="flag-slot" id="flag1">1</div>
+                <div class="flag-slot" id="flag2">2</div>
+                <div class="flag-slot" id="flag3">3</div>
+                <div class="flag-slot" id="flag4">4</div>
+                <div class="flag-slot" id="flag5">5</div>
+            </div>
+        </div>
+
+        <div class="hint-box">
+            <h3>🕵️ Advanced Hacker Training</h3>
+            <ul>
+                <li><strong>Cookies:</strong> Your browser stores session data in cookies. Check the Application tab in DevTools...</li>
+                <li><strong>IDOR:</strong> What if you could access accounts that aren't yours? Try changing account IDs...</li>
+                <li><strong>URL Parameters:</strong> Dashboard pages often pass user info in the URL. What happens if you change it?</li>
+                <li><strong>Hidden Endpoints:</strong> Developers sometimes leave debug pages accessible. Check for /debug.html</li>
+                <li><strong>Role Manipulation:</strong> What makes someone an admin? Could you change your role?</li>
+            </ul>
+        </div>
+
+        <div class="footer-links">
+            <a href="index.html">Home</a> |
+            <a href="dashboard.html">Dashboard</a> |
+            <a href="debug.html">Debug</a> |
+            <a href="admin-panel.html">Admin</a>
+        </div>
+    </div>
+
+    <div class="security-badge">
+        🔒 256-bit Encryption
+    </div>
+
+    <script>
+        // "Secure" user database (VULNERABILITY: Client-side storage!)
+        const users = {
+            1001: { name: "John Doe", pin: "1234", balance: 5000.00, role: "user" },
+            1002: { name: "Jane Smith", pin: "5678", balance: 12500.50, role: "user" },
+            1003: { name: "Bob Wilson", pin: "9999", balance: 750.25, role: "user" },
+            9999: { name: "System Admin", pin: "0000", balance: 999999.99, role: "admin" }
+        };
+
+        // Initialize game state
+        let gameState = {
+            flagsFound: [],
+            currentUser: null
+        };
+
+        // Load state
+        function loadState() {
+            const saved = localStorage.getItem('cryptoVaultGame');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+
+            // Initialize cookies if not present
+            if (!getCookie('session_id')) {
+                setCookie('session_id', 'guest_' + Date.now(), 1);
+            }
+            if (!getCookie('user_role')) {
+                setCookie('user_role', 'guest', 1);
+            }
+            if (!getCookie('user_id')) {
+                setCookie('user_id', '0', 1);
+            }
+
+            updateFlagDisplay();
+            checkCookieFlags();
+        }
+
+        function saveState() {
+            localStorage.setItem('cryptoVaultGame', JSON.stringify(gameState));
+            updateFlagDisplay();
+        }
+
+        // Cookie functions
+        function setCookie(name, value, days) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+        }
+
+        function getCookie(name) {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const parts = v.split('=');
+                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+            }, '');
+        }
+
+        function selectUser(userId) {
+            document.getElementById('accountSelect').value = userId;
+        }
+
+        function enableAdmin() {
+            const select = document.getElementById('accountSelect');
+            // Check if admin option already exists
+            if (!select.querySelector('option[value="9999"]')) {
+                const option = document.createElement('option');
+                option.value = "9999";
+                option.textContent = "Account #9999 - System Admin";
+                select.appendChild(option);
+                console.log("🔓 Admin account unlocked in dropdown!");
+            }
+            select.value = "9999";
+        }
+
+        function attemptLogin() {
+            const accountId = document.getElementById('accountSelect').value;
+            const pin = document.getElementById('pinCode').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            if (!accountId) {
+                showError("Please select an account");
+                return;
+            }
+
+            const user = users[accountId];
+            if (!user) {
+                showError("Account not found");
+                return;
+            }
+
+            if (pin !== user.pin) {
+                showError("Invalid PIN code. Hint: Common PINs are 1234, 0000, 1111...");
+                return;
+            }
+
+            // Set session cookies (VULNERABILITY: Client can modify these!)
+            setCookie('user_id', accountId, 1);
+            setCookie('user_role', user.role, 1);
+            setCookie('session_id', 'session_' + accountId + '_' + Date.now(), 1);
+
+            // Redirect to dashboard with account ID (VULNERABILITY: IDOR!)
+            window.location.href = 'dashboard.html?account=' + accountId;
+        }
+
+        function showError(msg) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = msg;
+            errorMsg.style.display = 'block';
+            setTimeout(() => errorMsg.style.display = 'none', 4000);
+        }
+
+        function showSupport() {
+            alert('Support Email: support@cryptovault.fake\nPhone: 1-800-HACKED\n\nHint: Real hackers check cookies and URL parameters!');
+        }
+
+        // Check for cookie manipulation (Flag 1)
+        function checkCookieFlags() {
+            const userRole = getCookie('user_role');
+            if (userRole === 'admin' && !gameState.flagsFound.includes(1)) {
+                captureFlag(1, "Cookie Monster! You changed your role to admin!");
+            }
+        }
+
+        function captureFlag(num, message) {
+            if (!gameState.flagsFound.includes(num)) {
+                gameState.flagsFound.push(num);
+                saveState();
+                console.log(`🏁 FLAG #${num} CAPTURED: ${message}`);
+                alert(`🏁 FLAG #${num} CAPTURED!\n\n${message}`);
+            }
+        }
+
+        function updateFlagDisplay() {
+            document.getElementById('flagCount').textContent = gameState.flagsFound.length;
+            gameState.flagsFound.forEach(num => {
+                const slot = document.getElementById('flag' + num);
+                if (slot) {
+                    slot.textContent = '🏁';
+                    slot.classList.add('found');
+                }
+            });
+        }
+
+        // Console hints
+        console.log("===========================================");
+        console.log("CryptoVault Bank - Security Challenge");
+        console.log("===========================================");
+        console.log("");
+        console.log("FLAGS TO FIND:");
+        console.log("1. Cookie Manipulation - Change your role");
+        console.log("2. IDOR - Access another user's account");
+        console.log("3. Hidden Debug Page - Find /debug.html");
+        console.log("4. Admin Panel - Crack the admin access");
+        console.log("5. Ultimate Hack - Transfer money from admin");
+        console.log("");
+        console.log("HINTS:");
+        console.log("- Check document.cookie in the console");
+        console.log("- Try: document.cookie = 'user_role=admin'");
+        console.log("- Look at URL parameters on the dashboard");
+        console.log("- Common PINs: 1234, 0000, 1111, 9999");
+        console.log("===========================================");
+
+        // Check cookies periodically
+        setInterval(checkCookieFlags, 2000);
+
+        // Initialize
+        loadState();
+    </script>
+</body>
+</html>

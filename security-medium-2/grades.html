@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EagleGrade - My Grades</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            max-width: 900px;
+            margin: 0 auto 30px auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .logo span {
+            font-size: 2em;
+        }
+
+        .logo h1 {
+            font-size: 1.5em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .grades-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .student-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .student-info h2 {
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+
+        .student-info p {
+            color: #666;
+        }
+
+        .student-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+        }
+
+        .gpa-card {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .gpa-card h3 {
+            font-size: 1em;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .gpa-card .gpa {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .grades-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .grades-table th {
+            background: #1e3c72;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .grades-table th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        .grades-table th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .grades-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .grades-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .grade {
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .grade-a { background: #d4edda; color: #155724; }
+        .grade-b { background: #cce5ff; color: #004085; }
+        .grade-c { background: #fff3cd; color: #856404; }
+        .grade-d { background: #ffe5d0; color: #8a4600; }
+        .grade-f { background: #f8d7da; color: #721c24; }
+
+        .flag-display {
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            animation: rainbow 3s linear infinite;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .flag-display h2 {
+            color: white;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-tracker {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-tracker h3 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+
+        .flags-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .flag-slot {
+            width: 60px;
+            height: 60px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            border: 3px dashed #ccc;
+            transition: all 0.3s;
+        }
+
+        .flag-slot.found {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            border: 3px solid #4caf50;
+            color: white;
+        }
+
+        .teacher-badge {
+            background: linear-gradient(135deg, #e94560 0%, #c23a51 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .warning-banner {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .warning-banner.show {
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8em;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .all-students-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .all-students-link a {
+            color: #1e3c72;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid #1e3c72;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .all-students-link a:hover {
+            background: #1e3c72;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <span>🦅</span>
+            <h1>EagleGrade</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="grades.html">My Grades</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="warningBanner" class="warning-banner">
+            ⚠️ <strong>Notice:</strong> You are viewing another student's grades!
+        </div>
+
+        <div class="grades-card">
+            <div class="student-header">
+                <div class="student-info">
+                    <h2 id="studentName">Loading...</h2>
+                    <p>Student ID: <span id="studentId">---</span></p>
+                </div>
+                <div class="student-avatar" id="studentAvatar">📚</div>
+            </div>
+
+            <div id="flagDisplay" class="flag-display">
+                <h2 id="flagMessage">FLAG FOUND!</h2>
+            </div>
+
+            <div class="gpa-card">
+                <h3>Current GPA</h3>
+                <div class="gpa" id="gpa">---</div>
+            </div>
+
+            <table class="grades-table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Teacher</th>
+                        <th>Grade</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody id="gradesBody">
+                    <!-- Grades will be loaded here -->
+                </tbody>
+            </table>
+
+            <div class="all-students-link" id="teacherLink" style="display: none;">
+                <a href="teacher.html">View All Students (Teacher Only)</a>
+            </div>
+        </div>
+
+        <div class="progress-tracker">
+            <h3>Security Challenge: <span id="flagCount">0</span>/4 Flags Found</h3>
+            <div class="flags-container">
+                <div class="flag-slot" id="flag1">1</div>
+                <div class="flag-slot" id="flag2">2</div>
+                <div class="flag-slot" id="flag3">3</div>
+                <div class="flag-slot" id="flag4">4</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="index.html">Home</a> |
+        <a href="grades.html">Grades</a> |
+        <a href="teacher.html">Teacher Portal</a> |
+        <a href="debug.html">Debug</a>
+    </div>
+
+    <script>
+        // Student database with grades
+        const studentsData = {
+            1001: {
+                name: "Alex Johnson",
+                role: "student",
+                gpa: 3.7,
+                grades: [
+                    { subject: "Mathematics", teacher: "Mrs. Smith", grade: "A-", percent: 91 },
+                    { subject: "English", teacher: "Mr. Brown", grade: "B+", percent: 87 },
+                    { subject: "Science", teacher: "Ms. Lee", grade: "A", percent: 94 },
+                    { subject: "History", teacher: "Mr. Thompson", grade: "A-", percent: 90 },
+                    { subject: "Computer Science", teacher: "Brother Cope", grade: "A+", percent: 98 }
+                ]
+            },
+            1002: {
+                name: "Maria Garcia",
+                role: "student",
+                gpa: 3.4,
+                grades: [
+                    { subject: "Mathematics", teacher: "Mrs. Smith", grade: "B", percent: 83 },
+                    { subject: "English", teacher: "Mr. Brown", grade: "A-", percent: 92 },
+                    { subject: "Science", teacher: "Ms. Lee", grade: "B+", percent: 88 },
+                    { subject: "History", teacher: "Mr. Thompson", grade: "B+", percent: 86 },
+                    { subject: "Computer Science", teacher: "Brother Cope", grade: "A", percent: 95 }
+                ]
+            },
+            1003: {
+                name: "James Wilson",
+                role: "student",
+                gpa: 2.5,
+                grades: [
+                    { subject: "Mathematics", teacher: "Mrs. Smith", grade: "C+", percent: 77 },
+                    { subject: "English", teacher: "Mr. Brown", grade: "C", percent: 73 },
+                    { subject: "Science", teacher: "Ms. Lee", grade: "B-", percent: 80 },
+                    { subject: "History", teacher: "Mr. Thompson", grade: "C+", percent: 78 },
+                    { subject: "Computer Science", teacher: "Brother Cope", grade: "B", percent: 84 }
+                ]
+            },
+            1004: {
+                name: "Emma Davis",
+                role: "student",
+                gpa: 4.0,
+                grades: [
+                    { subject: "Mathematics", teacher: "Mrs. Smith", grade: "A+", percent: 99 },
+                    { subject: "English", teacher: "Mr. Brown", grade: "A", percent: 96 },
+                    { subject: "Science", teacher: "Ms. Lee", grade: "A+", percent: 100 },
+                    { subject: "History", teacher: "Mr. Thompson", grade: "A", percent: 95 },
+                    { subject: "Computer Science", teacher: "Brother Cope", grade: "A+", percent: 100 }
+                ]
+            },
+            9999: {
+                name: "Mr. Thompson",
+                role: "teacher",
+                gpa: "N/A",
+                grades: [
+                    { subject: "Staff Account", teacher: "Admin", grade: "N/A", percent: 100 }
+                ]
+            }
+        };
+
+        // Game state
+        let gameState = {
+            flagsFound: [],
+            loggedIn: false,
+            currentUser: null
+        };
+
+        // Cookie functions
+        function setCookie(name, value, days) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+        }
+
+        function getCookie(name) {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const parts = v.split('=');
+                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+            }, '');
+        }
+
+        // Load game state
+        function loadState() {
+            const saved = localStorage.getItem('eagleGradeGame');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+            updateFlagDisplay();
+        }
+
+        function saveState() {
+            localStorage.setItem('eagleGradeGame', JSON.stringify(gameState));
+            updateFlagDisplay();
+        }
+
+        function getGradeClass(grade) {
+            const letter = grade.charAt(0).toUpperCase();
+            switch(letter) {
+                case 'A': return 'grade-a';
+                case 'B': return 'grade-b';
+                case 'C': return 'grade-c';
+                case 'D': return 'grade-d';
+                case 'F': return 'grade-f';
+                default: return '';
+            }
+        }
+
+        function loadGrades() {
+            // VULNERABILITY: Get student ID from URL parameter (IDOR!)
+            const urlParams = new URLSearchParams(window.location.search);
+            let studentId = urlParams.get('id');
+
+            // Fall back to cookie if no URL param
+            if (!studentId) {
+                studentId = getCookie('student_id');
+            }
+
+            // Check if we're viewing a different student's grades
+            const loggedInId = getCookie('student_id');
+
+            if (!studentId || studentId === '0' || !studentsData[studentId]) {
+                document.getElementById('studentName').textContent = "Please log in";
+                document.getElementById('gpa').textContent = "---";
+                document.getElementById('gradesBody').innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px;">Please <a href="index.html">log in</a> to view grades</td></tr>';
+                return;
+            }
+
+            const student = studentsData[studentId];
+
+            // Check for IDOR attack (viewing another student's grades)
+            if (loggedInId && loggedInId !== '0' && loggedInId !== studentId) {
+                document.getElementById('warningBanner').classList.add('show');
+                if (!gameState.flagsFound.includes(3)) {
+                    captureFlag(3, "IDOR Master! You accessed another student's grades by changing the URL!");
+                }
+            }
+
+            // Update student info
+            document.getElementById('studentName').innerHTML = student.name +
+                (student.role === 'teacher' ? '<span class="teacher-badge">TEACHER</span>' : '');
+            document.getElementById('studentId').textContent = studentId;
+            document.getElementById('gpa').textContent = student.gpa;
+
+            // Set avatar based on role
+            document.getElementById('studentAvatar').textContent = student.role === 'teacher' ? '👨‍🏫' : '📚';
+
+            // Show teacher link if user is a teacher
+            const role = getCookie('role');
+            if (role === 'teacher' || student.role === 'teacher') {
+                document.getElementById('teacherLink').style.display = 'block';
+            }
+
+            // Build grades table
+            let gradesHTML = '';
+            student.grades.forEach(g => {
+                gradesHTML += `
+                    <tr>
+                        <td>${g.subject}</td>
+                        <td>${g.teacher}</td>
+                        <td><span class="grade ${getGradeClass(g.grade)}">${g.grade}</span></td>
+                        <td>${g.percent}%</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('gradesBody').innerHTML = gradesHTML;
+
+            // Check for cookie manipulation
+            checkCookieFlags();
+        }
+
+        function checkCookieFlags() {
+            const role = getCookie('role');
+            if (role === 'teacher' && !gameState.flagsFound.includes(1)) {
+                captureFlag(1, "Cookie Monster! You changed your role to teacher!");
+            }
+        }
+
+        function captureFlag(num, message) {
+            if (!gameState.flagsFound.includes(num)) {
+                gameState.flagsFound.push(num);
+                saveState();
+
+                const flagDisplay = document.getElementById('flagDisplay');
+                const flagMessage = document.getElementById('flagMessage');
+                flagMessage.textContent = `FLAG #${num}: ${message}`;
+                flagDisplay.style.display = 'block';
+
+                console.log(`🏁 FLAG #${num} CAPTURED: ${message}`);
+
+                setTimeout(() => {
+                    flagDisplay.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function updateFlagDisplay() {
+            document.getElementById('flagCount').textContent = gameState.flagsFound.length;
+            gameState.flagsFound.forEach(num => {
+                const slot = document.getElementById('flag' + num);
+                if (slot) {
+                    slot.textContent = '🏁';
+                    slot.classList.add('found');
+                }
+            });
+        }
+
+        function logout() {
+            setCookie('student_id', '0', 1);
+            setCookie('role', 'guest', 1);
+            setCookie('session', 'not_logged_in', 1);
+            window.location.href = 'index.html';
+        }
+
+        // Console hints
+        console.log("===========================================");
+        console.log("🦅 EagleGrade - Grades Page");
+        console.log("===========================================");
+        console.log("");
+        console.log("IDOR HINT:");
+        console.log("Try changing the ?id= parameter in the URL!");
+        console.log("Other student IDs: 1001, 1002, 1003, 1004, 9999");
+        console.log("");
+        console.log("Example: grades.html?id=1004");
+        console.log("===========================================");
+
+        // Initialize
+        loadState();
+        loadGrades();
+
+        // Check cookies periodically
+        setInterval(checkCookieFlags, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoVault - Account Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #ffd700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-badge {
+            padding: 8px 20px;
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid #ffd700;
+            border-radius: 20px;
+            color: #ffd700;
+        }
+
+        .admin-badge {
+            background: rgba(255, 0, 0, 0.3);
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .balance-display {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .balance-label {
+            color: #888;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .balance-amount {
+            font-size: 3rem;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .account-details {
+            list-style: none;
+        }
+
+        .account-details li {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .account-details li:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #888;
+        }
+
+        .detail-value {
+            color: white;
+            font-weight: bold;
+        }
+
+        .transfer-form {
+            display: grid;
+            gap: 15px;
+        }
+
+        .transfer-form input, .transfer-form select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .transfer-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .transfer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+
+        .transactions {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .transaction {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .transaction.incoming {
+            border-left: 4px solid #4caf50;
+        }
+
+        .transaction.outgoing {
+            border-left: 4px solid #f44336;
+        }
+
+        .tx-amount.positive {
+            color: #4caf50;
+        }
+
+        .tx-amount.negative {
+            color: #f44336;
+        }
+
+        .flag-alert {
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            animation: rainbow 3s linear infinite;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hint-box {
+            background: rgba(255, 200, 0, 0.1);
+            border: 1px dashed #ffd700;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .hint-box h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .warning-banner {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff4444;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .progress-bar {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .flags-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .flag-slot {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .flag-slot.found {
+            background: linear-gradient(135deg, #ffd700, #ffb700);
+            border: 2px solid #ffd700;
+        }
+
+        .success-msg {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon">🏦</span>
+            <h1>CryptoVault</h1>
+        </div>
+        <div class="user-info">
+            <span id="userBadge" class="user-badge">User</span>
+            <span id="userName">Guest</span>
+            <a href="index.html" style="color: #ffd700; text-decoration: none;">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="flagAlert" class="flag-alert">
+            <h2 id="flagMessage">FLAG CAPTURED!</h2>
+        </div>
+
+        <div id="warningBanner" class="warning-banner">
+            ⚠️ You are viewing another user's account! This is an IDOR vulnerability!
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>💰 Account Balance</h2>
+                <div class="balance-display">
+                    <div class="balance-label">Available Balance</div>
+                    <div class="balance-amount" id="balanceAmount">$0.00</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📋 Account Details</h2>
+                <ul class="account-details">
+                    <li>
+                        <span class="detail-label">Account ID</span>
+                        <span class="detail-value" id="accountId">--</span>
+                    </li>
+                    <li>
+                        <span class="detail-label">Account Holder</span>
+                        <span class="detail-value" id="accountName">--</span>
+                    </li>
+                    <li>
+                        <span class="detail-label">Account Type</span>
+                        <span class="detail-value" id="accountType">--</span>
+                    </li>
+                    <li>
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value" style="color: #4caf50;">Active</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>💸 Transfer Funds</h2>
+                <div class="transfer-form">
+                    <select id="transferTo">
+                        <option value="">Select recipient...</option>
+                        <option value="1001">Account #1001 - John Doe</option>
+                        <option value="1002">Account #1002 - Jane Smith</option>
+                        <option value="1003">Account #1003 - Bob Wilson</option>
+                    </select>
+                    <input type="number" id="transferAmount" placeholder="Amount ($)" min="1">
+                    <button class="transfer-btn" onclick="transferFunds()">Transfer Now</button>
+                </div>
+                <div id="transferSuccess" class="success-msg"></div>
+            </div>
+
+            <div class="card">
+                <h2>📜 Recent Transactions</h2>
+                <div class="transactions" id="transactions">
+                    <div class="transaction incoming">
+                        <div>
+                            <div>Deposit</div>
+                            <div style="color: #888; font-size: 0.8rem;">Yesterday</div>
+                        </div>
+                        <div class="tx-amount positive">+$500.00</div>
+                    </div>
+                    <div class="transaction outgoing">
+                        <div>
+                            <div>Online Purchase</div>
+                            <div style="color: #888; font-size: 0.8rem;">2 days ago</div>
+                        </div>
+                        <div class="tx-amount negative">-$49.99</div>
+                    </div>
+                    <div class="transaction incoming">
+                        <div>
+                            <div>Interest Payment</div>
+                            <div style="color: #888; font-size: 0.8rem;">Last week</div>
+                        </div>
+                        <div class="tx-amount positive">+$12.50</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hint-box">
+            <h3>🕵️ Dashboard Vulnerabilities</h3>
+            <ul style="margin-left: 20px; color: #ccc;">
+                <li>Look at the URL - what parameter controls which account you see?</li>
+                <li>Try changing <code>?account=1001</code> to <code>?account=9999</code></li>
+                <li>What if you're logged in as a regular user but access the admin's account?</li>
+                <li>Can you transfer money FROM someone else's account?</li>
+            </ul>
+        </div>
+
+        <div class="progress-bar">
+            <h3 style="text-align: center; color: #ffd700;">Flags Found: <span id="flagCount">0</span>/5</h3>
+            <div class="flags-container">
+                <div class="flag-slot" id="flag1">1</div>
+                <div class="flag-slot" id="flag2">2</div>
+                <div class="flag-slot" id="flag3">3</div>
+                <div class="flag-slot" id="flag4">4</div>
+                <div class="flag-slot" id="flag5">5</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // User database (same as index)
+        const users = {
+            1001: { name: "John Doe", pin: "1234", balance: 5000.00, role: "user" },
+            1002: { name: "Jane Smith", pin: "5678", balance: 12500.50, role: "user" },
+            1003: { name: "Bob Wilson", pin: "9999", balance: 750.25, role: "user" },
+            9999: { name: "System Admin", pin: "0000", balance: 999999.99, role: "admin" }
+        };
+
+        let gameState = {
+            flagsFound: [],
+            currentUser: null
+        };
+
+        // Cookie functions
+        function getCookie(name) {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const parts = v.split('=');
+                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+            }, '');
+        }
+
+        function setCookie(name, value, days) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+        }
+
+        // Load game state
+        function loadState() {
+            const saved = localStorage.getItem('cryptoVaultGame');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+            updateFlagDisplay();
+        }
+
+        function saveState() {
+            localStorage.setItem('cryptoVaultGame', JSON.stringify(gameState));
+            updateFlagDisplay();
+        }
+
+        function captureFlag(num, message) {
+            if (!gameState.flagsFound.includes(num)) {
+                gameState.flagsFound.push(num);
+                saveState();
+
+                const flagAlert = document.getElementById('flagAlert');
+                document.getElementById('flagMessage').textContent = `🏁 FLAG #${num}: ${message}`;
+                flagAlert.style.display = 'block';
+
+                setTimeout(() => {
+                    flagAlert.style.display = 'none';
+                }, 5000);
+
+                console.log(`🏁 FLAG #${num} CAPTURED: ${message}`);
+            }
+        }
+
+        function updateFlagDisplay() {
+            document.getElementById('flagCount').textContent = gameState.flagsFound.length;
+            gameState.flagsFound.forEach(num => {
+                const slot = document.getElementById('flag' + num);
+                if (slot) {
+                    slot.textContent = '🏁';
+                    slot.classList.add('found');
+                }
+            });
+        }
+
+        // Initialize dashboard
+        function initDashboard() {
+            loadState();
+
+            // VULNERABILITY: IDOR - Account ID from URL can be manipulated!
+            const urlParams = new URLSearchParams(window.location.search);
+            const requestedAccount = urlParams.get('account') || getCookie('user_id');
+            const loggedInUser = getCookie('user_id');
+            const userRole = getCookie('user_role');
+
+            const user = users[requestedAccount];
+
+            if (user) {
+                document.getElementById('balanceAmount').textContent = '$' + user.balance.toLocaleString('en-US', {minimumFractionDigits: 2});
+                document.getElementById('accountId').textContent = '#' + requestedAccount;
+                document.getElementById('accountName').textContent = user.name;
+                document.getElementById('accountType').textContent = user.role === 'admin' ? 'Administrator' : 'Standard';
+                document.getElementById('userName').textContent = user.name;
+
+                // Update badge
+                const badge = document.getElementById('userBadge');
+                if (user.role === 'admin') {
+                    badge.textContent = 'ADMIN';
+                    badge.classList.add('admin-badge');
+                }
+
+                // Check for IDOR vulnerability (Flag 2)
+                if (requestedAccount !== loggedInUser && loggedInUser !== '0') {
+                    document.getElementById('warningBanner').style.display = 'block';
+                    captureFlag(2, "IDOR Attack! You accessed another user's account by changing the URL!");
+                }
+
+                // Check for admin access (Flag 4)
+                if (requestedAccount === '9999') {
+                    captureFlag(4, "Admin Account Access! You found the hidden admin account!");
+                }
+
+                // Check cookie role manipulation (Flag 1)
+                if (userRole === 'admin') {
+                    captureFlag(1, "Cookie Monster! You changed your role to admin!");
+                }
+            } else {
+                document.getElementById('balanceAmount').textContent = 'Account Not Found';
+            }
+        }
+
+        // Transfer function with vulnerability
+        function transferFunds() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromAccount = urlParams.get('account') || getCookie('user_id');
+            const toAccount = document.getElementById('transferTo').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+
+            if (!toAccount || !amount || amount <= 0) {
+                alert('Please select a recipient and enter a valid amount');
+                return;
+            }
+
+            const fromUser = users[fromAccount];
+            if (!fromUser) {
+                alert('Invalid source account');
+                return;
+            }
+
+            if (amount > fromUser.balance) {
+                alert('Insufficient funds!');
+                return;
+            }
+
+            // "Process" the transfer (VULNERABILITY: Can transfer from any account!)
+            const successMsg = document.getElementById('transferSuccess');
+            successMsg.textContent = `Transfer of $${amount.toFixed(2)} to Account #${toAccount} successful!`;
+            successMsg.style.display = 'block';
+
+            // Flag 5: Transfer from admin account
+            if (fromAccount === '9999') {
+                captureFlag(5, "Ultimate Hack! You transferred money from the admin account!");
+            }
+
+            // Add transaction to list
+            const txDiv = document.createElement('div');
+            txDiv.className = 'transaction outgoing';
+            txDiv.innerHTML = `
+                <div>
+                    <div>Transfer to #${toAccount}</div>
+                    <div style="color: #888; font-size: 0.8rem;">Just now</div>
+                </div>
+                <div class="tx-amount negative">-$${amount.toFixed(2)}</div>
+            `;
+            document.getElementById('transactions').prepend(txDiv);
+
+            // Clear form
+            document.getElementById('transferTo').value = '';
+            document.getElementById('transferAmount').value = '';
+        }
+
+        // Console hints
+        console.log("===========================================");
+        console.log("CryptoVault Dashboard");
+        console.log("===========================================");
+        console.log("");
+        console.log("VULNERABILITY HINTS:");
+        console.log("1. Check the URL - what's in ?account=XXXX?");
+        console.log("2. Try: ?account=9999 (the admin)");
+        console.log("3. You can transfer from ANY account shown!");
+        console.log("4. Don't forget to check cookies too");
+        console.log("===========================================");
+
+        initDashboard();
+    </script>
+</body>
+</html>
