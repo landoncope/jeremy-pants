@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Injection Attack Demo - Learn About SQL Injection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .explanation-box {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .explanation-box h1 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .explanation-box p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .explanation-box code {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 1.05em;
+        }
+
+        .demo-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .demo-section h2 {
+            color: #0f3460;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        /* Login Form Demo */
+        .login-box {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            margin: 0 auto 30px;
+        }
+
+        .login-box h3 {
+            text-align: center;
+            color: #0f3460;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .form-group input:focus {
+            border-color: #0f3460;
+            outline: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* SQL Query Display */
+        .query-display {
+            background: #1a1a2e;
+            color: #4caf50;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .query-display .keyword {
+            color: #ff6b6b;
+        }
+
+        .query-display .string {
+            color: #ffd700;
+        }
+
+        .query-display .injection {
+            color: #e94560;
+            background: rgba(233, 69, 96, 0.2);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        .query-display .comment {
+            color: #666;
+        }
+
+        /* Results */
+        .result-box {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .result-box.success {
+            background: #d4edda;
+            border: 2px solid #4caf50;
+            color: #155724;
+        }
+
+        .result-box.danger {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .result-box.info {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            color: #0d47a1;
+        }
+
+        /* Try buttons */
+        .try-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .try-section h4 {
+            color: #0f3460;
+            margin-bottom: 15px;
+        }
+
+        .try-btn {
+            background: #0f3460;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+
+        .try-btn:hover {
+            background: #16213e;
+            transform: translateY(-2px);
+        }
+
+        .try-btn.danger {
+            background: #e94560;
+        }
+
+        .try-btn.danger:hover {
+            background: #c23a51;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            font-size: 1em;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: #0f3460;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* User table */
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .user-table th, .user-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .user-table th {
+            background: #0f3460;
+            color: white;
+        }
+
+        .user-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .user-table .password {
+            font-family: monospace;
+            color: #e94560;
+        }
+
+        /* Summary box */
+        .summary-box {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .summary-box h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .summary-box ul {
+            margin-left: 20px;
+        }
+
+        .summary-box li {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        /* Vulnerable vs Safe comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .code-block {
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+
+        .code-block.bad {
+            background: #fff3f3;
+            border: 2px solid #e94560;
+        }
+
+        .code-block.good {
+            background: #f3fff3;
+            border: 2px solid #4caf50;
+        }
+
+        .code-block h4 {
+            margin-bottom: 10px;
+        }
+
+        .code-block.bad h4 {
+            color: #e94560;
+        }
+
+        .code-block.good h4 {
+            color: #4caf50;
+        }
+
+        .hacked-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(233, 69, 96, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+        }
+
+        .hacked-overlay.visible {
+            display: flex;
+            animation: fadeIn 0.5s;
+        }
+
+        .hacked-overlay h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .hacked-overlay p {
+            font-size: 1.5em;
+            max-width: 600px;
+        }
+
+        .hacked-overlay button {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: white;
+            color: #e94560;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            .tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="explanation-box">
+            <h1>What is an Injection Attack?</h1>
+            <p><strong>Injection attacks</strong> happen when an attacker inserts malicious code into input fields (like login forms, search boxes, or URL parameters), and the application accidentally runs that code as if it were legitimate.</p>
+            <p>The most common type is <strong>SQL Injection</strong> - where attackers type database commands into form fields to bypass security, steal data, or even delete entire databases!</p>
+            <p><strong>How does it work?</strong> Imagine a website checks your login like this:</p>
+            <p><code>SELECT * FROM users WHERE username='[what you typed]' AND password='[what you typed]'</code></p>
+            <p>What if instead of a username, you typed: <code>admin' --</code>? The query becomes:</p>
+            <p><code>SELECT * FROM users WHERE username='admin' --' AND password='...'</code></p>
+            <p>The <code>--</code> is a SQL comment that ignores everything after it - including the password check!</p>
+        </div>
+
+        <div class="demo-section">
+            <h2>Interactive SQL Injection Demo</h2>
+
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('login')">Login Demo</button>
+                <button class="tab" onclick="switchTab('database')">See the "Database"</button>
+                <button class="tab" onclick="switchTab('prevention')">How to Prevent</button>
+            </div>
+
+            <div id="loginTab" class="tab-content active">
+                <div class="login-box">
+                    <h3>Admin Portal Login</h3>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" placeholder="Enter username" oninput="updateQuery()">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="text" id="password" placeholder="Enter password" oninput="updateQuery()">
+                    </div>
+                    <button class="login-btn" onclick="attemptLogin()">Login</button>
+                </div>
+
+                <div class="try-section">
+                    <h4>Try These Injection Attacks:</h4>
+                    <button class="try-btn" onclick="tryInjection('admin', 'password123')">Normal Login (admin/password123)</button>
+                    <button class="try-btn" onclick="tryInjection('admin', 'wrongpassword')">Wrong Password</button>
+                    <button class="try-btn danger" onclick="tryInjection(`admin' --`, 'anything')">SQL Injection: admin' --</button>
+                    <button class="try-btn danger" onclick="tryInjection(`' OR '1'='1' --`, 'anything')">SQL Injection: ' OR '1'='1' --</button>
+                    <button class="try-btn danger" onclick="tryInjection(`' OR 1=1; DROP TABLE users; --`, 'x')">DANGER: DROP TABLE</button>
+                </div>
+
+                <h4>The SQL Query Being Executed:</h4>
+                <div class="query-display" id="queryDisplay">
+                    <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> users
+                    <span class="keyword">WHERE</span> username='<span id="queryUsername"></span>'
+                    <span class="keyword">AND</span> password='<span id="queryPassword"></span>'
+                </div>
+
+                <div class="result-box info" id="resultBox">
+                    Try entering credentials above or use the injection buttons!
+                </div>
+            </div>
+
+            <div id="databaseTab" class="tab-content">
+                <h3>The "Database" (users table)</h3>
+                <p style="margin-bottom: 15px; color: #666;">This is what the server's database looks like. Normally you'd NEVER see this - but injection attacks can expose it!</p>
+
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>username</th>
+                            <th>password</th>
+                            <th>role</th>
+                            <th>email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>admin</td>
+                            <td class="password">password123</td>
+                            <td>Administrator</td>
+                            <td>admin@company.com</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>jsmith</td>
+                            <td class="password">johnpass456</td>
+                            <td>User</td>
+                            <td>john.smith@email.com</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>sarah_w</td>
+                            <td class="password">s@rah2024!</td>
+                            <td>User</td>
+                            <td>sarah@email.com</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>brothercope</td>
+                            <td class="password">ilovespreadsheets</td>
+                            <td>Teacher</td>
+                            <td>cope@school.edu</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="result-box danger">
+                    <strong>This is the scary part:</strong> With SQL injection, attackers can dump the ENTIRE users table, including all usernames and passwords. In 2008, Heartland Payment Systems was hacked via SQL injection, exposing 130 million credit card numbers - one of the largest breaches in history!
+                </div>
+            </div>
+
+            <div id="preventionTab" class="tab-content">
+                <h3>How Real Websites Prevent SQL Injection</h3>
+
+                <div class="comparison">
+                    <div class="code-block bad">
+                        <h4>VULNERABLE CODE</h4>
+                        <pre>
+// This code is DANGEROUS!
+query = "SELECT * FROM users
+         WHERE username='" + username + "'
+         AND password='" + password + "'"
+
+// User input goes directly into the query
+// Attacker can insert SQL commands!
+                        </pre>
+                    </div>
+                    <div class="code-block good">
+                        <h4>SAFE CODE (Parameterized)</h4>
+                        <pre>
+// This code is SAFE!
+query = "SELECT * FROM users
+         WHERE username = ?
+         AND password = ?"
+
+// The ? are placeholders
+// Database treats input as DATA,
+// never as commands!
+execute(query, [username, password])
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="summary-box">
+                    <h3>Prevention Methods:</h3>
+                    <ul>
+                        <li><strong>Parameterized Queries (Prepared Statements):</strong> Separate the SQL command from the data. The database knows what's code and what's just text.</li>
+                        <li><strong>Input Validation:</strong> Check that usernames only contain letters/numbers, not special characters like quotes or semicolons.</li>
+                        <li><strong>Escape Special Characters:</strong> Convert dangerous characters like ' into safe versions like \'.</li>
+                        <li><strong>Least Privilege:</strong> Database accounts used by the app should only have the permissions they need - not admin rights!</li>
+                        <li><strong>Web Application Firewalls (WAF):</strong> Detect and block common injection patterns.</li>
+                    </ul>
+                </div>
+
+                <div class="result-box info" style="margin-top: 20px;">
+                    <strong>Real World Example:</strong> In 2017, Equifax was hacked, exposing data of 147 million people. While the main vulnerability was different, the attack could have been prevented with proper input validation and security practices.
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Other Types of Injection Attacks</h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div class="result-box info">
+                    <h4 style="color: #0d47a1; margin-bottom: 10px;">XSS (Cross-Site Scripting)</h4>
+                    <p>Injecting JavaScript into websites. If a site displays user input without sanitizing it, attackers can inject scripts that steal cookies or redirect users.</p>
+                    <p style="margin-top: 10px;"><code>&lt;script&gt;alert('Hacked!')&lt;/script&gt;</code></p>
+                </div>
+                <div class="result-box info">
+                    <h4 style="color: #0d47a1; margin-bottom: 10px;">Command Injection</h4>
+                    <p>Injecting OS commands. If a website runs system commands with user input, attackers can run their own commands on the server!</p>
+                    <p style="margin-top: 10px;"><code>; rm -rf /</code> (deletes everything!)</p>
+                </div>
+                <div class="result-box info">
+                    <h4 style="color: #0d47a1; margin-bottom: 10px;">LDAP Injection</h4>
+                    <p>Injecting into directory services. Similar to SQL injection but targets user directories used for authentication.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hacked-overlay" id="hackedOverlay">
+        <h1>DATABASE DROPPED!</h1>
+        <p>You just executed a DROP TABLE command! In a real vulnerable website, this would have deleted the entire users table - destroying all user accounts!</p>
+        <p style="margin-top: 20px; font-size: 1.2em;">This is why SQL injection is one of the most dangerous vulnerabilities on the web.</p>
+        <button onclick="closeHackedOverlay()">I Understand - Close</button>
+    </div>
+
+    <script>
+        // Simulated user database
+        const users = [
+            { id: 1, username: 'admin', password: 'password123', role: 'Administrator' },
+            { id: 2, username: 'jsmith', password: 'johnpass456', role: 'User' },
+            { id: 3, username: 'sarah_w', password: 's@rah2024!', role: 'User' },
+            { id: 4, username: 'brothercope', password: 'ilovespreadsheets', role: 'Teacher' }
+        ];
+
+        function updateQuery() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Highlight injection patterns
+            const queryDisplay = document.getElementById('queryDisplay');
+            let queryHTML = `<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> users
+<span class="keyword">WHERE</span> username='`;
+
+            if (username.includes("'") || username.includes("--") || username.includes("OR")) {
+                queryHTML += `<span class="injection">${escapeHtml(username)}</span>`;
+            } else {
+                queryHTML += escapeHtml(username);
+            }
+
+            queryHTML += `' <span class="keyword">AND</span> password='`;
+
+            if (password.includes("'") || password.includes("--")) {
+                queryHTML += `<span class="injection">${escapeHtml(password)}</span>`;
+            } else {
+                queryHTML += escapeHtml(password);
+            }
+
+            queryHTML += `'`;
+
+            // Add comment highlighting
+            if (username.includes("--") || password.includes("--")) {
+                const commentStart = queryHTML.indexOf("--");
+                if (commentStart > -1) {
+                    const before = queryHTML.substring(0, commentStart);
+                    const after = queryHTML.substring(commentStart);
+                    queryHTML = before + `<span class="comment">${after}</span>`;
+                }
+            }
+
+            queryDisplay.innerHTML = queryHTML;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function tryInjection(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            updateQuery();
+            attemptLogin();
+        }
+
+        function attemptLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const resultBox = document.getElementById('resultBox');
+
+            // Check for DROP TABLE attack
+            if (username.toUpperCase().includes('DROP TABLE') || password.toUpperCase().includes('DROP TABLE')) {
+                document.getElementById('hackedOverlay').classList.add('visible');
+                resultBox.className = 'result-box danger';
+                resultBox.innerHTML = `<strong>CATASTROPHIC!</strong> You attempted to delete the entire database!`;
+                return;
+            }
+
+            // Check for SQL injection bypass
+            if (username.includes("' --") || username.includes("'--")) {
+                // Extract the username before the injection
+                const extractedUser = username.split("'")[0];
+                const foundUser = users.find(u => u.username === extractedUser);
+
+                if (foundUser) {
+                    resultBox.className = 'result-box danger';
+                    resultBox.innerHTML = `<strong>SQL INJECTION SUCCESSFUL!</strong><br><br>
+                    You bypassed the password check using SQL comments!<br>
+                    Logged in as: <strong>${foundUser.username}</strong> (${foundUser.role})<br><br>
+                    The -- comment made the database ignore the password check entirely.`;
+                } else {
+                    resultBox.className = 'result-box info';
+                    resultBox.innerHTML = `SQL Injection attempted, but user "${extractedUser}" not found.`;
+                }
+                return;
+            }
+
+            // Check for OR 1=1 injection
+            if (username.includes("OR") && (username.includes("1=1") || username.includes("'1'='1"))) {
+                resultBox.className = 'result-box danger';
+                resultBox.innerHTML = `<strong>SQL INJECTION SUCCESSFUL!</strong><br><br>
+                You used the OR 1=1 trick!<br>
+                This makes the WHERE clause always TRUE, returning ALL users!<br><br>
+                <strong>All users exposed:</strong><br>
+                ${users.map(u => `- ${u.username} (${u.role})`).join('<br>')}`;
+                return;
+            }
+
+            // Normal login check
+            const foundUser = users.find(u => u.username === username && u.password === password);
+
+            if (foundUser) {
+                resultBox.className = 'result-box success';
+                resultBox.innerHTML = `<strong>Login Successful!</strong><br>Welcome, ${foundUser.username}! (${foundUser.role})`;
+            } else {
+                resultBox.className = 'result-box danger';
+                resultBox.innerHTML = `<strong>Login Failed!</strong><br>Invalid username or password.`;
+            }
+        }
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        function closeHackedOverlay() {
+            document.getElementById('hackedOverlay').classList.remove('visible');
+        }
+
+        // Initialize
+        updateQuery();
+    </script>
+</body>
+</html>
